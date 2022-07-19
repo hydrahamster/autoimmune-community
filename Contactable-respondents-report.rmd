@@ -1,0 +1,394 @@
+---
+title: "Respondents that wish to be contacted from survey"
+author: "Anna Liza Kretzschmar"
+date: "19/02/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This notebook demographics on the respondents from the [Autoimmunity and Health project](https://spoonie-community.netlify.app/) project that consented to be contacted again.
+
+```{r load source file and packages, include = F}
+# in 1_1-22_data-clean.R filter for respondents wanting to be contacted:
+#insert at line 971 : data.base <- subset(data.base, sex_diff_bool == 1)
+#source("2_1-22_Autoimmune-disorder-clean.R")
+
+library(plyr)
+library(tidyverse)
+library(magrittr)
+library(RColorBrewer)
+library(wesanderson)
+library(ggrepel)
+library(arsenal) 
+library(ggbeeswarm)
+library(wordcloud2)
+library(sjlabelled)
+library(readxl)
+library(viridis)
+```
+The number of respondents that consent to being contacted for further studies are
+```{r count number of respondents, echo=FALSE}
+nrow(data.clean)
+```
+Location of respondents by state:
+```{r figure of states,  fig.height = 4, fig.width = 5, fig.align='center', fig.cap="Respondents by state of residence.", echo=FALSE, warning=FALSE}
+### pie chart of states
+state.count <- data.clean %>%
+  count(state) #%>% 
+#.[-9, ] #leave in if NAs should be removed
+state.count$state2 <- c("ACT", "NSW", "NT", "QLD", "SA", "TAS", "VIC", "WA", "None")
+
+#png("state-summary.png")
+ggplot(state.count, aes(x = "", y = n, fill = state2)) +
+  geom_col(color = "black") +
+  geom_label(aes(label = NA),
+             colour = "white",
+             size = 10,
+             position = position_stack(vjust = 0.5),
+             show.legend = F) +
+  coord_polar(theta = "y") +
+  guides(fill = guide_legend(title = "State")) +
+  scale_fill_viridis_d() + #discrete palette, _c for continuous
+  theme_void()
+```
+
+The illnesses reported by respondents.
+```{r count AD represented, echo = F}
+#find types of illnesses represented
+ad.cloud <- df.ad %>%
+  select(contains("autoimmune_id__"), -c(autoimmune_id___44, autoimmune_id___45, autoimmune_id___120, autoimmune_id___123, autoimmune_id___124, autoimmune_id___135), -contains("factor")) 
+ad.labels <- ad.cloud %>%
+  get_label 
+ad.labels <- gsub("\\(.*", "", ad.labels) %>% #TODO this removes the brackets in the AD labels
+  str_trim
+ad.cloud <- ad.cloud %>%
+  mutate_if(is.character, as.numeric) #for some reason initial ADs were character columns, so convert back
+colnames(ad.cloud) <- ad.labels
+ad.count <- ad.cloud %>% 
+  summarise_if(is.numeric, sum) %>% 
+  transpose()
+ad.count.df <- as.data.frame(do.call(cbind, ad.count)) %>% 
+  rownames_to_column(.) %>% 
+  rename(., word = rowname, freq = V1)
+ad.count.df$freq <- as.numeric(as.character(ad.count.df$freq))
+```
+
+```{r bar plot of ADs, echo = F}
+ad.count.ord <- ad.count.df %>%
+  filter(freq > 9)%>%
+  rename(., Autoimmune_disorder = word) %>%
+  arrange(., desc(freq))
+#TODO include healthy controls?
+
+ggplot(ad.count.ord, aes(x = freq, y = Autoimmune_disorder)) +
+  geom_col(fill = viridis(32)) +
+  scale_y_discrete(limits=rev(ad.count.ord$Autoimmune_disorder)) +
+  labs(title = NULL,
+       x = NULL, 
+       y = NULL) +
+  scale_x_continuous(expand = c(0, 0), 
+                     limits = c(0, 200),
+                     breaks = c(0, 20, 40, 60, 80, 100, 120, 140, 160, 180)) +
+  theme_bw() +
+  theme(plot.title=element_text(size=20, face="bold"),
+        axis.title=element_text(size=25),
+        axis.text=element_text(size=10, face="bold"))
+```
+
+### What does the ME/CFS respondents demographics look like?
+
+What is the number of respondents with ME/CFS?
+```{r pull out ME/CFS number, echo = F}
+ad.count.ord %>%
+    filter(Autoimmune_disorder == "ME/CFS")
+```
+
+```{r make df of me info, echo=FALSE}
+me.entries <- subset(df.ad, autoimmune_id___55 == 1) %>%
+  select(record_id, contains("autoimmune_id___"), contains("chronic___"), -c(autoimmune_id___44, autoimmune_id___45, autoimmune_id___55, autoimmune_id___120, autoimmune_id___123, autoimmune_id___124, autoimmune_id___135, chronic___7,), -contains("factor"))
+suppl.df <- data.clean %>%
+  select(record_id,
+         diseasestat,
+         state,
+         gender,
+         misdiag,
+         diagnosis_length,
+         year_of_birth,
+         self,
+         formal)
+
+suppl.df$age <- (2022 - as.numeric(suppl.df$year_of_birth))
+
+me.df <- suppl.df  %>%
+  inner_join(me.entries, by="record_id")
+
+me.df <- me.df %>%
+  mutate_if(is.character, as.numeric)
+
+me.df <- me.df %>% #prev hist.test
+  mutate(gender.id = case_when(
+    gender == "1" ~ "Female",
+    gender == "2" ~ "Male",
+    gender == "3" ~ "Gender fluid",
+    gender == "4" ~ "Non-binary",
+    gender == "5" ~ "Other",
+    gender == "6" ~ "Prefer not to say",
+    gender == "NA" ~ "Non response"
+  )) %>%
+  mutate(disease.id = case_when(
+    diseasestat == "0" ~ "Control group",
+    diseasestat == "1" ~ "Chronically ill cohort",
+    diseasestat == "NA" ~ "Non response"
+  )) %>%
+  mutate(dia_len_id = case_when(
+    diagnosis_length == "2" ~ "Less than six months",
+    diagnosis_length == "3" ~ "6 months - 1 year",
+    diagnosis_length == "4" ~ "1 - 2 years",
+    diagnosis_length == "5" ~ "3 - 4 years",
+    diagnosis_length == "6" ~ "4 - 5 years",
+    diagnosis_length == "7" ~ "6 - 7 years",
+    diagnosis_length == "8" ~ "7 - 8 years",
+    diagnosis_length == "9" ~ "9 - 10 years",
+    diagnosis_length == "10" ~ "10+ years",
+    diagnosis_length == "NA" ~ "Non response"
+  ))  %>%
+  mutate(misdiag.id = case_when(
+    misdiag == "0" ~ "Not misdiagnosed",
+    misdiag == "1" ~ "Misdiagnosed",
+    misdiag == "NA" ~ "Non response"
+  ))
+
+me.df$dia_len_id <- factor(me.df$dia_len_id, levels = c("Non response", 
+                                                                      "Less than six months", 
+                                                                      "6 months - 1 year", 
+                                                                      "1 - 2 years", 
+                                                                      "3 - 4 years", 
+                                                                      "4 - 5 years", 
+                                                                      "6 - 7 years", 
+                                                                      "7 - 8 years", 
+                                                                      "9 - 10 years", 
+                                                                      "10+ years"))
+```
+
+What is the age and gender distribution on ME/CFS respondents?
+```{r me histogram age, echo=FALSE, message=FALSE, warning=FALSE, results='hide', fig.cap="Age and gender of respondents with ME/CFS"}
+ggplot(me.df, aes(x = age, fill = gender.id, color = gender.id)) +
+  geom_histogram(binwidth = 5,
+                 alpha = 0.5) +
+  scale_x_continuous(breaks = seq(20, 95, by = 10)) +
+  scale_y_continuous(breaks = seq(0, 100, by = 10)) +
+  theme_bw() +
+  labs(title = NULL,
+       y = NULL, 
+       x = "Age of respondents",
+       fill = "Gender") +
+  theme(text = element_text(family = "Helvetica-Narrow", face = "bold")) 
+``` 
+Looking at the age distribution here, it would be relatively easy to age match ME/CFS respondents here to the onek1k cohort whose median age is roughly around 60 years of age.
+
+
+Where are the ME/CFS respondents from?
+```{r figure of ME states,  fig.height = 4, fig.width = 5, fig.align='center', fig.cap="Respondents with ME/CFS by state of residence.", echo=FALSE, warning=FALSE}
+### pie chart of states
+state.me <- me.df %>%
+  count(state) #%>% 
+#.[-9, ] #leave in if NAs should be removed
+state.me$state2 <- c("ACT", "NSW", "NT", "QLD", "SA", "TAS", "VIC", "WA")
+
+state.me %>% select(-state)
+#png("state-summary.png")
+ggplot(state.me, aes(x = "", y = n, fill = state2)) +
+  geom_col(color = "black") +
+  geom_label(aes(label = NA),
+             colour = "white",
+             size = 10,
+             position = position_stack(vjust = 0.5),
+             show.legend = F) +
+  coord_polar(theta = "y") +
+  guides(fill = guide_legend(title = "State")) +
+  scale_fill_viridis_d() + #discrete palette, _c for continuous
+  theme_void()
+```
+
+What's the age and sex distribution of ME/CFS respondents?
+```{r me histogram state, echo=FALSE, message=FALSE, warning=FALSE, results='hide', fig.cap="Gender of respondents with ME/CFS by state"}
+state.label <- c("ACT", "NSW", "NT", "QLD", "SA", "TAS", "VIC", "WA")
+
+ggplot(me.df, aes(x = state, fill = gender.id, color = gender.id)) +
+  geom_bar(binwidth = 5,
+                 alpha = 0.5) +
+  scale_x_discrete(labels = state.label) +
+#  scale_y_continuous(breaks = seq(0, 100, by = 10)) +
+  theme_bw() +
+  labs(title = NULL,
+       y = NULL, 
+       x = "State of residence of ME/CFS respondents",
+       fill = "Gender") +
+  theme(text = element_text(family = "Helvetica-Narrow", face = "bold")) 
+```
+
+What's the misdiagnsosis rate like for ME/CFS  respondents?
+```{r me misdia, echo=FALSE, warning=FALSE, fig.cap="Misidagnosis rate of respondents with ME/CFS"}
+misd.me <- me.df %>% 
+  select(misdiag) %>%
+  filter(misdiag == 1) %>%
+  count(.)#47
+nmis.me <- me.df %>% 
+  select(misdiag) %>%
+  filter(misdiag == 0) %>%
+  count(.)# 34
+
+narp.me <- me.df %>% 
+  select(misdiag, self, formal) %>%
+  filter(self == 1 | formal == 1) %>%
+  filter(is.na(misdiag)) %>%
+  select(misdiag) %>%
+  count(.) #10
+
+ids.me <- c("Misdiagnosed", "Correct diagnosis", "Missing")
+vals.me <- c(misd.me, nmis.me, narp.me)
+mis.me <- as.data.frame(cbind(ids.me, vals.me))
+mis.me$ids.me  <- as.character(mis.me$ids.me)
+
+#pie chart misdiagnosis
+ggplot(mis.me, aes(x = "", y = vals.me, fill = ids.me)) +
+  geom_col(color = "black") +
+  geom_label(aes(label = NA),
+             colour = "white",
+             size = 0.1,
+             position = position_stack(vjust = 0.5),
+             show.legend = F) +
+  coord_polar(theta = "y") +
+  guides(fill = guide_legend(title = "Diagnosis")) +
+  scale_fill_viridis_d(option = "inferno",
+                       direction = -1) + #discrete palette, _c for continuous
+  theme_void() +
+  theme(legend.title = element_text(size = 14),
+        legend.text = element_text(size = 15))
+```
+Interestingly, 45 respondents neither picked the formal nor self-diagnosis sections as a 'yes' so they won't have seen a few of the relevant questions we look at here.
+
+How long does it generally take for ME/CFS patients to receive a diagnosis?
+```{r me len dia, echo=FALSE, fig.cap="Time taken for ME/CFS respondents to receive a diagnosis"}
+# freqs = plyr::count(cbind(me.df$diagnosis_length.factor, me.df$misdiag) ) 
+# testx = spread(freqs, key = "x", value="freq")
+# testx[is.na(testx[,1]),1] = "Missing" 
+# 
+# 
+# rownames(testx)  = testx[,1] 
+# testx = testx[,-c(1,11)] # remove NA column, and labels 
+# testx[is.na(testx)] = 0 
+# 
+# colnames(testx) = c("Less than six months","6 months - 1 year","1 - 2 years","3 - 4 years","4 - 5 years","6 - 7 years","7 - 8 years","9 - 10 years","10+ years")
+# rownames(testx) = c("Correct diagnosis", "Misdiagnosed", "Missing")
+
+# ggplot(me.df,
+#        aes(x = dia_len_id,
+#            fill = misdiag.id)) +
+#   scale_x_discrete(expand = c(0, 0)) +
+#   scale_y_continuous(expand = c(0, 0), breaks = seq(0, 15)) +
+#   theme_bw() +
+#   geom_bar(position = position_dodge(preserve = "single")) +
+#   scale_fill_viridis_d(option = "inferno")
+# 
+# ggplot(me.df, aes(x = dia_len_id, fill = misdiag.id, color = misdiag.id) +
+#   geom_histogram(binwidth = 5,
+#                  alpha = 0.5) +
+#   scale_x_discrete(breaks = seq(20, 95, by = 10)) +
+#   scale_y_continuous(breaks = seq(0, 30, by = 5)) +
+#   theme_bw() +
+#   labs(title = NULL,
+#        y = NULL, 
+#        x = "Length to diagnosis",
+#        fill = "Diagnostic status") +
+#   theme(text = element_text(family = "Helvetica-Narrow", face = "bold"))) 
+```
+
+Do they usually have ME/CFS in isolation, or other illnesses?
+```{r me number of illnesses comorb, echo=FALSE}
+
+```
+
+What are the most common other autoimmune disorders that ME/CFS respondents had?
+```{r me number of illnesses, echo=FALSE}
+me.cloud <- me.df %>%
+  select(contains("autoimmune_id__")) 
+me.labels <- me.cloud %>%
+  get_label 
+me.labels <- gsub("\\(.*", "", me.labels) %>% #TODO this removes the brackets in the AD labels
+  str_trim
+colnames(me.cloud) <- me.labels
+#lables are lost for initial sections, which means they come up as blank #TODO up to here, some fuckery abounds
+me.cloud %>% filter(duplicated())
+
+me.count <- me.cloud %>% 
+  summarise_if(is.numeric, sum) %>% 
+  transpose()
+me.count.df <- as.data.frame(do.call(cbind, me.count)) %>% 
+  rownames_to_column(.) %>% 
+  rename(., word = rowname, freq = V1)
+me.count.df$freq <- me.numeric(as.character(me.count.df$freq))
+
+ad.count.ord <- ad.count.df %>%
+  filter(freq > 9)%>%
+  rename(., Autoimmune_disorder = word) %>%
+  arrange(., desc(freq))
+#TODO include healthy controls?
+
+ggplot(ad.count.ord, aes(x = freq, y = Autoimmune_disorder)) +
+  geom_col(fill = viridis(32)) +
+  scale_y_discrete(limits=rev(ad.count.ord$Autoimmune_disorder)) +
+  labs(title = NULL,
+       x = NULL, 
+       y = NULL) +
+  scale_x_continuous(expand = c(0, 0), 
+                     limits = c(0, 200),
+                     breaks = c(0, 20, 40, 60, 80, 100, 120, 140, 160, 180)) +
+  theme_bw() +
+  theme(plot.title=element_text(size=20, face="bold"),
+        axis.title=element_text(size=25),
+        axis.text=element_text(size=10, face="bold"))
+```
+
+
+How common are co-morbidities for ME/CFS respondents?
+```{r me co-moerbs, echo=FALSE}
+como.df.me <- me.df %>%
+  select(contains("chronic_"), -chronic___7, -contains("factor"))  #record_id, 
+como.labels.me <- como.df.me %>%
+  get_label 
+como.df.me <- como.df.me %>%
+  mutate_if(is.character, as.numeric) #for some reason initial ADs were character columns, so convert back
+colnames(como.df.me) <- como.labels.me
+como.count.me <- como.df.me %>% 
+  mutate_if(is.character, as.numeric) %>%
+#  select(como.df, -contains("ecord")) %>%
+  summarise_if(is.numeric, sum) %>% 
+  transpose()
+como.count.df.me <- as.data.frame(do.call(cbind, como.count.me)) %>% 
+  rownames_to_column(.) %>% 
+  rename(., Comorbidity = rowname, freq = V1)
+como.count.df.me$freq <- as.numeric(as.character(como.count.df.me$freq))
+
+como.count.df.me %>% arrange(desc(freq))
+
+#wordcloud2(como.count.df, shape = 'diamond', color = "random-light", backgroundColor = "grey")
+
+##piechart comorbs
+# ggplot(como.count.df.me, aes(x = "", y = freq, fill = Comorbidity)) +
+#   geom_col(color = "black") +
+#   geom_label(aes(label = NA),
+#              colour = "white",
+#              size = 6,
+#              position = position_stack(vjust = 0.5),
+#              show.legend = F) +
+#   coord_polar(theta = "y") +
+#   guides(fill = guide_legend(title = "Co-morbidity")) +
+#   scale_fill_viridis_d(option = "inferno") + #discrete palette, _c for continuous
+#   theme_void() +
+#   theme(legend.title = element_text(size = 14),
+#         legend.text = element_text(size = 15))
+```

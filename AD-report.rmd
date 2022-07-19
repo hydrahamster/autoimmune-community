@@ -1,0 +1,338 @@
+---
+title: 'Autoimmunity and Health: Analysis of final data'
+Author: Anna Liza Kretzschmar
+output:
+  html_document:
+    df_print: paged
+---
+```{r load libraries, include = F}
+#load helper file
+source("0_pachages-function.R")
+
+#load data
+df.ad <- readRDS("df-ad.rds")
+data.clean <- readRDS("AD-data-clean.rds")
+df.sumstats <- readRDS("AD-sumstats.rds")
+```
+This notebook is to keep track of results as they are generated on the final dataset for the [Autoimmunity and Health project](https://spoonie-community.netlify.app/) project. The project aims to quantify diagnostic journeys of chronically ill folk in Australia. Recruitment for both chronically ill participants as well as healthy controls will continue till June 2022. Accompanying code to generate images is in `AD-report-code.R`
+
+## Overview of participating cohort.
+
+<!-- The project information website mentioned above has has 2485 viewers from around Australia. Their distribution can be seen in the map below, where circle size corresponds to number of viewers. -->
+<!-- ```{r, fig.cap="Visits to the project website by location.", echo=FALSE} -->
+<!-- map_path <- "images/website-plot-red.jpeg" -->
+<!-- knitr::include_graphics(map_path) -->
+<!-- ``` -->
+
+To date, 1366 people have participated in this project by taking the survey, 1183 chronically ill folk and 186 control cohort, recording 176 illnesses. Their distribution by resident state can be seen in the chart below, which is on par with the polulation density ratio between the states.
+### Responses by state
+```{r, fig.cap="Distribution of responses by state" , echo=FALSE}
+state_pie <- "images/AD-state-responses-pie.png"
+knitr::include_graphics(state_pie)
+```
+
+
+### Age by gender distribution
+```{r age gend hist, echo=FALSE}
+gend_hist <- "images/AD-gender-age-hist.png"
+knitr::include_graphics(gend_hist)
+```
+
+
+### Age, gender and cohort distribution
+Gender breakdown between chronically ill and control cohorts by percentage:
+```{r gender cohort, echo=FALSE}
+df.sumstats %>%
+  tabyl(gender.id, cohort.id) %>%
+  adorn_totals(where = "row") %>%
+  adorn_percentages(denominator = "col") %>%
+  adorn_pct_formatting() %>%
+  adorn_ns(position = "rear") %>%
+  adorn_title(
+    row_name = "Gender"
+  )
+```
+Visualisaztion to compare age range between controls and chronic illness cohort shows that there is no statistical difference for age representation between HC and CI cohorts.
+```{r hist ages, echo=FALSE}
+age_viol <- "images/AD-cohort-age-violin.png"
+knitr::include_graphics(age_viol)
+```
+How about by gender? Here, any identification other than Male and Female was grouped into Other due to the number of respondents with that identity.
+```{r hist age gender, echo=FALSE}
+age_gend_viol <- "images/AD-cohort-age-gender-violin.png"
+knitr::include_graphics(age_gend_viol)
+```
+
+
+### Ethnicity
+```{r ethn pie , echo=FALSE}
+ethn_pie <- "images/ethnicity-pie.png"
+knitr::include_graphics(ethn_pie)
+
+```
+
+### Income
+```{r inc pie , echo=FALSE}
+emp_pie <- "images/employment-pie.png"
+knitr::include_graphics(emp_pie)
+
+```
+
+### Education level
+```{r edu pie , echo=FALSE}
+edu_pie <- "images/education-pie.png"
+knitr::include_graphics(edu_pie)
+
+```
+
+
+### Relationship status
+```{r relationship pie , echo=FALSE}
+rel_pie <- "images/relationship-pie.png"
+knitr::include_graphics(rel_pie)
+
+```
+
+
+### Misdiagnsosis
+```{r misdia pie , echo=FALSE}
+misdia_pie <- "images/misdiag-pie.png"
+knitr::include_graphics(misdia_pie)
+
+```
+```{r stats mdx, echo=FALSE}
+df.sumstats %>%
+     tabyl(dia.length, misdiag.id) %>%
+     adorn_totals(where = "row") %>%
+     adorn_percentages(denominator = "col") %>%
+     adorn_pct_formatting() %>%
+     adorn_ns(position = "rear") %>%
+     adorn_title(
+         row_name = "Length to diagnosis"
+     )
+         
+```
+```{r mdx len bar, echo=FALSE}
+mdx-len-bar <- "images/mdx-length-dx-bar.png"
+knitr::include_graphics(mdx-len-bar)
+```
+
+
+<!-- ```{r} -->
+<!-- #TODO should change this too to rm entries that didn't have the option to participate -->
+<!-- #TODO this needs to be cleaned up -->
+<!-- filt =  which(data.clean$diseasestat == 1 )[-93] -->
+<!-- freqs = plyr::count(cbind(data.clean$diagnosis_length.factor[filt], data.clean$misdiag[filt]) )  -->
+<!-- testx = spread(freqs, key = "x.1", value="freq") -->
+<!-- testx[is.na(testx[,1]),1] = "Missing"  -->
+
+
+<!-- rownames(testx)  = testx[,1]  -->
+<!-- testx = testx[,-c(1,11)] # remove NA column, and labels  -->
+<!-- testx[is.na(testx)] = 0  -->
+
+<!-- colnames(testx) = c("Less than six months","6 months - 1 year","1 - 2 years","3 - 4 years","4 - 5 years","6 - 7 years","7 - 8 years","9 - 10 years","10+ years") -->
+<!-- rownames(testx) = c("Correct diagnosis", "Misdiagnosed", "Missing") -->
+
+<!-- ggplot(df.sumstats, -->
+<!--        aes(x = dia.length, -->
+<!--            fill = misdiag.id)) + -->
+<!-- #  scale_x_discrete(expand = c(0, 0)) + -->
+<!--   scale_y_continuous(breaks = seq(0, 200, by = 10))  + -->
+<!--   theme_bw() + -->
+<!--   geom_bar(position = position_dodge(preserve = "single")) + -->
+<!--   scale_fill_viridis_d(option = "inferno", direction = -1) -->
+<!-- ``` -->
+<!-- mis-dia - len dia bar plot -->
+There is a significant association between length to diagnosis and misdiagnosis based on Fisher's exact test.
+```{r fishers tests, echo=FALSE}
+# Is there an association with length of diagnosis and misdiagnosis
+freqs = plyr::count(cbind(df.sumstats$dia.length, df.sumstats$misdiag.id) ) 
+testx = spread(freqs, key = "x.1", value="freq")
+testx = testx[!is.na(testx[,1]),]   
+rownames(testx)  = testx[,1] 
+testx = testx[,-c(1,11)] # remove NA column, and labels 
+testx[is.na(testx)] = 0 
+fisher.test(testx, simulate.p.value=TRUE)
+# simulated p-value (based on 2000 replicates)
+# p-value = 0.0004998
+# alternative hypothesis: two.sided
+```
+
+
+## Autoimmune diorders and chronic illnesses represented in the cohort.
+
+### Primary illnesses reported.
+
+In this cohort, 180 chronic illnesses have been reported by participants. Due to request from the chronic illness community, Hypermobility spectrum disorders were grouped together which include Ehlers-Danlos syndrome (EDS) (including variants such as hEDS, vEDS) as well as Hypermobility spectrum disorder (HSD) as diagnostic critreria changed in the last three years where hEDS would now be usually diagnosed as HSD.
+Further, vasculitis disorder were grouped together also as the underlying disease mechanism consists of vascular inflammation that presents in different tissues or types of blood vessels (i.e. Wegener's granulomatosis, Takayasu's Arteritis, Susac's syndrome, Giant cell arteritis, Essential mixed cryoglobulinemia, Eosinophilic granulomatosis with polyangiitis (EGPA), cerebral vasculitis, general vasculitis, Leukocytoclastic vasculitis, Microscopic polyangiitis, Lymphocytic vasculitis, Henoch Schonlein purpura and Cutaneous small vessel vasculitis). Individually, these rare illnesses were so minorly represented as to not give any statistical power.
+
+```{r cloud ADs , echo=FALSE}
+ad_wcloud <- "images/AD-wordcloud.png"
+knitr::include_graphics(ad_wcloud)
+```
+
+Another visual representation with more informative values are bar charts, as shown below. For this example, any illnesses with more than 10 entries are selected
+```{r ADs barchart , echo=FALSE}
+ad_barc <- "images/AD-barplot.png"
+knitr::include_graphics(ad_barc)
+```
+
+
+### Comorbidities found among participants.
+
+```{r comorb bar  , echo=FALSE}
+com_barc <- "images/Comorb-barplot.png"
+knitr::include_graphics(com_barc)
+```
+Co-morbidities were reported in the control cohort also, however I think it is possible to not have to merge these as it is primarily asthma and mental illness.
+```{r comorb control bar  , echo=FALSE}
+com_cont <- "images/Control-comorb-bar.png"
+knitr::include_graphics(com_cont)
+```
+
+### Upset plot of top 10 represented ADs with misdiagnosis rate and employment status
+```{r upset work mdx  , echo=FALSE}
+upset_10 <- "images/Upset-top10-mdx-employment.png"
+knitr::include_graphics(upset_10)
+```
+
+
+### Violing plot of y = Number of ADs, x = Length dx
+
+# SF36
+
+# Symptoms
+
+### Overview of symtptoms experienced
+
+Symptom distribution between Chronically ill and control cohorts
+```{r stats sympt, echo=FALSE}
+symptoms.factor <- data.clean %>%
+  select(record_id,
+         diseasestat.factor,
+         fatigue.factor:bruise.factor)
+symptoms.scale <- data.clean %>%
+  select(record_id,
+         diseasestat,
+         fatigue:bruise) %>%
+  mutate(across(diseasestat:bruise, .fns = as.numeric))
+
+sympt.long <- symptoms.factor %>%
+   mutate(dx.id = case_when( 
+    diseasestat.factor == "Yes" ~ "Chronically ill",
+    diseasestat.factor == "No" ~ "Control group",
+    TRUE ~ NA_character_
+  )) %>%
+  select(-c(record_id, diseasestat.factor))
+colnames(sympt.long)<-gsub(".factor","",colnames(sympt.long))
+sympt.long<- sympt.long %>%
+  pivot_longer(!dx.id, names_to = "symptom", values_to = "severity")
+
+sympt.long %>%
+  tabyl(severity, symptom, dx.id) %>%
+  adorn_totals(where = "row") %>%
+  adorn_percentages(denominator = "col") %>%
+  adorn_pct_formatting() %>%
+  adorn_ns(position = "rear") %>%
+  adorn_title(
+    row_name = "severity"
+  )
+```
+```{r bar sympt sum all CI , echo=FALSE}
+sym_allAD <- "images/Symptoms-summary.png"
+knitr::include_graphics(sym_allAD)
+```
+
+#### Symptoms for top 10 most represented illnesses
+![image](images/coeliac-symptoms.png)
+![image](images/mecfs-symptoms.png)
+![image](images/hashi-symptoms.png)
+![image](images/ra-symptoms.png)
+![image](images/sjog-symptoms.png)
+![image](images/fibro-symptoms.png)
+![image](images/lupus-symptoms.png)
+![image](images/hsd-symptoms.png)
+![image](images/pots-symptoms.png)
+![image](images/psa-symptoms.png)
+#### Individual symptoms for controls vs. chronic cohorts
+
+```{r bar fatigue , echo=FALSE}
+sym_fat <- "images/Sympt-bar-fatigue.png"
+knitr::include_graphics(sym_fat)
+```
+```{r bar joint , echo=FALSE}
+sym_joint <- "images/Sympt-bar-joint.png"
+knitr::include_graphics(sym_joint)
+```
+```{r bar  skin, echo=FALSE}
+sym_skin <- "images/Sympt-bar-skin.png"
+knitr::include_graphics(sym_skin)
+```
+```{r bar stomach , echo=FALSE}
+sym_stomach <- "images/Sympt-bar-stomach.png"
+knitr::include_graphics(sym_stomach)
+```
+```{r bar fever , echo=FALSE}
+sym_fever <- "images/Sympt-bar-fever.png"
+knitr::include_graphics(sym_fever)
+```
+```{r bar glands , echo=FALSE}
+sym_glands <- "images/Sympt-bar-glands.png"
+knitr::include_graphics(sym_glands)
+```
+```{r bar chills , echo=FALSE}
+sym_chills <- "images/Sympt-bar-chills.png"
+knitr::include_graphics(sym_chills)
+```
+```{r bar memory , echo=FALSE}
+sym_memory <- "images/Sympt-bar-memory.png"
+knitr::include_graphics(sym_memory)
+```
+```{r bar conc , echo=FALSE}
+sym_conc <- "images/Sympt-bar-conc.png"
+knitr::include_graphics(sym_conc)
+```
+```{r bar hair , echo=FALSE}
+sym_hair <- "images/Sympt-bar-hair.png"
+knitr::include_graphics(sym_hair)
+```
+```{r bar skin2 , echo=FALSE}
+sym_skin2 <- "images/Sympt-bar-skin2.png"
+knitr::include_graphics(sym_skin2)
+```
+```{r bar weak , echo=FALSE}
+sym_weak <- "images/Sympt-bar-weak.png"
+knitr::include_graphics(sym_weak)
+```
+```{r bar pain , echo=FALSE}
+sym_pain <- "images/Sympt-bar-pain.png"
+knitr::include_graphics(sym_pain)
+```
+```{r bar bruise , echo=FALSE}
+sym_bruise <- "images/Sympt-bar-bruise.png"
+knitr::include_graphics(sym_bruise)
+```
+
+
+
+
+
+<!-- Need to find a better way to count co-morbs for the test -->
+<!-- There is a significant association between developing chronic illness and presence of co-morbidities based on Fisher's exact test. -->
+<!-- ```{r} -->
+<!-- #TODO missing co-morbs in df.sumstats -->
+<!-- freqs = plyr::count(cbind(df.sumstats$comorb, df.sumstats$cohort.id) )  -->
+<!-- testx = spread(freqs, key = "x.1", value="freq") -->
+<!-- testx = testx[!is.na(testx[,1]),]    -->
+<!-- rownames(testx)  = testx[,1]  -->
+<!-- testx = testx[,-c(1,9)] # remove NA column, and labels  -->
+<!-- testx[is.na(testx)] = 0  -->
+<!-- fisher.test(testx, simulate.p.value=TRUE)  -->
+<!-- ``` -->
+<!-- ## Common treatments employed by paricipants. -->
+
+<!-- ### Diets. -->
+
+<!-- Diets were the most common strategy used by participants for symptom management. This is unsurprising as the most commonly reported chronic illness so far is coeliac, however a range of diets other than gluten free are recorded. -->
+
