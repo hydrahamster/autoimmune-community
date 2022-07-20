@@ -381,7 +381,63 @@ gender.data <- data.clean %>% select(record_id, fatigue:bruise) %>% left_join((d
 ###
 # Top 10 ADs
 ####
- sympt.hsd
+ 
+ #TODO problem with IDs, have a look at HSD as working on
+ sympt.heat((sympt.fibro %>% select(-dx.id)))
+ ggsave("images/sympt-heatmap-fibro.png")
+ sympt.network((sympt.fibro %>% select(-dx.id)))
+ ggsave("images/sympt-network-fibro.png")
+ 
+ sympt.heat((sympt.pots %>% select(-dx.id)))
+ ggsave("images/sympt-heatmap-pots.png")
+ pots.test <- sympt.pots %>% select(-dx.id) 
+ sympt.network(pots.test)
+ ggsave("images/sympt-network-pots.png")
+ 
+ sympt.heat((sympt.psa %>% select(-dx.id)))
+ ggsave("images/sympt-heatmap-psa.png")
+ sympt.network((sympt.psa %>% select(-dx.id)))
+ ggsave("images/sympt-network-psa.png")
+ 
+ sympt.heat((sympt.sjog %>% select(-dx.id)))
+ ggsave("images/sympt-heatmap-sjog.png")
+ sympt.network((sympt.sjog %>% select(-dx.id)))
+ ggsave("images/sympt-network-sjog.png")
+ 
+ sympt.heat((sympt.ra %>% select(-dx.id)))
+ ggsave("images/sympt-heatmap-ra.png")
+ sympt.network((sympt.ra %>% select(-dx.id)))
+ ggsave("images/sympt-network-ra.png")
+ 
+ sympt.heat((sympt.me %>% select(-dx.id)))
+ ggsave("images/sympt-heatmap-me.png")
+ sympt.network((sympt.me %>% select(-dx.id)))
+ ggsave("images/sympt-network-me.png")
+ 
+ sympt.heat((sympt.lupus %>% select(-dx.id)))
+ ggsave("images/sympt-heatmap-lupus.png")
+ sympt.network((sympt.lupus %>% select(-dx.id)))
+ ggsave("images/sympt-network-lupus.png")
+ 
+ sympt.heat((sympt.hashi %>% select(-dx.id)))
+ ggsave("images/sympt-heatmap-hashi.png")
+ sympt.network((sympt.hashi %>% select(-dx.id)))
+ ggsave("images/sympt-network-hashi.png")
+ 
+ sympt.heat((sympt.coeliac %>% select(-dx.id)))
+ ggsave("images/sympt-heatmap-coeliac.png")
+ sympt.network((sympt.coeliac %>% select(-dx.id)))
+ ggsave("images/sympt-network-coeliac.png")
+ 
+ scale.hsd <- id.hsd %>%
+   left_join((symptoms.scale %>% select(-cohort.id)), by = "record_id") %>%
+   filter(!if_all(fatigue:bruise, is.na)) %>%
+   select(-c(record_id))
+ sympt.heat(scale.hsd)
+ ggsave("images/sympt-heatmap-hsd.png")
+ sympt.network(scale.hsd)
+ ggsave("images/sympt-network-hsd.png")
+ 
  
  
  #use record IDs from prev section
