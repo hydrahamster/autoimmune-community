@@ -1598,18 +1598,18 @@ df.sumstats <- df.sumstats %>% #prev hist.test
     age %in% 95:99 ~ "95-99"
   ))%>%
   rename("dia.length" = "diagnosis_length.factor") %>%
-  # mutate(dia.length = case_when(
-  #   data.clean$diagnosis_length == "2" ~ "Less than six months",
-  #   data.clean$diagnosis_length == "3" ~ "6 months - 1 year",
-  #   data.clean$diagnosis_length == "4" ~ "1 - 2 years",
-  #   data.clean$diagnosis_length == "5" ~ "3 - 4 years",
-  #   data.clean$diagnosis_length == "6" ~ "4 - 5 years",
-  #   data.clean$diagnosis_length == "7" ~ "6 - 7 years",
-  #   data.clean$diagnosis_length == "8" ~ "7 - 8 years",
-  #   data.clean$diagnosis_length == "9" ~ "9 - 10 years",
-  #   data.clean$diagnosis_length == "10" ~ "10+ years",
-  #   data.clean$diagnosis_length == "NA" ~ "Non response"
-# ))  %>%
+  mutate(dx.group = case_when(
+    dia.length == "Less than six months" ~"< 6 months",
+    dia.length == "6 months - 1 year" ~">6 months - 1 year",
+    dia.length == "1 - 2 years" ~ ">1 - 5 years",
+    dia.length == "3 - 4 years" ~">1 - 5 years",
+    dia.length == "4 - 5 years" ~">1 - 5 years",
+    dia.length == "6 - 7  years" ~ ">5 - 9 years",
+    dia.length == "7 - 8  years" ~">5 - 9 years",
+    dia.length == "9 - 10 years" ~ "9+ years",
+    dia.length == "10+  years (please specify length in the other section)" ~"9+ years",
+    is.na(dia.length)  ~ NA_character_
+))  %>%
 rename("misdiag.id" = "misdiag.factor") %>%
   # mutate(misdiag.id = case_when(
   #   data.clean$misdiag == "0" ~ "Not misdiagnosed",
@@ -1631,6 +1631,8 @@ rename("misdiag.id" = "misdiag.factor") %>%
   left_join((df.ad %>% select(record_id, cohort.id, ad.sum)), by= "record_id")
 df.sumstats$gender.group = factor(df.sumstats$gender.group,levels=c("Female","Male","Other"))
 levels(df.sumstats$gender.group)=c("Female","Male","Other")
+df.sumstats$dx.group = factor(df.sumstats$dx.group,levels=c("< 6 months",">6 months - 1 year",">1 - 5 years", ">5 - 9 years", "9+ years"))
+levels(df.sumstats$dx.group)=c("< 6 months",">6 months - 1 year",">1 - 5 years", ">5 - 9 years", "9+ years")
 #Check allocations worked out correctly
 # test %>% filter(!(as.character(gender.id) == as.character(gender.group))) %>% select(record_id, gender.id, gender.group)
 

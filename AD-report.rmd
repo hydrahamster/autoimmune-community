@@ -25,6 +25,9 @@ This notebook is to keep track of results as they are generated on the final dat
 <!-- ``` -->
 
 To date, 1366 people have participated in this project by taking the survey, 1183 chronically ill folk and 186 control cohort, recording 176 illnesses. Their distribution by resident state can be seen in the chart below, which is on par with the polulation density ratio between the states.
+
+
+
 ### Responses by state
 ```{r, fig.cap="Distribution of responses by state" , echo=FALSE}
 state_pie <- "images/AD-state-responses-pie.png"
@@ -113,8 +116,8 @@ df.sumstats %>%
          
 ```
 ```{r mdx len bar, echo=FALSE}
-mdx-len-bar <- "images/mdx-length-dx-bar.png"
-knitr::include_graphics(mdx-len-bar)
+mdx_lenbar <- "images/mdx-length-dx-bar.png"
+knitr::include_graphics(mdx_lenbar)
 ```
 
 

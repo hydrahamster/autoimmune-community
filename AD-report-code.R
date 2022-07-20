@@ -6,6 +6,73 @@ df.ad <- readRDS("df-ad.rds")
 data.clean <- readRDS("AD-data-clean.rds")
 df.sumstats <- readRDS("AD-sumstats.rds")
 
+### count completion per section
+query.completion <- data.clean %>%
+  select(contains(".factor") & contains("_complete"))
+query.completion %>%
+  tabyl(demographics_complete.factor) %>%
+  adorn_totals(where = "row") %>%
+  adorn_percentages(denominator = "col") %>%
+  adorn_pct_formatting() %>%
+  adorn_ns(position = "rear") %>%
+  adorn_title(
+    row_name = "Completion"
+  )
+query.completion %>%
+  tabyl(disease_and_diagnosis_complete.factor) %>%
+  adorn_totals(where = "row") %>%
+  adorn_percentages(denominator = "col") %>%
+  adorn_pct_formatting() %>%
+  adorn_ns(position = "rear") %>%
+  adorn_title(
+    row_name = "Completion"
+  )
+query.completion %>%
+  tabyl(symptom_management_complete.factor) %>%
+  adorn_totals(where = "row") %>%
+  adorn_percentages(denominator = "col") %>%
+  adorn_pct_formatting() %>%
+  adorn_ns(position = "rear") %>%
+  adorn_title(
+    row_name = "Completion"
+  )
+query.completion %>%
+  tabyl(mental_health_complete.factor) %>%
+  adorn_totals(where = "row") %>%
+  adorn_percentages(denominator = "col") %>%
+  adorn_pct_formatting() %>%
+  adorn_ns(position = "rear") %>%
+  adorn_title(
+    row_name = "Completion"
+  )
+query.completion %>%
+  tabyl(neuroqol_bank_v10_fatigue_complete.factor) %>%
+  adorn_totals(where = "row") %>%
+  adorn_percentages(denominator = "col") %>%
+  adorn_pct_formatting() %>%
+  adorn_ns(position = "rear") %>%
+  adorn_title(
+    row_name = "Completion"
+  )
+query.completion %>%
+  tabyl(alcohol_dependence_scale_complete.factor) %>%
+  adorn_totals(where = "row") %>%
+  adorn_percentages(denominator = "col") %>%
+  adorn_pct_formatting() %>%
+  adorn_ns(position = "rear") %>%
+  adorn_title(
+    row_name = "Completion"
+  )
+query.completion %>%
+  tabyl(rand_36_item_sf_health_survey_instrument_version_1_complete.factor) %>%
+  adorn_totals(where = "row") %>%
+  adorn_percentages(denominator = "col") %>%
+  adorn_pct_formatting() %>%
+  adorn_ns(position = "rear") %>%
+  adorn_title(
+    row_name = "Completion"
+  )
+
 ### Responses by state pie chart
 state.count <- df.sumstats %>%
   count(state) #%>% 
@@ -137,9 +204,9 @@ ggpiestats(
 ggsave("images/misdiag-pie.png")
 
 ### misdiagnosis len dx bar
-ggplot((df.sumstats %>% filter(cohort.id != "control")), aes(dia.length, fill = misdiag.id)) +
-  geom_bar(stat = "count") +
-  labs(title = "dx length",
+ggplot((df.sumstats %>% filter(cohort.id != "control") %>% filter(!is.na(dx.group))), aes(dx.group, fill = misdiag.id)) +
+  geom_bar(stat = "count", position = position_dodge2(width = 0.9, preserve = "single")) +
+  labs(title = "Length of time to receive a diagnosis",
        x = NULL, 
        y = NULL,
        fill = "Misdiagnosed") +
@@ -156,12 +223,12 @@ ggplot((df.sumstats %>% filter(cohort.id != "control")), aes(dia.length, fill = 
   coord_flip()
 ggsave("images/mdx-length-dx-bar.png")
 
+#mdx by length and 3ads, doesn't quite work
 grouped_ggbetweenstats(
-#ggbetweenstats(
   data = (df.sumstats %>% filter(cohort.id != "control")),
-  x = misdiag.id,
+  x = dia.length, #misdiag.id,
   y =  ad.sum,
-  grouping.var = gender.group ,
+  grouping.var = misdiag.id ,
   pairwise.comparisons = TRUE,
   ylab = "Number of chronic illnesses",
   xlab = "Misdiagnosis received",
