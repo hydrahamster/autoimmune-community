@@ -382,55 +382,100 @@ gender.data <- data.clean %>% select(record_id, fatigue:bruise) %>% left_join((d
 # Top 10 ADs
 ####
  
- #TODO problem with IDs, have a look at HSD as working on
- sympt.heat((sympt.fibro %>% select(-dx.id)))
+ scale.fibro <- id.fibro %>%
+   select(-c(dx.id)) %>%
+   left_join((data.clean %>% select(record_id, fatigue:bruise)), by = "record_id") %>%
+   filter(!if_all(fatigue:bruise, is.na)) %>%
+   select(-c(record_id))
+  sympt.heat(scale.fibro)
  ggsave("images/sympt-heatmap-fibro.png")
- sympt.network((sympt.fibro %>% select(-dx.id)))
+ sympt.network(scale.fibro)
  ggsave("images/sympt-network-fibro.png")
  
- sympt.heat((sympt.pots %>% select(-dx.id)))
+ scale.pots <- id.pots %>%
+   select(-c(dx.id)) %>%
+   left_join((data.clean %>% select(record_id, fatigue:bruise)), by = "record_id") %>%
+   filter(!if_all(fatigue:bruise, is.na)) %>%
+   select(-c(record_id))
+  sympt.heat(scale.pots)
  ggsave("images/sympt-heatmap-pots.png")
  pots.test <- sympt.pots %>% select(-dx.id) 
- sympt.network(pots.test)
+ sympt.network(scale.pots)
  ggsave("images/sympt-network-pots.png")
  
- sympt.heat((sympt.psa %>% select(-dx.id)))
+ scale.psa <- id.psa %>%
+   select(-c(dx.id)) %>%
+   left_join((data.clean %>% select(record_id, fatigue:bruise)), by = "record_id") %>%
+   filter(!if_all(fatigue:bruise, is.na)) %>%
+   select(-c(record_id))
+ sympt.heat(scale.psa)
  ggsave("images/sympt-heatmap-psa.png")
- sympt.network((sympt.psa %>% select(-dx.id)))
+ sympt.network(scale.psa)
  ggsave("images/sympt-network-psa.png")
  
- sympt.heat((sympt.sjog %>% select(-dx.id)))
+ scale.sjog <- id.sjog %>%
+   select(-c(dx.id)) %>%
+   left_join((data.clean %>% select(record_id, fatigue:bruise)), by = "record_id") %>%
+   filter(!if_all(fatigue:bruise, is.na)) %>%
+   select(-c(record_id))
+ sympt.heat(scale.sjog)
  ggsave("images/sympt-heatmap-sjog.png")
- sympt.network((sympt.sjog %>% select(-dx.id)))
+ sympt.network(scale.sjog)
  ggsave("images/sympt-network-sjog.png")
  
- sympt.heat((sympt.ra %>% select(-dx.id)))
+ scale.ra <- id.ra %>%
+   select(-c(dx.id)) %>%
+   left_join((data.clean %>% select(record_id, fatigue:bruise)), by = "record_id") %>%
+   filter(!if_all(fatigue:bruise, is.na)) %>%
+   select(-c(record_id))
+ sympt.heat(scale.ra)
  ggsave("images/sympt-heatmap-ra.png")
- sympt.network((sympt.ra %>% select(-dx.id)))
+ sympt.network(scale.ra)
  ggsave("images/sympt-network-ra.png")
  
- sympt.heat((sympt.me %>% select(-dx.id)))
+ scale.me <- id.me %>%
+   select(-c(dx.id)) %>%
+   left_join((data.clean %>% select(record_id, fatigue:bruise)), by = "record_id") %>%
+   filter(!if_all(fatigue:bruise, is.na)) %>%
+   select(-c(record_id))
+ sympt.heat(scale.me)
  ggsave("images/sympt-heatmap-me.png")
- sympt.network((sympt.me %>% select(-dx.id)))
+ sympt.network(scale.me)
  ggsave("images/sympt-network-me.png")
  
- sympt.heat((sympt.lupus %>% select(-dx.id)))
+ scale.lupus <- id.lupus %>%
+   select(-c(dx.id)) %>%
+   left_join((data.clean %>% select(record_id, fatigue:bruise)), by = "record_id") %>%
+   filter(!if_all(fatigue:bruise, is.na)) %>%
+   select(-c(record_id))
+ sympt.heat(scale.lupus)
  ggsave("images/sympt-heatmap-lupus.png")
- sympt.network((sympt.lupus %>% select(-dx.id)))
+ sympt.network(scale.lupus)
  ggsave("images/sympt-network-lupus.png")
  
- sympt.heat((sympt.hashi %>% select(-dx.id)))
+ scale.hashi <- id.hashi %>%
+   select(-c(dx.id)) %>%
+   left_join((data.clean %>% select(record_id, fatigue:bruise)), by = "record_id") %>%
+   filter(!if_all(fatigue:bruise, is.na)) %>%
+   select(-c(record_id))
+ sympt.heat(scale.hashi)
  ggsave("images/sympt-heatmap-hashi.png")
- sympt.network((sympt.hashi %>% select(-dx.id)))
+ sympt.network(scale.hashi)
  ggsave("images/sympt-network-hashi.png")
  
- sympt.heat((sympt.coeliac %>% select(-dx.id)))
+ scale.coeliac <- id.coeliac %>%
+   select(-c(dx.id)) %>%
+   left_join((data.clean %>% select(record_id, fatigue:bruise)), by = "record_id") %>%
+   filter(!if_all(fatigue:bruise, is.na)) %>%
+   select(-c(record_id))
+ sympt.heat(scale.coeliac)
  ggsave("images/sympt-heatmap-coeliac.png")
- sympt.network((sympt.coeliac %>% select(-dx.id)))
+ sympt.network(scale.coeliac)
  ggsave("images/sympt-network-coeliac.png")
  
  scale.hsd <- id.hsd %>%
-   left_join((symptoms.scale %>% select(-cohort.id)), by = "record_id") %>%
+   select(-c(dx.id)) %>%
+   left_join((data.clean %>% select(record_id, fatigue:bruise)), by = "record_id") %>%
    filter(!if_all(fatigue:bruise, is.na)) %>%
    select(-c(record_id))
  sympt.heat(scale.hsd)
