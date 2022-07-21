@@ -483,12 +483,93 @@ gender.data <- data.clean %>% select(record_id, fatigue:bruise) %>% left_join((d
  sympt.network(scale.hsd)
  ggsave("images/sympt-network-hsd.png")
  
+ ###
+ # Misdiag
+ ###
+ scale.mdx <- df.sumstats %>%
+   select(record_id, misdiag.id) %>%
+   filter(misdiag.id == "Yes") %>%
+   left_join((data.clean %>% select(record_id, fatigue:bruise)), by = "record_id") %>%
+   filter(!if_all(fatigue:bruise, is.na)) %>%
+   select(-c(record_id, misdiag.id))
+ sympt.heat(scale.mdx)
+ ggsave("images/sympt-heatmap-misdiagnosed.png")
+ sympt.network(scale.mdx)
+ ggsave("images/sympt-network-misdiagnosed.png")
  
+ scale.cdx <- df.sumstats %>%
+   select(record_id, misdiag.id) %>%
+   filter(misdiag.id == "No") %>%
+   left_join((data.clean %>% select(record_id, fatigue:bruise)), by = "record_id") %>%
+   filter(!if_all(fatigue:bruise, is.na)) %>%
+   select(-c(record_id, misdiag.id))
+ sympt.heat(scale.cdx)
+ ggsave("images/sympt-heatmap-correct-diagnosed.png")
+ sympt.network(scale.cdx)
+ ggsave("images/sympt-network-correct-diagnosed.png")
  
- #use record IDs from prev section
-#TODO next question: how does this pan out between cAD vs. non-ad chron cohort? 
+ ###
+ # Length dx
+ ###
+ 
+ scale.less6m <- df.sumstats %>%
+   select(record_id, dx.group) %>%
+   filter(dx.group == "< 6 months") %>%
+   left_join((data.clean %>% select(record_id, fatigue:bruise)), by = "record_id") %>%
+   filter(!if_all(fatigue:bruise, is.na)) %>%
+   select(-c(record_id, dx.group))
+ sympt.heat(scale.less6m)
+ ggsave("images/sympt-heatmap-dx-less6m.png")
+ sympt.network(scale.less6m)
+ ggsave("images/sympt-network-dx-less6m.png")
+ 
+ scale.6mto1 <- df.sumstats %>%
+   select(record_id, dx.group) %>%
+   filter(dx.group == ">6 months - 1 year") %>%
+   left_join((data.clean %>% select(record_id, fatigue:bruise)), by = "record_id") %>%
+   filter(!if_all(fatigue:bruise, is.na)) %>%
+   select(-c(record_id, dx.group))
+ sympt.heat(scale.6mto1)
+ ggsave("images/sympt-heatmap-dx-6mto1.png")
+ sympt.network(scale.6mto1)
+ ggsave("images/sympt-network-dx-6mto1.png")
+ 
+ scale.1to5 <- df.sumstats %>%
+   select(record_id, dx.group) %>%
+   filter(dx.group == ">1 - 5 years") %>%
+   left_join((data.clean %>% select(record_id, fatigue:bruise)), by = "record_id") %>%
+   filter(!if_all(fatigue:bruise, is.na)) %>%
+   select(-c(record_id, dx.group))
+ sympt.heat(scale.1to5)
+ ggsave("images/sympt-heatmap-dx-1to5.png")
+ sympt.network(scale.1to5)
+ ggsave("images/sympt-network-dx-1to5.png")
+ 
+ scale.5to9 <- df.sumstats %>%
+   select(record_id, dx.group) %>%
+   filter(dx.group == ">5 - 9 years") %>%
+   left_join((data.clean %>% select(record_id, fatigue:bruise)), by = "record_id") %>%
+   filter(!if_all(fatigue:bruise, is.na)) %>%
+   select(-c(record_id, dx.group))
+ sympt.heat(scale.5to9)
+ ggsave("images/sympt-heatmap-dx-5to9.png")
+ sympt.network(scale.5to9)
+ ggsave("images/sympt-network-dx-5to9.png")
+ 
+ scale.9plus <- df.sumstats %>%
+   select(record_id, dx.group) %>%
+   filter(dx.group == "9+ years") %>%
+   left_join((data.clean %>% select(record_id, fatigue:bruise)), by = "record_id") %>%
+   filter(!if_all(fatigue:bruise, is.na)) %>%
+   select(-c(record_id, dx.group))
+ sympt.heat(scale.9plus)
+ ggsave("images/sympt-heatmap-dx-9plus.png")
+ sympt.network(scale.9plus)
+ ggsave("images/sympt-network-dx-9plus.png")
+ 
+#TODO next question: how does this pan out between AD vs. non-ad chron cohort? 
  # Other/continuation/questions 
- ## Symptoms associations per disease/misdiag/gender etc
+ 
  ## Symptom co-occurences (network edges) 
  ## Symptoms as a classifier 
  ## Severity and other associations 
