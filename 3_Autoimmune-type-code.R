@@ -72,7 +72,7 @@ ad.type <- df.ad %>%
                                      autoimmune_id___162 == 1 |
                                      autoimmune_id___180 |
                                      autoimmune_id___187 == 1, 1, 0)) %>%
-  mutate(ad_type_local.kid = ifelse(autoimmune_id___19 == 1 |
+  mutate(ad_type_loc.kid = ifelse(autoimmune_id___19 == 1 |
                                       autoimmune_id___23 == 1 |
                                       autoimmune_id___137 == 1, 1, 0)) %>%
   mutate(ad_type_loc.liv = ifelse(autoimmune_id___32 == 1 |
@@ -184,6 +184,7 @@ ad.type <- df.ad %>%
  #TODO work out whether to drop ADs
 #TODO chron.sum?
 #TODO ad.type.sum ?
+#TODO variables with type ADs might be needed to?
 
 #label
 label(ad.type$ad_type_healthy)="Healthy"
@@ -194,7 +195,7 @@ label(ad.type$ad_type_loc.endocr)="Local endocrine"
 label(ad.type$ad_type_loc.gastro)="Local gastrointestinal system"
 label(ad.type$ad_type_loc.gento)="Local genitourinary system"
 label(ad.type$ad_type_loc.skel)="Local joint/skeletal"
-label(ad.type$ad_type_local.kid)="Local kidney"
+label(ad.type$ad_type_loc.kid)="Local kidney"
 label(ad.type$ad_type_loc.liv)="Local liver"
 label(ad.type$ad_type_loc.lymph)="Local lymphatic"
 label(ad.type$ad_type_loc.musc)="Local muscular"
@@ -209,9 +210,212 @@ label(ad.type$ad_type_sys.vasc)="Systemic vasculitis"
 
 saveRDS(ad.type, file = "AD-type-classification.rds")
 
+############
+# Variables of AD classification
+############
+
+autoimmune.yes <- c()
+autoimmune.no <- c()
+autoimmune.unknown <- c()
+
+type.healthy <- c()
+type.local.blood <- c("autoimmune_id___2", 
+                        "autoimmune_id___11", 
+                        "autoimmune_id___21", 
+                        "autoimmune_id___70", 
+                        "autoimmune_id___102", 
+                        "autoimmune_id___106", 
+                        "autoimmune_id___126", 
+                        "autoimmune_id___130", 
+                        "autoimmune_id___134", 
+                        "autoimmune_id___150", 
+                        "autoimmune_id___156", 
+                        "autoimmune_id___157", 
+                        "autoimmune_id___177")
+saveRDS(type.local.blood, file = "type-local-blood.rds")
+type.local.cardiac <- c("autoimmune_id___16", 
+                                     "autoimmune_id___53", 
+                                     "autoimmune_id___116", 
+                                     "autoimmune_id___100", 
+                                     "autoimmune_id___160")
+saveRDS(type.local.cardiac, file = "type-local-cardiac.rds")
+type.local.ear <- c("autoimmune_id___140",
+                                    "autoimmune_id___129")
+saveRDS(type.local.ear, file = "type-local-ear.rds")
+type.local.endocrine <- c("autoimmune_id___14", 
+                                       "autoimmune_id___17", 
+                                       "autoimmune_id___87", 
+                                       "autoimmune_id___91", 
+                                       "autoimmune_id___112", 
+                                       "autoimmune_id___113", 
+                                       "autoimmune_id___125", 
+                                       "autoimmune_id___170",
+                                       "autoimmune_id___173",
+                                       "autoimmune_id___179",
+                                       "autoimmune_id___184")
+saveRDS(type.local.endocrine, file = "type-local-endocrine.rds")
+type.local.gastrointestinal <- c("autoimmune_id___6", 
+                                       "autoimmune_id___8", 
+                                       "autoimmune_id___30", 
+                                       "autoimmune_id___42", 
+                                       "autoimmune_id___61", 
+                                       "autoimmune_id___69", 
+                                       "autoimmune_id___72", 
+                                       "autoimmune_id___93", 
+                                       "autoimmune_id___94", 
+                                       "autoimmune_id___98", 
+                                       "autoimmune_id___122", 
+                                       "autoimmune_id___136", 
+                                       "autoimmune_id___141", 
+                                       "autoimmune_id___142", 
+                                       "autoimmune_id___149", 
+                                       "autoimmune_id___174")
+saveRDS(type.local.gastrointestinal, file = "type-local-gastrointestinal.rds")
+type.local.genitourinary <- c("autoimmune_id___65", 
+                                      "autoimmune_id___84", 
+                                      "autoimmune_id___99", 
+                                      "autoimmune_id___101")
+saveRDS(type.local.genitourinary, file = "type-local-genitourinary.rds")
+type.local.skeletal <- c("autoimmune_id___1", 
+                                     "autoimmune_id___58",
+                                     "autoimmune_id___71",  
+                                     "autoimmune_id___81", 
+                                     "autoimmune_id___92", 
+                                     "autoimmune_id___111", 
+                                     "autoimmune_id___121", 
+                                     "autoimmune_id___151", 
+                                     "autoimmune_id___152", 
+                                     "autoimmune_id___153", 
+                                     "autoimmune_id___154", 
+                                     "autoimmune_id___158", 
+                                     "autoimmune_id___162", 
+                                     "autoimmune_id___180",
+                                     "autoimmune_id___187")
+saveRDS(type.local.skeletal, file = "type-local-skeletal.rds")
+type.local.kidney <- c("autoimmune_id___19", 
+                                      "autoimmune_id___23", 
+                                      "autoimmune_id___137")
+saveRDS(type.local.kidney, file = "type-local-kidney.rds")
+type.local.liver <- c("autoimmune_id___32", 
+                                    "autoimmune_id___52",
+                                    "autoimmune_id___182",
+                                    "autoimmune_id___183",
+                                    "autoimmune_id___185")
+saveRDS(type.local.liver, file = "type-local-liver.rds")
+type.local.lymphatic <- c("autoimmune_id___83", 
+                            "autoimmune_id___117")
+saveRDS(type.local.lymphatic, file = "type-local-lymphatic.rds")
+type.local.muscular <- c("autoimmune_id___27", 
+                           "autoimmune_id___40", 
+                           "autoimmune_id___178",  
+                           "autoimmune_id___186", 
+                           "autoimmune_id___128")
+saveRDS(type.local.muscular, file = "type-local-muscular.rds")
+type.local.nervous <- c("autoimmune_id___5", 
+                          "autoimmune_id___15", 
+                          "autoimmune_id___25", 
+                          "autoimmune_id___26", 
+                          "autoimmune_id___51", 
+                          "autoimmune_id___63", 
+                          "autoimmune_id___64", 
+                          "autoimmune_id___66", 
+                          "autoimmune_id___68", 
+                          "autoimmune_id___78", 
+                          "autoimmune_id___82", 
+                          "autoimmune_id___90", 
+                          "autoimmune_id___114",
+                          "autoimmune_id___115", 
+                          "autoimmune_id___127", 
+                          "autoimmune_id___144", 
+                          "autoimmune_id___155", 
+                          "autoimmune_id___161",
+                          "autoimmune_id___163", 
+                          "autoimmune_id___168", 
+                          "autoimmune_id___175")
+saveRDS(type.local.nervous, file = "type-local-nervous.rds")
+type.local.ocular <- c("autoimmune_id___28", 
+                         "autoimmune_id___110", 
+                         "autoimmune_id___147", 
+                         "autoimmune_id___181")
+saveRDS(type.local.ocular, file = "type-local-ocular.rds")
+type.local.pancreas <- c("autoimmune_id___41")
+saveRDS(type.local.pancreas, file = "type-local-pancreas.rds")
+type.local.respiratory <- c("autoimmune_id___159")
+saveRDS(type.local.respiratory, file = "type-local-respiratory.rds")
+type.local.skin <- c("autoimmune_id___3", 
+                       "autoimmune_id___4", 
+                       "autoimmune_id___29", 
+                       "autoimmune_id___56", 
+                       "autoimmune_id___57", 
+                       "autoimmune_id___59", 
+                       "autoimmune_id___73", 
+                       "autoimmune_id___74", 
+                       "autoimmune_id___75", 
+                       "autoimmune_id___88", 
+                       "autoimmune_id___89", 
+                       "autoimmune_id___95", 
+                       "autoimmune_id___103", 
+                       "autoimmune_id___119", 
+                       "autoimmune_id___131", 
+                       "autoimmune_id___138", 
+                       "autoimmune_id___145", 
+                       "autoimmune_id___148", 
+                       "autoimmune_id___165", 
+                       "autoimmune_id___166", 
+                       "autoimmune_id___167", 
+                       "autoimmune_id___169")
+saveRDS(type.local.skin, file = "type-local-skin.rds")
+type.systemic.general <- c("autoimmune_id___105", 
+                             "autoimmune_id___108", 
+                             "autoimmune_id___146", 
+                             "autoimmune_id___132")
+saveRDS(type.systemic.general, file = "type-systemic-general.rds")
+type.systemic.rheum <- c("autoimmune_id___7", 
+                           "autoimmune_id___9", 
+                           "autoimmune_id___22", 
+                           "autoimmune_id___31", 
+                           "autoimmune_id___33", 
+                           "autoimmune_id___34", 
+                           "autoimmune_id___35", 
+                           "autoimmune_id___37", 
+                           "autoimmune_id___38", 
+                           "autoimmune_id___46", 
+                           "autoimmune_id___50", 
+                           "autoimmune_id___55", 
+                           "autoimmune_id___60", 
+                           "autoimmune_id___77", 
+                           "autoimmune_id___80", 
+                           "autoimmune_id___96", 
+                           "autoimmune_id___107", 
+                           "autoimmune_id___139", 
+                           "autoimmune_id___164", 
+                           "autoimmune_id___171", 
+                           "autoimmune_id___172", 
+                           "autoimmune_id___85")
+saveRDS(type.systemic.rheum, file = "type-systemic-rheum.rds")
+type.systemic.vasc <- c("autoimmune_id___10", 
+                          "autoimmune_id___12", 
+                          "autoimmune_id___13", 
+                          "autoimmune_id___18", 
+                          "autoimmune_id___20", 
+                          "autoimmune_id___24", 
+                          "autoimmune_id___36", 
+                          "autoimmune_id___39", 
+                          "autoimmune_id___43", 
+                          "autoimmune_id___54", 
+                          "autoimmune_id___62", 
+                          "autoimmune_id___76", 
+                          "autoimmune_id___79", 
+                          "autoimmune_id___86", 
+                          "autoimmune_id___104", 
+                          "autoimmune_id___109", 
+                          "autoimmune_id___118", 
+                          "autoimmune_id___133", 
+                          "autoimmune_id___176")
+saveRDS(type.systemic.vasc, file = "type-systemic-vasc.rds")
+
 adty.cloud <- ad.type %>%
-  select(contains("ad_type")) %>% #other was reclassified so doesn't need to be in
-  replace_na(list(ad_type_healthy = 0)) #NA entries from diseasestat break downstream process
+  select(contains("ad_type")) 
 adty.labels <- adty.cloud %>%
   get_label 
 colnames(adty.cloud) <- adty.labels
