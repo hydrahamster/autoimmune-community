@@ -332,7 +332,7 @@ ggsave("images/hsd-symptoms.png")
 sympt.all <- data.clean %>% select(fatigue:bruise)
 sympt.heat(sympt.all)
 ggsave("images/sympt-heatmap-all.png")
-sympt.network(sympt.all)
+sympt.network(sympt.all, "Symptoms of all respondents")
 ggsave("images/sympt-network-all.png")
 
 
@@ -345,20 +345,23 @@ gender.data <- data.clean %>% select(record_id, fatigue:bruise) %>% left_join((d
  gender.m <- gender.data %>% filter(gender.group == "Male") %>% select(!c(record_id, gender.group))
  sympt.heat(gender.m)
  ggsave("images/sympt-heatmap-male.png")
- sympt.network(gender.m)
+ sympt.network(gender.m, "Symptoms of males")
  ggsave("images/sympt-network-male.png")
  
  gender.f <- gender.data %>% filter(gender.group == "Female") %>% select(!c(record_id, gender.group))
  sympt.heat(gender.f)
  ggsave("images/sympt-heatmap-female.png")
- sympt.network(gender.f)
+ sympt.network(gender.f, "Symptoms of females")
  ggsave("images/sympt-network-female.png")
  
  gender.o <- gender.data %>% filter(gender.group == "Other") %>% select(!c(record_id, gender.group))
  sympt.heat(gender.o)
  ggsave("images/sympt-heatmap-other-gender.png")
- sympt.network(gender.o)
+ sympt.network(gender.o, "Symptoms of other genders")
  ggsave("images/sympt-network-other-gender.png")
+ 
+ network.differences(cohort.chronic, cohort.control, "Network difference between male and female")
+ ggsave("images/sympt-network-diff-male-female.png")
  
 ###
 # control vs. chronic
@@ -369,14 +372,17 @@ gender.data <- data.clean %>% select(record_id, fatigue:bruise) %>% left_join((d
  cohort.control <- cohort.data %>% filter(cohort.id == "control") %>% select(!c(record_id, cohort.id))
  sympt.heat(cohort.control)
  ggsave("images/sympt-heatmap-control-cohort.png")
- sympt.network(cohort.control)
+ sympt.network(cohort.control, "Symptoms of control cohort")
  ggsave("images/sympt-network-control-cohort.png")
  
  cohort.chronic <- cohort.data %>% filter(cohort.id == "chronically ill") %>% select(!c(record_id, cohort.id))
  sympt.heat(cohort.chronic)
  ggsave("images/sympt-heatmap-chronic-cohort.png")
- sympt.network(cohort.chronic)
+ sympt.network(cohort.chronic, "Symptoms of chronic cohort")
  ggsave("images/sympt-network-chronic-cohort.png")
+ 
+ network.differences(cohort.chronic, cohort.control, "Network difference between chronic and control cohorts")
+ ggsave("images/sympt-network-diff-chron-control.png")
  
 ###
 # Top 10 ADs
@@ -389,7 +395,7 @@ gender.data <- data.clean %>% select(record_id, fatigue:bruise) %>% left_join((d
    select(-c(record_id))
   sympt.heat(scale.fibro)
  ggsave("images/sympt-heatmap-fibro.png")
- sympt.network(scale.fibro)
+ sympt.network(scale.fibro, "x")
  ggsave("images/sympt-network-fibro.png")
  
  scale.pots <- id.pots %>%
@@ -400,7 +406,7 @@ gender.data <- data.clean %>% select(record_id, fatigue:bruise) %>% left_join((d
   sympt.heat(scale.pots)
  ggsave("images/sympt-heatmap-pots.png")
  pots.test <- sympt.pots %>% select(-dx.id) 
- sympt.network(scale.pots)
+ sympt.network(scale.pots, "x")
  ggsave("images/sympt-network-pots.png")
  
  scale.psa <- id.psa %>%
@@ -410,7 +416,7 @@ gender.data <- data.clean %>% select(record_id, fatigue:bruise) %>% left_join((d
    select(-c(record_id))
  sympt.heat(scale.psa)
  ggsave("images/sympt-heatmap-psa.png")
- sympt.network(scale.psa)
+ sympt.network(scale.psa, "x")
  ggsave("images/sympt-network-psa.png")
  
  scale.sjog <- id.sjog %>%
@@ -420,7 +426,7 @@ gender.data <- data.clean %>% select(record_id, fatigue:bruise) %>% left_join((d
    select(-c(record_id))
  sympt.heat(scale.sjog)
  ggsave("images/sympt-heatmap-sjog.png")
- sympt.network(scale.sjog)
+ sympt.network(scale.sjog, "x")
  ggsave("images/sympt-network-sjog.png")
  
  scale.ra <- id.ra %>%
@@ -440,7 +446,7 @@ gender.data <- data.clean %>% select(record_id, fatigue:bruise) %>% left_join((d
    select(-c(record_id))
  sympt.heat(scale.me)
  ggsave("images/sympt-heatmap-me.png")
- sympt.network(scale.me)
+ sympt.network(scale.me, "x")
  ggsave("images/sympt-network-me.png")
  
  scale.lupus <- id.lupus %>%
@@ -470,9 +476,9 @@ gender.data <- data.clean %>% select(record_id, fatigue:bruise) %>% left_join((d
    select(-c(record_id))
  sympt.heat(scale.coeliac)
  ggsave("images/sympt-heatmap-coeliac.png")
- sympt.network(scale.coeliac)
+ sympt.network(scale.coeliac, "x")
  ggsave("images/sympt-network-coeliac.png")
- 
+ network.differences(scale.psa, scale.ra, "psa vs ra")
  scale.hsd <- id.hsd %>%
    select(-c(dx.id)) %>%
    left_join((data.clean %>% select(record_id, fatigue:bruise)), by = "record_id") %>%
@@ -494,7 +500,7 @@ gender.data <- data.clean %>% select(record_id, fatigue:bruise) %>% left_join((d
    select(-c(record_id, misdiag.id))
  sympt.heat(scale.mdx)
  ggsave("images/sympt-heatmap-misdiagnosed.png")
- sympt.network(scale.mdx)
+ sympt.network(scale.mdx, "Symptoms of misdiagnosed cohort")
  ggsave("images/sympt-network-misdiagnosed.png")
  
  scale.cdx <- df.sumstats %>%
@@ -505,8 +511,11 @@ gender.data <- data.clean %>% select(record_id, fatigue:bruise) %>% left_join((d
    select(-c(record_id, misdiag.id))
  sympt.heat(scale.cdx)
  ggsave("images/sympt-heatmap-correct-diagnosed.png")
- sympt.network(scale.cdx)
+ sympt.network(scale.cdx, "Symptoms of correctly diagnosed cohort")
  ggsave("images/sympt-network-correct-diagnosed.png")
+ 
+ network.differences(scale.mdx, scale.cdx, "Network difference between correct and misdiagnoses")
+ ggsave("images/sympt-network-diff-mdx-cdx.png")
  
  ###
  # Length dx

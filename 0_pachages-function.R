@@ -67,7 +67,7 @@ sympt.heat <- function(input){
 # call: sympt.heat(input)
 #ggsave("images/-heatmap.png")
 
-sympt.network <- function(input){
+sympt.network <- function(input, title){
   # Generate co-occurence network 
   ### Version 1 - room to try other methods here 
   symp_num <- mapply(input, FUN=as.numeric)
@@ -109,14 +109,15 @@ sympt.network <- function(input){
             vertex.label.font=c(2), 
             vertex.label.cex=c(1.5),                 
             vertex.label.dist=1,
-            layout=coords)
+            layout=coords,
+            main = title)
   x
 }
 #call: sympt.network(sexy_m)
 #ggsave("images/-network.png")
-sympt.network(gender.f)
+# sympt.network(gender.f, "title")
 
-network.differences <- function(input_a, input_b) {
+network.differences <- function(input_a, input_b, title) {
   #weights for input A
   symp_num_a <- mapply(input_a, FUN = as.numeric)
   symp_net_a = cor(symp_num_a, m = "s", use = "pair") # get correlations
@@ -202,10 +203,11 @@ network.differences <- function(input_a, input_b) {
             vertex.label.font=c(2), 
             vertex.label.cex=c(1.5),                 
             vertex.label.dist=1,
-            layout = coords)
+            layout = coords,
+            main = title)
   x
 }
-network.differences(gender.m, gender.f)
+# network.differences(gender.m, gender.f, "Network difference, male & female symptoms")
 
 #colours
 cols2 = brewer.pal(8, "Spectral")

@@ -214,11 +214,15 @@ saveRDS(ad.type, file = "AD-type-classification.rds")
 # Variables of AD classification
 ############
 
+# Subsetting aim:
+# data %>%
+#   select(any_of(variable))
+
 autoimmune.yes <- c()
 autoimmune.no <- c()
 autoimmune.unknown <- c()
 
-type.healthy <- c()
+type.healthy <- c("autoimmune_id___44")
 type.local.blood <- c("autoimmune_id___2", 
                         "autoimmune_id___11", 
                         "autoimmune_id___21", 
