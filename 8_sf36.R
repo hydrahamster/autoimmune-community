@@ -16,7 +16,7 @@ df.sf36 <- data.clean %>%
   select( -rand_36_item_sf_health_survey_instrument_version_1_complete,
           -rand_36_item_sf_health_survey_instrument_version_1_timestamp,
           -contains(".factor")) %>%
-  mutate(across(record_id:rand36_36, .fns = as.numeric))
+  mutate(across(rand36_1:rand36_36, .fns = as.numeric))
 #already in the right scale from 0 (bad) to 100 (good)
 #set up scale columns
 scale.physfunc <- c("rand36_3", "rand36_4", "rand36_5", "rand36_6", "rand36_7", "rand36_8", "rand36_9", "rand36_10", "rand36_11", "rand36_12")
@@ -99,10 +99,10 @@ sf36.domain <- sf36.score %>%
          broad.physsum,
          broad.mentsum)
 ad.info <- ad.short %>%
+  select(-c(ad.sum, cohort.id)) %>%
   left_join(sf36.domain, by = "record_id") %>%
   left_join(df.sumstats, by = "record_id")
-##there are zero AD entries, with diseasestat == 1.. why?
-#TODO up to here need to re-do HC and disease cohort classification
+
 
 
 # ad.query <- data.clean  %>%
@@ -129,7 +129,7 @@ ggscatterstats(
   ylab = "QoL score (0 = poor, 100 = excellent)",
   title = "Mental QoL score per number of ADs in all patients"
 )
-ggsave("ad-sf36/allADs-mental-qol.png")
+ggsave("images/sf36-allADs-mental.png")
 
 ggscatterstats(
   data = ad.info,
@@ -140,22 +140,12 @@ ggscatterstats(
   ylab = "QoL score (0 = poor, 100 = excellent)",
   title = "Physical QoL score per number of ADs in all patients"
 )
-ggsave("ad-sf36/allADs-physical-qol.png")
-#split into sub dataframes of top 5 diseases
+ggsave("images/sf36-allADs-physical.png")
+
+#split into sub dataframes of top 10 diseases
 ### coeliac
 df.coeliac <- ad.info %>%
   filter(autoimmune_id___6 == 1)
-
-ggscatterstats(
-  data = df.coeliac,
-  x = ad.sum,
-  y = broad.qolall,
-  ggplot.component = list(ggplot2::scale_x_continuous(breaks = seq(1, 14, 1)), ggplot2::scale_y_continuous(breaks = seq(0, 100, 25), limits = (c(0, 100)))),
-  xlab = "Number of ADs",
-  ylab = "QoL score (0 = poor, 100 = excellent)",
-  title = "Overall QoL score per number of ADs in Coeliac patients"
-)
-ggsave("ad-sf36/coeliac-overall-qol.png")
 
 ggscatterstats(
   data = df.coeliac,
@@ -166,7 +156,7 @@ ggscatterstats(
   ylab = "QoL score (0 = poor, 100 = excellent)",
   title = "Mental QoL score per number of ADs in Coeliac patients"
 )
-ggsave("ad-sf36/coeliac-mental-qol.png")
+ggsave("images/sf36-coeliac-mental-numADS.png")
 
 ggscatterstats(
   data = df.coeliac,
@@ -177,22 +167,11 @@ ggscatterstats(
   ylab = "QoL score (0 = poor, 100 = excellent)",
   title = "Physical QoL score per number of ADs in Coeliac patients"
 )
-ggsave("ad-sf36/coeliac-physical-qol.png")
+ggsave("images/sf36-coeliac-physical-numADS.png")
 
 ### hashi
 df.hashi <- ad.info %>%
   filter(autoimmune_id___17 == 1)
-
-ggscatterstats(
-  data = df.hashi,
-  x = ad.sum,
-  y = broad.qolall,
-  ggplot.component = list(ggplot2::scale_x_continuous(breaks = seq(1, 14, 1)), ggplot2::scale_y_continuous(breaks = seq(0, 100, 25), limits = (c(0, 100)))),
-  xlab = "Number of ADs",
-  ylab = "QoL score (0 = poor, 100 = excellent)",
-  title = "Overall QoL score per number of ADs in Hashimoto's patients"
-)
-ggsave("ad-sf36/hashi-overall-qol.png")
 
 ggscatterstats(
   data = df.hashi,
@@ -203,7 +182,7 @@ ggscatterstats(
   ylab = "QoL score (0 = poor, 100 = excellent)",
   title = "Mental QoL score per number of ADs in Hashimoto's patients"
 )
-ggsave("ad-sf36/hashi-mental-qol.png")
+ggsave("images/sf36-hashi-mental-numAD.png")
 
 ggscatterstats(
   data = df.hashi,
@@ -214,22 +193,11 @@ ggscatterstats(
   ylab = "QoL score (0 = poor, 100 = excellent)",
   title = "Physical QoL score per number of ADs in Hashimoto's patients"
 )
-ggsave("ad-sf36/hashi-physical-qol.png")
+ggsave("images/sf36-hashi-physical-numAD.png")
 
 ### lupus
 df.lupus <- ad.info %>%
   filter(autoimmune_id___22 == 1)
-
-ggscatterstats(
-  data = df.lupus,
-  x = ad.sum,
-  y = broad.qolall,
-  ggplot.component = list(ggplot2::scale_x_continuous(breaks = seq(1, 14, 1)), ggplot2::scale_y_continuous(breaks = seq(0, 100, 25), limits = (c(0, 100)))),
-  xlab = "Number of ADs",
-  ylab = "QoL score (0 = poor, 100 = excellent)",
-  title = "Overall QoL score per number of ADs in SLE patients"
-)
-ggsave("ad-sf36/lupus-overall-qol.png")
 
 ggscatterstats(
   data = df.lupus,
@@ -240,7 +208,7 @@ ggscatterstats(
   ylab = "QoL score (0 = poor, 100 = excellent)",
   title = "Mental QoL score per number of ADs in SLE patients"
 )
-ggsave("ad-sf36/lupus-mental-qol.png")
+ggsave("images/sf36-lupus-mental-numAD.png")
 
 ggscatterstats(
   data = df.lupus,
@@ -251,22 +219,11 @@ ggscatterstats(
   ylab = "QoL score (0 = poor, 100 = excellent)",
   title = "Physical QoL score per number of ADs in SLE patients"
 )
-ggsave("ad-sf36/lupus-physical-qol.png")
+ggsave("images/sf36-lupus-physical-numAD.png")
 
 ### RA
 df.rheum <- ad.info %>%
   filter(autoimmune_id___35 == 1)
-
-ggscatterstats(
-  data = df.rheum,
-  x = ad.sum,
-  y = broad.qolall,
-  ggplot.component = list(ggplot2::scale_x_continuous(breaks = seq(1, 14, 1)), ggplot2::scale_y_continuous(breaks = seq(0, 100, 25), limits = (c(0, 100)))),
-  xlab = "Number of ADs",
-  ylab = "QoL score (0 = poor, 100 = excellent)",
-  title = "Overall QoL score per number of ADs in RA patients"
-)
-ggsave("ad-sf36/rheum-overall-qol.png")
 
 ggscatterstats(
   data = df.rheum,
@@ -277,7 +234,7 @@ ggscatterstats(
   ylab = "QoL score (0 = poor, 100 = excellent)",
   title = "Mental QoL score per number of ADs in RA patients"
 )
-ggsave("ad-sf36/rheum-mental-qol.png")
+ggsave("images/sf36-ra-mental-numAD.png")
 
 ggscatterstats(
   data = df.rheum,
@@ -288,22 +245,11 @@ ggscatterstats(
   ylab = "QoL score (0 = poor, 100 = excellent)",
   title = "Physical QoL score per number of ADs in RA patients"
 )
-ggsave("ad-sf36/rheum-physical-qol.png")
+ggsave("images/sf36-ra-physical-numAD.png")
 
 ### sjoegren's
 df.sjog <- ad.info %>%
   filter(autoimmune_id___38 == 1)
-
-ggscatterstats(
-  data = df.sjog,
-  x = ad.sum,
-  y = broad.qolall,
-  ggplot.component = list(ggplot2::scale_x_continuous(breaks = seq(1, 14, 1)), ggplot2::scale_y_continuous(breaks = seq(0, 100, 25), limits = (c(0, 100)))),
-  xlab = "Number of ADs",
-  ylab = "QoL score (0 = poor, 100 = excellent)",
-  title = "Overall QoL score per number of ADs in Sjoegren's patients"
-)
-ggsave("ad-sf36/sjog-overall-qol.png")
 
 ggscatterstats(
   data = df.sjog,
@@ -314,7 +260,7 @@ ggscatterstats(
   ylab = "QoL score (0 = poor, 100 = excellent)",
   title = "Mental QoL score per number of ADs in Sjoegren's patients"
 )
-ggsave("ad-sf36/sjog-mental-qol.png")
+ggsave("images/sf36-sjog-mental-numAD.png")
 
 ggscatterstats(
   data = df.sjog,
@@ -325,23 +271,11 @@ ggscatterstats(
   ylab = "QoL score (0 = poor, 100 = excellent)",
   title = "Physical QoL score per number of ADs in Sjoegren's patients"
 )
-ggsave("ad-sf36/sjog-physical-qol.png")
+ggsave("images/sf36-sjog-physical-numAD.png")
 
-# check how 6th to 8th most common ADs are fareing
 ### fibro
 df.fibro <- ad.info %>%
   filter(autoimmune_id___64 == 1)
-
-ggscatterstats(
-  data = df.fibro,
-  x = ad.sum,
-  y = broad.qolall,
-  ggplot.component = list(ggplot2::scale_x_continuous(breaks = seq(1, 14, 1)), ggplot2::scale_y_continuous(breaks = seq(0, 100, 25), limits = (c(0, 100)))),
-  xlab = "Number of ADs",
-  ylab = "QoL score (0 = poor, 100 = excellent)",
-  title = "Overall QoL score per number of ADs in fibro patients"
-)
-ggsave("ad-sf36/fibro-overall-qol.png")
 
 ggscatterstats(
   data = df.fibro,
@@ -352,7 +286,7 @@ ggscatterstats(
   ylab = "QoL score (0 = poor, 100 = excellent)",
   title = "Mental QoL score per number of ADs in fibro patients"
 )
-ggsave("ad-sf36/fibro-mental-qol.png")
+ggsave("images/sf36-fibro-mental-numAD.png")
 
 ggscatterstats(
   data = df.fibro,
@@ -363,34 +297,23 @@ ggscatterstats(
   ylab = "QoL score (0 = poor, 100 = excellent)",
   title = "Physical QoL score per number of ADs in fibro patients"
 )
-ggsave("ad-sf36/fibro-physical-qol.png")
+ggsave("images/sf36-fibro-physical-numAD.png")
 
 
-###scleroderma
-df.sclero <- ad.info %>%
-  filter(autoimmune_id___37 == 1)
-
-ggscatterstats(
-  data =df.sclero,
-  x = ad.sum,
-  y = broad.qolall,
-  ggplot.component = list(ggplot2::scale_x_continuous(breaks = seq(1, 14, 1)), ggplot2::scale_y_continuous(breaks = seq(0, 100, 25), limits = (c(0, 100)))),
-  xlab = "Number of ADs",
-  ylab = "QoL score (0 = poor, 100 = excellent)",
-  title = "Overall QoL score per number of ADs in scleroderma patients"
-)
-ggsave("ad-sf36/sclero-overall-qol.png")
+### pots
+df.pots <- ad.info %>%
+  filter(autoimmune_id___116 == 1)
 
 ggscatterstats(
-  data = df.sclero,
+  data = df.pots,
   x = ad.sum,
   y = broad.mentsum,
   ggplot.component = list(ggplot2::scale_x_continuous(breaks = seq(1, 14, 1)), ggplot2::scale_y_continuous(breaks = seq(0, 100, 25), limits = (c(0, 100)))),
   xlab = "Number of ADs",
   ylab = "QoL score (0 = poor, 100 = excellent)",
-  title = "Mental QoL score per number of ADs in scleroderma patients"
+  title = "Mental QoL score per number of ADs in POTS patients"
 )
-ggsave("ad-sf36/sclero-mental-qol.png")
+ggsave("images/sf36-pots-mental-numAD.png")
 
 ggscatterstats(
   data = df.sclero,
@@ -401,22 +324,11 @@ ggscatterstats(
   ylab = "QoL score (0 = poor, 100 = excellent)",
   title = "Physical QoL score per number of ADs in scleroderma patients"
 )
-ggsave("ad-sf36/sclero-physical-qol.png")
+ggsave("images/sf36-sclero-physical-numAD.png")
 
-###hypermobility
+### hypermobility
 df.hyper <- ad.info %>%
   filter(autoimmune_id___172 == 1)
-
-ggscatterstats(
-  data = df.hyper,
-  x = ad.sum,
-  y = broad.qolall,
-  ggplot.component = list(ggplot2::scale_x_continuous(breaks = seq(1, 14, 1)), ggplot2::scale_y_continuous(breaks = seq(0, 100, 25), limits = (c(0, 100)))),
-  xlab = "Number of ADs",
-  ylab = "QoL score (0 = poor, 100 = excellent)",
-  title = "Overall QoL score per number of ADs in hypermobile patients"
-)
-ggsave("ad-sf36/hyper-overall-qol.png")
 
 ggscatterstats(
   data = df.hyper,
@@ -427,7 +339,7 @@ ggscatterstats(
   ylab = "QoL score (0 = poor, 100 = excellent)",
   title = "Mental QoL score per number of ADs in hypermobile patients"
 )
-ggsave("ad-sf36/hyper-mental-qol.png")
+ggsave("images/sf36-hsd-mental-numAD.png")
 
 ggscatterstats(
   data = df.hyper,
@@ -438,58 +350,25 @@ ggscatterstats(
   ylab = "QoL score (0 = poor, 100 = excellent)",
   title = "Physical QoL score per number of ADs in hypermobile patients"
 )
-ggsave("ad-sf36/hyper-physical-qol.png")
+ggsave("images/sf36-hsd-physical-numAD.png")
 
-### look at ME and number of ADs specifically
-# remove ME/CFS cohort and useless columns
-me.short <- df.ad %>%
-  filter(autoimmune_id___55 == 1) %>%
-  subset(., select = -c( autoimmune_id___44, #healthy controls, NA issues from disease stat problematic downstream
-                        autoimmune_id___45, #other ADs
-                        autoimmune_id___120, #following are encompassed in hypermobility, aAD 172
-                        autoimmune_id___123,
-                        autoimmune_id___124,
-                        autoimmune_id___135,
-                        autoimmune_id_other,
-                        otherchronic,
-                        diseasestat)) %>%
-  select(-contains("chronic___"))
 
-#look at interconnextivity
-me.co <- me.short %>%
-  select(contains("autoimmune_id"))%>%
-  names()
-upset(me.short, 
-      me.co, 
-      name = "Autoimmune disorders with ME",
-      min_degree=1) #del comma before ")" shouldn't affect running though
+#TODO relevant later on 
+# #look at interconnextivity
+# me.co <- me.short %>%
+#   select(contains("autoimmune_id"))%>%
+#   names()
+# upset(me.short, 
+#       me.co, 
+#       name = "Autoimmune disorders with ME",
+#       min_degree=1) #del comma before ")" shouldn't affect running though
 
-## interconnextivity is nuts. So need to look at how many ADs people have in total per top 5
-me.short <- me.short %>%
-  mutate(ad.sum = rowSums(select(., contains("autoimmune_id"))))
-
-## join SF36 scores and sumstats
-me.info <- me.short %>%
-  left_join(sf36.domain, by = "record_id") %>%
-  left_join(df.sumstats, by = "record_id")
-saveRDS(me.info, file = "me-sf36-gen.rds")
+### me
+df.me <- ad.info %>%
+  filter(autoimmune_id___55 == 1)
 
 ggscatterstats(
-  data = me.info,
-  x = ad.sum,
-  y = broad.qolall,
-  xlab = "Number of ADs",
-  ylab = "QoL score (0 = poor, 100 = excellent)",
-  #label.var = ad.sum > 8,
-  ggplot.component = list(ggplot2::scale_x_continuous(breaks = seq(1, 14, 1)), ggplot2::scale_y_continuous(breaks = seq(0, 100, 25), limits = (c(0, 100)))), #, limits = (c(1, 14)) fo uniform scale on x-axis
-  # package = "viridis",
-  # palette = "viridis",
-  title = "Overall QoL score per number of ADs in ME patients"
-)
-ggsave("ad-sf36/me-overall-qol.png")
-
-ggscatterstats(
-  data = me.info,
+  data = df.me,
   x = ad.sum,
   y = broad.mentsum,
   ggplot.component = list(ggplot2::scale_x_continuous(breaks = seq(1, 14, 1)), ggplot2::scale_y_continuous(breaks = seq(0, 100, 25), limits = (c(0, 100)))),
@@ -497,10 +376,10 @@ ggscatterstats(
   ylab = "QoL score (0 = poor, 100 = excellent)",
   title = "Mental QoL score per number of ADs in ME patients"
 )
-ggsave("ad-sf36/me-mental-qol.png")
+ggsave("images/sf36me-mental-numAD.png")
 
 ggscatterstats(
-  data = me.info,
+  data = df.me,
   x = ad.sum,
   y = broad.physsum,
   ggplot.component = list(ggplot2::scale_x_continuous(breaks = seq(1, 14, 1)), ggplot2::scale_y_continuous(breaks = seq(0, 100, 25), limits = (c(0, 100)))),
@@ -508,10 +387,37 @@ ggscatterstats(
   ylab = "QoL score (0 = poor, 100 = excellent)",
   title = "Physical QoL score per number of ADs in ME patients"
 )
-ggsave("ad-sf36/me-physical-qol.png")
+ggsave("images/sf36me-physical-numAD.png")
+
+### psa
+
+df.psa  <- ad.info %>%
+  filter(autoimmune_id___35 == 1)
+
+ggscatterstats(
+  data = df.psa,
+  x = ad.sum,
+  y = broad.mentsum,
+  ggplot.component = list(ggplot2::scale_x_continuous(breaks = seq(1, 14, 1)), ggplot2::scale_y_continuous(breaks = seq(0, 100, 25), limits = (c(0, 100)))),
+  xlab = "Number of ADs",
+  ylab = "QoL score (0 = poor, 100 = excellent)",
+  title = "Mental QoL score per number of ADs in ME patients"
+)
+ggsave("images/sf36-psa-mental-numAD.png")
+
+ggscatterstats(
+  data = df.psa,
+  x = ad.sum,
+  y = broad.physsum,
+  ggplot.component = list(ggplot2::scale_x_continuous(breaks = seq(1, 14, 1)), ggplot2::scale_y_continuous(breaks = seq(0, 100, 25), limits = (c(0, 100)))),
+  xlab = "Number of ADs",
+  ylab = "QoL score (0 = poor, 100 = excellent)",
+  title = "Physical QoL score per number of ADs in ME patients"
+)
+ggsave("images/sf36-psa-physical-numAD.png")
 
 ### compare QoL betweeen illnesses by how many ADs
-
+#TODO up to here
 df.coeliac <- df.coeliac %>%
   mutate(disorder = "coeliac")
 
@@ -527,38 +433,29 @@ df.rheum <- df.rheum %>%
 df.sjog <- df.sjog %>%
   mutate(disorder = "sjoegrens")
 
-me.info <- me.info %>%
+df.me <- me.info %>%
   mutate(disorder = "ME") 
 
-top5.me <- bind_rows(list(df.coeliac, df.hashi, df.lupus, df.rheum, df.sjog, me.info))
-saveRDS(top5.me, "sf36-top5-me.rds")
+top10.ad <- bind_rows(list(df.coeliac, df.hashi, df.lupus, df.rheum, df.sjog, df.me))
+saveRDS(top10.ad, "sf36-top5-me.rds")
 
 grouped_ggbetweenstats(
-  data = top5.me %>% dplyr::filter(ad.sum < 5),
-  x = disorder,
-  y = broad.qolall,
-  grouping.var = ad.sum,
-  annotation.args = list(title = "Differences in overall quality of life between illnesses for different number of overall disorders")
-)
-ggsave("ad-sf36/top5-me-overall-qol.png")
-
-grouped_ggbetweenstats(
-  data = top5.me %>% dplyr::filter(ad.sum < 5),
+  data = top10.ad, #%>% dplyr::filter(ad.sum < 5),
   x = disorder,
   y = broad.physsum,
   grouping.var = ad.sum,
   annotation.args = list(title = "Differences in physical health QoL between illnesses for different number of overall disorders")
 )
-ggsave("ad-sf36/top5-me-physical-qol.png")
+ggsave("images/sf36-top10-physical.png")
 
 grouped_ggbetweenstats(
-  data = top5.me %>% dplyr::filter(ad.sum < 5),
+  data = top10.ad, #%>% dplyr::filter(ad.sum < 5),
   x = disorder,
   y = broad.mentsum,
   grouping.var = ad.sum,
   annotation.args = list(title = "Differences in mental health QoL between illnesses for different number of overall disorders")
 )
-ggsave("ad-sf36/top5-me-mental-qol.png")
+ggsave("images/sf36-top10-mental.png")
 
 #scatterplot top 5 vs. number of ADs
 #function for plots and saving
