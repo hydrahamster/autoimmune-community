@@ -327,11 +327,11 @@ ggscatterstats(
 ggsave("images/sf36-sclero-physical-numAD.png")
 
 ### hypermobility
-df.hyper <- ad.info %>%
+df.hsd <- ad.info %>%
   filter(autoimmune_id___172 == 1)
 
 ggscatterstats(
-  data = df.hyper,
+  data = df.hsd,
   x = ad.sum,
   y = broad.mentsum,
   ggplot.component = list(ggplot2::scale_x_continuous(breaks = seq(1, 14, 1)), ggplot2::scale_y_continuous(breaks = seq(0, 100, 25), limits = (c(0, 100)))),
@@ -342,7 +342,7 @@ ggscatterstats(
 ggsave("images/sf36-hsd-mental-numAD.png")
 
 ggscatterstats(
-  data = df.hyper,
+  data = df.hsd,
   x = ad.sum,
   y = broad.physsum,
   ggplot.component = list(ggplot2::scale_x_continuous(breaks = seq(1, 14, 1)), ggplot2::scale_y_continuous(breaks = seq(0, 100, 25), limits = (c(0, 100)))),
@@ -417,7 +417,7 @@ ggscatterstats(
 ggsave("images/sf36-psa-physical-numAD.png")
 
 ### compare QoL betweeen illnesses by how many ADs
-#TODO up to here
+
 df.coeliac <- df.coeliac %>%
   mutate(disorder = "coeliac")
 
@@ -433,29 +433,53 @@ df.rheum <- df.rheum %>%
 df.sjog <- df.sjog %>%
   mutate(disorder = "sjoegrens")
 
-df.me <- me.info %>%
+df.me <- df.me %>%
   mutate(disorder = "ME") 
 
-top10.ad <- bind_rows(list(df.coeliac, df.hashi, df.lupus, df.rheum, df.sjog, df.me))
-saveRDS(top10.ad, "sf36-top5-me.rds")
+df.fibro <- df.fibro %>%
+  mutate(disorder = "fibro")
+
+df.hsd <- df.hsd %>%
+  mutate(disorder = "hsd")
+
+df.pots <- df.pots%>%
+  mutate(disorder = "pots")
+
+df.psa <- df.psa %>%
+  mutate(disorder = "psa")
+
+top10.ad <- bind_rows(list(df.coeliac, df.hashi, df.lupus, df.rheum, df.sjog, df.me, df.pots, df.psa, df.fibro, df.hsd))
+saveRDS(top10.ad, "sf36-top10-ads.rds")
 
 grouped_ggbetweenstats(
-  data = top10.ad, #%>% dplyr::filter(ad.sum < 5),
+  data = top10.ad %>% dplyr::filter(ad.sum < 4) %>% dplyr::filter(disorder != "sjoegrens") %>% dplyr::filter(disorder != "SLE") %>% dplyr::filter(disorder != "hsd")  %>% dplyr::filter(disorder != "pots"),
   x = disorder,
   y = broad.physsum,
   grouping.var = ad.sum,
-  annotation.args = list(title = "Differences in physical health QoL between illnesses for different number of overall disorders")
+  annotation.args = list(title = "Differences in physical health QoL between illnesses for different number of overall disorders"),
+  ggplot.component =
+    ## modify further with `{ggplot2}` functions
+    list(
+      scale_color_manual(values = paletteer::paletteer_c("viridis::turbo", 6)),
+      theme(axis.text.x = element_text(angle = 90))
+    )
 )
-ggsave("images/sf36-top10-physical.png")
+ggsave("images/sf36-top6-physical-numAD3.png")
 
 grouped_ggbetweenstats(
-  data = top10.ad, #%>% dplyr::filter(ad.sum < 5),
+  data = top10.ad %>% dplyr::filter(ad.sum < 4) %>% dplyr::filter(disorder != "sjoegrens") %>% dplyr::filter(disorder != "SLE") %>% dplyr::filter(disorder != "hsd")  %>% dplyr::filter(disorder != "pots"),
   x = disorder,
   y = broad.mentsum,
   grouping.var = ad.sum,
-  annotation.args = list(title = "Differences in mental health QoL between illnesses for different number of overall disorders")
+  annotation.args = list(title = "Differences in mental health QoL between illnesses for different number of overall disorders"),
+  ggplot.component =
+    ## modify further with `{ggplot2}` functions
+    list(
+      scale_color_manual(values = paletteer::paletteer_c("viridis::turbo", 6)),
+      theme(axis.text.x = element_text(angle = 90))
+    )
 )
-ggsave("images/sf36-top10-mental.png")
+ggsave("images/sf36-top6-mental-numAD3.png")
 
 #scatterplot top 5 vs. number of ADs
 #function for plots and saving
@@ -516,92 +540,7 @@ ggsave("images/sf36-top10-mental.png")
 #   # ggsave(paste0("images/sans-ME/", df, "-", dom, ".png"))
 # }
 
-#ad.info
 
-ad.info %>%
-  filter(ad.sum != 0) %>%
-  ggplot(aes(x=ad.sum, y=broad.qolall)) + #, color=gender.id)) + #, y=broad.qolall, color=demog_x1..biological.sex)) +
-  geom_jitter()+ 
-  geom_smooth(method=lm) +#, aes(fill=gender))+ #, aes(fill=demog_x1..biological.sex) #se=FALSE) +#, fullrange=TRUE) +
-  scale_color_viridis_d(na.value = "grey")+
-  scale_x_continuous(breaks = seq(0, 15, by = 1))+
-  # scale_y_continuous(breaks = seq(0, 100, by = 10)) +
-  theme_bw() +
-  labs(title = "All respondents with ADs",
-       y = "SF36 QoL score", 
-       x = "Number of conditions") +
-#fill = NULL,
-#color = "Sex") +
-theme(text = element_text(family = "Helvetica-Narrow", face = "bold")) +
-  theme(axis.text.x = element_text(angle = 60, vjust = 0.5),
-        plot.title=element_text(size=15),
-        axis.title=element_text(size=15),
-        axis.text=element_text(size=10),
-        legend.text = element_text(size=10),
-        legend.title = element_text(size=15)) 
-ad.info %>%
-  filter(ad.sum != 0) %>%
-  ggplot(aes(x=ad.sum, y=broad.physsum)) + #, color=gender.id)) + #, y=broad.qolall, color=demog_x1..biological.sex)) +
-  geom_jitter()+ 
-  geom_smooth(method=lm) +#, aes(fill=gender))+ #, aes(fill=demog_x1..biological.sex) #se=FALSE) +#, fullrange=TRUE) +
-  scale_color_viridis_d(na.value = "grey")+
-  scale_x_continuous(breaks = seq(0, 15, by = 1))+
-  # scale_y_continuous(breaks = seq(0, 100, by = 10)) +
-  theme_bw() +
-  labs(title = "All respondents with ADs",
-       y = "SF36 QoL score", 
-       x = "Number of conditions")
-#fill = NULL,
-#color = "Sex") +
-theme(text = element_text(family = "Helvetica-Narrow", face = "bold")) +
-  theme(axis.text.x = element_text(angle = 60, vjust = 0.5),
-        plot.title=element_text(size=15),
-        axis.title=element_text(size=15),
-        axis.text=element_text(size=10),
-        legend.text = element_text(size=10),
-        legend.title = element_text(size=15)) 
-ad.info %>%
-  filter(ad.sum != 0) %>%
-  ggplot(aes(x=ad.sum, y=broad.mentsum)) + #, color=gender.id)) + #, y=broad.qolall, color=demog_x1..biological.sex)) +
-  geom_jitter()+ 
-  geom_smooth(method=lm) +#, aes(fill=gender))+ #, aes(fill=demog_x1..biological.sex) #se=FALSE) +#, fullrange=TRUE) +
-  scale_color_viridis_d(na.value = "grey")+
-  scale_x_continuous(breaks = seq(0, 15, by = 1))+
-  # scale_y_continuous(breaks = seq(0, 100, by = 10)) +
-  theme_bw() +
-  labs(title = "All respondents with ADs",
-       y = "SF36 QoL score", 
-       x = "Number of conditions")
-#fill = NULL,
-#color = "Sex") +
-theme(text = element_text(family = "Helvetica-Narrow", face = "bold")) +
-  theme(axis.text.x = element_text(angle = 60, vjust = 0.5),
-        plot.title=element_text(size=15),
-        axis.title=element_text(size=15),
-        axis.text=element_text(size=10),
-        legend.text = element_text(size=10),
-        legend.title = element_text(size=15)) 
-
-df.coeliac %>%
-  ggplot(aes(x=ad.sum, y=broad.qolall)) + #, color=gender.id)) + #, y=broad.qolall, color=demog_x1..biological.sex)) +
-  geom_jitter()+ 
-  geom_smooth(method=lm) +#, aes(fill=gender))+ #, aes(fill=demog_x1..biological.sex) #se=FALSE) +#, fullrange=TRUE) +
-  scale_color_viridis_d(na.value = "grey")+
-  scale_x_continuous(breaks = seq(0, 15, by = 1))+
-  # scale_y_continuous(breaks = seq(0, 100, by = 10)) +
-  theme_bw() +
-  labs(title = "Coeliac respondents",
-       y = "SF36 QoL score", 
-       x = "Number of conditions")
-#fill = NULL,
-#color = "Sex") +
-theme(text = element_text(family = "Helvetica-Narrow", face = "bold")) +
-  theme(axis.text.x = element_text(angle = 60, vjust = 0.5),
-        plot.title=element_text(size=15),
-        axis.title=element_text(size=15),
-        axis.text=element_text(size=10),
-        legend.text = element_text(size=10),
-        legend.title = element_text(size=15)) 
 
 # #upset plot of co-occurence of ADs
 # ad.10 <- ad.short %>%

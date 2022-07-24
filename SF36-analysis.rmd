@@ -1,0 +1,106 @@
+---
+title: "sf36 AD analysis"
+author: "Anna Liza Kretzschmar"
+date: "24/07/2022"
+output: html_document
+---
+
+Images generated from 8_sf36.R
+
+# QoL of individual ADs
+
+## all ADs
+Out of 1369 respondents with chronic illness, 1198 completed the SF36 questionnaire used for this analysis
+### mental QoL
+![image](images/sf36-allADs-mental.png)
+
+### physical QoL
+![image](images/sf36-allADs-physical.png)
+
+## Coeliac
+Out of 216 respondents with coeliac, 202 completed the SF36 questionnaire used for this analysis 
+### mental QoL
+![image](images/sf36-coeliac-mental-numADS.png)
+
+### physical QoL
+![image](images/sf36-coeliac-physical-numADS.png)
+
+## ME/CFS
+Out of 192 respondents with ME, 178 completed the SF36 questionnaire used for this analysis
+### mental QoL
+![image](images/sf36-me-mental-numAD.png)
+
+### physical QoL
+![image](images/sf36-me-physical-numAD.png)
+
+## Hashimoto's
+Out of 191 respondents with hashimoto's, 179 completed the SF36 questionnaire used for this analysis
+### mental QoL
+![image](images/sf36-hashi-mental-numAD.png)
+
+### physical QoL
+![image](images/sf36-hashi-physical-numAD.png)
+
+## Rheumatoid arthritis
+Out of 147 respondents with RA, 136 completed the SF36 questionnaire used for this analysis
+### mental QoL
+![image](images/sf36-ra-mental-numAD.png)
+
+### physical QoL
+![image](images/sf36-ra-physical-numAD.png)
+
+## Sjoegren's syndrome
+Out of 127 respondents with Sjoegren's, 120 completed the SF36 questionnaire used for this analysis
+### mental QoL
+![image](images/sf36-sjog-mental-numAD.png)
+
+### physical QoL
+![image](images/sf36-sjog-physical-numAD.png)
+
+## Fibromyalgia
+Out of 126 respondents with fibro, 118 completed the SF36 questionnaire used for this analysis
+### mental QoL
+![image](images/sf36-fibro-mental-numAD.png)
+
+### physical QoL
+![image](images/sf36-fibro-physical-numAD.png)
+
+## Lupus (SLE)
+Out of 76 respondents with SLE, 72 completed the SF36 questionnaire used for this analysis
+### mental QoL
+![image](images/sf36-lupus-mental-numAD.png)
+
+### physical QoL
+![image](images/sf36-lupus-physical-numAD.png)
+
+## Hypermobility disorders
+Out of 76 respondents with HSD, 70 completed the SF36 questionnaire used for this analysis
+### mental QoL
+![image](images/sf36-hsd-mental-numAD.png)
+
+### physical QoL
+![image](images/sf36-hsd-physical-numAD.png)
+
+## POTS
+Out of 74 respondents with POTS, 69 completed the SF36 questionnaire used for this analysis
+### mental QoL
+![image](images/sf36-pots-mental-numAD.png)
+
+### physical QoL
+![image](images/sf36-pots-physical-numAD.png)
+
+## Psoriatric arthritis
+Out of 69 respondents with PsA, 66 completed the SF36 questionnaire used for this analysis
+### mental QoL
+![image](images/sf36-psa-mental-numAD.png)
+
+### physical QoL
+![image](images/sf36-psa-physical-numAD.png)
+
+# Comparison of QoL of ADs with number of overall illnesses
+
+### mental QoL
+![image](images/sf36-top6-mental-numAD3.png)
+
+### physical QoL
+![image](images/sf36-top6-physical-numAD3.png)
