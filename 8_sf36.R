@@ -4,7 +4,7 @@ source("0_pachages-function.R")
 #load data
 data.clean <- readRDS("AD-data-clean.rds")
 df.sumstats <- readRDS("AD-sumstats.rds")
-#NOTE: df.ad too large ot load on desktop
+
 df.ad <- readRDS("df-ad.rds")
 
 #SF36
@@ -316,15 +316,15 @@ ggscatterstats(
 ggsave("images/sf36-pots-mental-numAD.png")
 
 ggscatterstats(
-  data = df.sclero,
+  data = df.pots,
   x = ad.sum,
   y = broad.physsum,
   ggplot.component = list(ggplot2::scale_x_continuous(breaks = seq(1, 14, 1)), ggplot2::scale_y_continuous(breaks = seq(0, 100, 25), limits = (c(0, 100)))),
   xlab = "Number of ADs",
   ylab = "QoL score (0 = poor, 100 = excellent)",
-  title = "Physical QoL score per number of ADs in scleroderma patients"
+  title = "Physical QoL score per number of ADs in POTS patients"
 )
-ggsave("images/sf36-sclero-physical-numAD.png")
+ggsave("images/sf36-pots-physical-numAD.png")
 
 ### hypermobility
 df.hsd <- ad.info %>%
@@ -376,7 +376,7 @@ ggscatterstats(
   ylab = "QoL score (0 = poor, 100 = excellent)",
   title = "Mental QoL score per number of ADs in ME patients"
 )
-ggsave("images/sf36me-mental-numAD.png")
+ggsave("images/sf36-me-mental-numAD.png")
 
 ggscatterstats(
   data = df.me,
@@ -387,12 +387,12 @@ ggscatterstats(
   ylab = "QoL score (0 = poor, 100 = excellent)",
   title = "Physical QoL score per number of ADs in ME patients"
 )
-ggsave("images/sf36me-physical-numAD.png")
+ggsave("images/sf36-me-physical-numAD.png") #save manually for size ratio
 
 ### psa
 
 df.psa  <- ad.info %>%
-  filter(autoimmune_id___35 == 1)
+  filter(autoimmune_id___34 == 1)
 
 ggscatterstats(
   data = df.psa,
@@ -412,9 +412,16 @@ ggscatterstats(
   ggplot.component = list(ggplot2::scale_x_continuous(breaks = seq(1, 14, 1)), ggplot2::scale_y_continuous(breaks = seq(0, 100, 25), limits = (c(0, 100)))),
   xlab = "Number of ADs",
   ylab = "QoL score (0 = poor, 100 = excellent)",
-  title = "Physical QoL score per number of ADs in ME patients"
+  title = "Physical QoL score per number of ADs in ME patients",
+  #ggplot.component =
+    ## modify further with `{ggplot2}` functions
+    #list(
+      #scale_color_manual(values = paletteer::paletteer_c("viridis::turbo", 6)),
+      #theme(axis.text.x = element_text(angle = 90))#,
+      #ggside::stat_bin(binwidth=15) #can't work out correct syntacx here
+    #)
 )
-ggsave("images/sf36-psa-physical-numAD.png")
+ggsave("images/sf36-psa-physical-numAD.png") 
 
 ### compare QoL betweeen illnesses by how many ADs
 
@@ -464,7 +471,21 @@ grouped_ggbetweenstats(
       theme(axis.text.x = element_text(angle = 90))
     )
 )
-ggsave("images/sf36-top6-physical-numAD3.png")
+# ggsave("images/sf36-top6-physical-numAD3.png") save manually for dimensions
+
+# grouped_ggbetweenstats(
+#   data = top10.ad %>% dplyr::filter(ad.sum < 5),
+#   x = disorder,
+#   y = broad.physsum,
+#   grouping.var = ad.sum,
+#   annotation.args = list(title = "Differences in physical health QoL between illnesses for different number of overall disorders"),
+#   ggplot.component =
+#     ## modify further with `{ggplot2}` functions
+#     list(
+#       scale_color_manual(values = paletteer::paletteer_c("viridis::turbo", 10)),
+#       theme(axis.text.x = element_text(angle = 90))
+#     )
+# )
 
 grouped_ggbetweenstats(
   data = top10.ad %>% dplyr::filter(ad.sum < 4) %>% dplyr::filter(disorder != "sjoegrens") %>% dplyr::filter(disorder != "SLE") %>% dplyr::filter(disorder != "hsd")  %>% dplyr::filter(disorder != "pots"),
@@ -476,10 +497,11 @@ grouped_ggbetweenstats(
     ## modify further with `{ggplot2}` functions
     list(
       scale_color_manual(values = paletteer::paletteer_c("viridis::turbo", 6)),
-      theme(axis.text.x = element_text(angle = 90))
+      theme(axis.text.x = element_text(angle = 90))#,
+     # ggside::geom_xsidehistogram(stat = "count", binwidth=15) #adds histogram at top
     )
 )
-ggsave("images/sf36-top6-mental-numAD3.png")
+# ggsave("images/sf36-top6-mental-numAD3.png")save manually for dimensions
 
 #scatterplot top 5 vs. number of ADs
 #function for plots and saving

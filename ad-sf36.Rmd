@@ -1,0 +1,225 @@
+---
+title: "SF36 analysis of autoimmune community project"
+author: "Anna Liza Kretzschmar"
+date: "14/06/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# SF36 scores
+
+After excluding missing or incomplete SF36 surveys, 980 participants remained.
+
+
+
+# top 5 ADs
+
+ME/CFS participants were excluded, as it is unknown whether they were part of the Emerge cohort. This excluded 154 participants, and 1079 participants remained.
+The 5 highest represented ADs were:
+
+* Coeliac, 191 participants
+* Hashimoto's, 147 participants
+* Sjoegren's, 106 participants
+* Rheumatoid arthritis, 105 participants
+* Lupus (SLE), 62 participants
+
+![image](ad-sf36/Top-5-AD-barplot.png)
+When looking at interconnectivity between participants and multiple instances of the top 5 ADs, it becomes clear that there is a large amount of cross over.
+![image](ad-sf36/Upset-top5-AD.png)
+Next line in inquiry is looking into number of ADs and QoL through SF36 in general, as well as specifically for the top 5 ADs.
+
+### SF36 per number ADs for all chronically ill participants
+
+Note: controls not filtered out
+
+#### Overall Quality of Life
+
+![image](ad-sf36/allADs-overall-qol.png)
+
+#### Physical health meassure
+
+![image](ad-sf36/allADs-physical-qol.png)
+
+#### Mental health meassure
+
+![image](ad-sf36/allADs-mental-qol.png)
+
+***
+
+### Coeliac
+
+#### Overall Quality of Life
+
+![image](ad-sf36/coeliac-overall-qol.png)
+
+#### Physical health meassure
+
+![image](ad-sf36/coeliac-physical-qol.png)
+
+#### Mental health meassure
+
+![image](ad-sf36/coeliac-mental-qol.png)
+
+***
+
+### Hashimoto's
+
+#### Overall Quality of Life
+
+![image](ad-sf36/hashi-overall-qol.png)
+
+#### Physical health meassure
+
+![image](ad-sf36/hashi-physical-qol.png)
+
+#### Mental health meassure
+
+![image](ad-sf36/hashi-mental-qol.png)
+
+***
+
+### Sjoegren's
+
+#### Overall Quality of Life
+
+![image](ad-sf36/sjog-overall-qol.png)
+
+#### Physical health meassure
+
+![image](ad-sf36/sjog-physical-qol.png)
+
+#### Mental health meassure
+
+![image](ad-sf36/sjog-mental-qol.png)
+
+***
+
+### Rheumatoid arthritis
+
+#### Overall Quality of Life
+
+![image](ad-sf36/rheum-overall-qol.png)
+
+#### Physical health meassure
+
+![image](ad-sf36/rheum-physical-qol.png)
+
+#### Mental health meassure
+
+![image](ad-sf36/rheum-mental-qol.png)
+
+***
+
+### Lupus
+
+#### Overall Quality of Life
+
+![image](ad-sf36/lupus-overall-qol.png)
+
+#### Physical health meassure
+
+![image](ad-sf36/lupus-physical-qol.png)
+
+#### Mental health meassure
+
+![image](ad-sf36/lupus-mental-qol.png)
+
+***
+***
+
+## Check further ADs
+
+Top 5 ADs were chosen due to representative numbers. How do the next 3 most represented ADs fare? Are there enough representative samples to show statistically robust trends?
+
+### Fibromyalgia
+
+#### Overall Quality of Life
+
+![image](ad-sf36/fibro-overall-qol.png)
+
+#### Physical health meassure
+
+![image](ad-sf36/fibro-physical-qol.png)
+
+#### Mental health meassure
+
+![image](ad-sf36/fibro-mental-qol.png)
+
+***
+
+### Scleroderma
+
+#### Overall Quality of Life
+
+![image](ad-sf36/sclero-overall-qol.png)
+
+#### Physical health meassure
+
+![image](ad-sf36/sclero-physical-qol.png)
+
+#### Mental health meassure
+
+![image](ad-sf36/sclero-mental-qol.png)
+
+***
+
+### Hypermobility Spectrum disorders (EDS, HSD)
+
+#### Overall Quality of Life
+
+![image](ad-sf36/hyper-overall-qol.png)
+
+#### Physical health meassure
+
+![image](ad-sf36/hyper-physical-qol.png)
+
+#### Mental health meassure
+
+![image](ad-sf36/hyper-mental-qol.png)
+
+***
+
+***
+
+## comparison to ME cohort
+
+We've seen that quite a few people have multiple ADs here. How does this compare to the ME cohort? It's uncertain whether we'd get a complete list of ADs from participants in the Solve and Emerge registries, so let's have a look at the Autoimmunity survey ME cohort.
+
+![image](ad-sf36/upset-me.png)
+Looking at the interconnectivity of ME with other ADs shows that around a third of respondents solely have ME, two thirds have ME in conjunction with between one and eleven other illnesses. 
+
+#### Overall Quality of Life
+
+![image](ad-sf36/me-overall-qol.png)
+
+#### Physical health meassure
+
+![image](ad-sf36/me-physical-qol.png)
+
+#### Mental health meassure
+
+![image](ad-sf36/me-mental-qol.png)
+
+***
+
+***
+
+# Comparing QoL between disorders by different number of total disorders
+
+Question: SLE and Sjogrens don't show any statistical significance here. Perhaps because numbers too low? Should they be excluded, and also should controls be included as comparison?
+
+#### Overall Quality of Life
+
+![image](ad-sf36/top5-me-physical-qol.png)
+
+#### Physical health meassure
+
+![image](ad-sf36/top5-me-physical-qol.png)
+
+#### Mental health meassure
+
+![image](ad-sf36/top5-me-mental-qol.png)
+
+<!-- ![image](images/sans-ME/QoL-per-number-ADs.png) -->

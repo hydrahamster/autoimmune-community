@@ -212,3 +212,36 @@ network.differences <- function(input_a, input_b, title) {
 #colours
 cols2 = brewer.pal(8, "Spectral")
 
+
+# #### trying to work out mdx other gender issues in dropping zeroes during plyr::count
+# symp_list = lapply(1:dim(scale.mdx.o)[2], function(i) cbind(i,plyr::count(scale.mdx.o[,i]))) #%>% complete(i, .[,], fill = list(freq=0))) )
+# for(i in 1:length(symp_list)) { colnames(symp_list[[i]]) = c("i", "j", "k" ) }
+# #symp_list <- symp_list %>% complete()
+# symp_temp = do.call(rbind,symp_list )
+# symp_mat = tidyr::spread(symp_temp, key=2, value=3, fill=0  )
+# symp_mat = t(symp_mat[,-1])
+# # Since all the symptoms have similar scales, get those from the response
+# symps = as.character(plyr::count(data.clean$fatigue.factor)[,1]) 
+# missing = which(is.na(symps)) 
+# symps[missing] = "Missing"
+# 
+# # Get the symptom labels 
+# sympt = Hmisc::label(data.clean %>% select(fatigue:bruise))
+# 
+# # Label the symptoms matrix 
+# rownames(symp_mat) = symps
+# colnames(symp_mat) = sympt
+# 
+# 
+# # Plot the tally (removing missing results row)
+# 
+# x <- gplots::heatmap.2(t(symp_mat[-missing,]), 
+#                        Colv=F, 
+#                        col=plasma(100),
+#                        ColSideCol = rev(cols2[2:7]), 
+#                        density="none", trace="none", 
+#                        margins=c(8,8),
+#                        keysize=1,
+#                        key.xlab="Tally",
+#                        key.title="NULL") 
+# x

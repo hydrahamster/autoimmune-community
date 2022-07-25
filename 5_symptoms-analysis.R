@@ -367,15 +367,15 @@ gender.data <- data.clean %>% select(record_id, fatigue:bruise) %>% left_join((d
 # control vs. chronic
 ###
 
- cohort.data <- data.clean %>% select(record_id, fatigue:bruise) %>% left_join((df.sumstats %>% select(record_id, cohort.id)), by = "record_id")
+ cohort.data <- data.clean %>% select(record_id, fatigue:bruise) %>% left_join((df.sumstats %>% select(record_id, cohort.id, gender.group)), by = "record_id")
  
- cohort.control <- cohort.data %>% filter(cohort.id == "control") %>% select(!c(record_id, cohort.id))
+ cohort.control <- cohort.data %>% filter(cohort.id == "control") %>% select(!c(record_id, cohort.id, gender.group))
  sympt.heat(cohort.control)
  ggsave("images/sympt-heatmap-control-cohort.png")
  sympt.network(cohort.control, "Symptoms of control cohort")
  ggsave("images/sympt-network-control-cohort.png")
  
- cohort.chronic <- cohort.data %>% filter(cohort.id == "chronically ill") %>% select(!c(record_id, cohort.id))
+ cohort.chronic <- cohort.data %>% filter(cohort.id == "chronically ill") %>% select(!c(record_id, cohort.id, gender.group))
  sympt.heat(cohort.chronic)
  ggsave("images/sympt-heatmap-chronic-cohort.png")
  sympt.network(cohort.chronic, "Symptoms of chronic cohort")
@@ -383,6 +383,60 @@ gender.data <- data.clean %>% select(record_id, fatigue:bruise) %>% left_join((d
  
  network.differences(cohort.chronic, cohort.control, "Network difference between chronic and control cohorts")
  ggsave("images/sympt-network-diff-chron-control.png")
+ 
+ ### gender difference control vs chronic
+ cohort.control.m <- cohort.data %>% filter(cohort.id == "control" & gender.group == "Male") %>% select(!c(record_id, cohort.id, gender.group))
+ 
+ png("images/sympt-heatmap-male-control-cohort.png")
+ sympt.heat(cohort.control.m)
+ dev.off()
+ 
+ png("images/sympt-network-male-control-cohort.png")
+ sympt.network(cohort.control.m, "Symptoms of male control cohort")
+ dev.off()
+ 
+ cohort.chronic.m <- cohort.data %>% filter(cohort.id == "chronically ill" & gender.group == "Male") %>% select(!c(record_id, cohort.id, gender.group))
+ 
+ png("images/sympt-heatmap-male-chronic-cohort.png")
+ sympt.heat(cohort.chronic.m)
+ dev.off()
+ 
+ png("images/sympt-network-male-chronic-cohort.png")
+ sympt.network(cohort.chronic.m, "Symptoms of male chronic cohort")
+ dev.off()
+ 
+ cohort.control.f <- cohort.data %>% filter(cohort.id == "control" & gender.group == "Female") %>% select(!c(record_id, cohort.id, gender.group))
+ 
+ png("images/sympt-heatmap-female-control-cohort.png")
+ sympt.heat(cohort.control.f)
+ dev.off()
+ 
+ png("images/sympt-network-female-control-cohort.png")
+ sympt.network(cohort.control.f, "Symptoms of female control cohort")
+ dev.off()
+ 
+ cohort.chronic.f <- cohort.data %>% filter(cohort.id == "chronically ill" & gender.group == "Female") %>% select(!c(record_id, cohort.id, gender.group))
+ 
+ png("images/sympt-heatmap-female-chronic-cohort.png")
+ sympt.heat(cohort.chronic.f)
+ dev.off()
+ 
+ png("images/sympt-network-female-chronic-cohort.png")
+ sympt.network(cohort.chronic.f, "Symptoms of female chronic cohort")
+ dev.off()
+ 
+ png("images/sympt-network-diff-male-chron-control.png")
+ network.differences(cohort.chronic.m, cohort.control.m, "Network difference between male chronic and control cohorts")
+ dev.off()
+ 
+ png("images/sympt-network-diff-female-chron-control.png")
+ network.differences(cohort.chronic.f, cohort.control.f, "Network difference between female chronic and control cohorts")
+ dev.off()
+ 
+ png("images/sympt-network-diff-female-male-chron.png")
+ network.differences(cohort.chronic.f, cohort.chronic.m, "Network difference between female and male chronic cohorts")
+ dev.off()
+ 
  
 ###
 # Top 10 ADs
@@ -517,6 +571,94 @@ gender.data <- data.clean %>% select(record_id, fatigue:bruise) %>% left_join((d
  network.differences(scale.mdx, scale.cdx, "Network difference between correct and misdiagnoses")
  ggsave("images/sympt-network-diff-mdx-cdx.png")
  
+ ## misdiag by sex as well as mdx
+ scale.mdx.m <- df.sumstats %>%
+   select(record_id, misdiag.id, gender.group) %>%
+   filter(misdiag.id == "Yes" & gender.group == "Male") %>%
+   left_join((data.clean %>% select(record_id, fatigue:bruise)), by = "record_id") %>%
+   filter(!if_all(fatigue:bruise, is.na)) %>%
+   select(-c(record_id, misdiag.id, gender.group))
+ png("images/sympt-heatmap-misdiagnosed-male.png")
+ sympt.heat(scale.mdx.m)
+ dev.off()
+ png("images/sympt-network-misdiagnosed-male.png")
+ sympt.network(scale.mdx.m, "Symptoms of misdiagnosed male cohort")
+ dev.off()
+ scale.mdx.f <- df.sumstats %>%
+   select(record_id, misdiag.id, gender.group) %>%
+   filter(misdiag.id == "Yes" & gender.group == "Female") %>%
+   left_join((data.clean %>% select(record_id, fatigue:bruise)), by = "record_id") %>%
+   filter(!if_all(fatigue:bruise, is.na)) %>%
+   select(-c(record_id, misdiag.id, gender.group))
+ png("images/sympt-heatmap-misdiagnosed-female.png")
+ sympt.heat(scale.mdx.f)
+ dev.off()
+ png("images/sympt-network-misdiagnosed-female.png")
+ sympt.network(scale.mdx.f, "Symptoms of misdiagnosed female cohort")
+ dev.off()
+ #### need to fix missing symptoms issue
+ # scale.mdx.o <- df.sumstats %>%
+ #   select(record_id, misdiag.id, gender.group) %>%
+ #   filter(misdiag.id == "Yes" & gender.group == "Other") %>%
+ #   left_join((data.clean %>% select(record_id, fatigue:bruise)), by = "record_id") %>%
+ #   filter(!if_all(fatigue:bruise, is.na)) %>%
+ #   select(-c(record_id, misdiag.id, gender.group))
+ # png("images/sympt-heatmap-misdiagnosed-other-gender.png")
+ # sympt.heat(scale.mdx.o)
+ # dev.off()
+ # png("images/sympt-network-misdiagnosed-other-gender.png")
+ # sympt.network(scale.mdx.o, "Symptoms of misdiagnosed other gender cohort")
+ # dev.off()
+ 
+ scale.cdx.m <- df.sumstats %>%
+   select(record_id, misdiag.id, gender.group) %>%
+   filter(misdiag.id == "No" & gender.group == "Male") %>%
+   left_join((data.clean %>% select(record_id, fatigue:bruise)), by = "record_id") %>%
+   filter(!if_all(fatigue:bruise, is.na)) %>%
+   select(-c(record_id, misdiag.id, gender.group))
+ png("images/sympt-heatmap-misdiagnosed-male.png")
+ sympt.heat(scale.cdx.m)
+ dev.off()
+ png("images/sympt-network-misdiagnosed-male.png")
+ sympt.network(scale.cdx.m, "Symptoms of correctly diagnosed male cohort")
+ dev.off()
+ scale.cdx.f <- df.sumstats %>%
+   select(record_id, misdiag.id, gender.group) %>%
+   filter(misdiag.id == "No" & gender.group == "Female") %>%
+   left_join((data.clean %>% select(record_id, fatigue:bruise)), by = "record_id") %>%
+   filter(!if_all(fatigue:bruise, is.na)) %>%
+   select(-c(record_id, misdiag.id, gender.group))
+ png("images/sympt-heatmap-misdiagnosed-female.png")
+ sympt.heat(scale.cdx.f)
+ dev.off()
+ png("images/sympt-network-misdiagnosed-female.png")
+ sympt.network(scale.cdx.f, "Symptoms of correctly diagnosed female cohort")
+ dev.off()
+ # scale.cdx.o <- df.sumstats %>%
+ #   select(record_id, misdiag.id, gender.group) %>%
+ #   filter(misdiag.id == "No" & gender.group == "Other") %>%
+ #   left_join((data.clean %>% select(record_id, fatigue:bruise)), by = "record_id") %>%
+ #   filter(!if_all(fatigue:bruise, is.na)) %>%
+ #   select(-c(record_id, misdiag.id, gender.group))
+ # png("images/sympt-heatmap-misdiagnosed-other-gender.png")
+ # sympt.heat(scale.cdx.o)
+ # dev.off()
+ # png("images/sympt-network-misdiagnosed-other-gender.png")
+ # sympt.network(scale.cdx.o, "Symptoms of correctly diagnosed other gender cohort")
+ # dev.off()
+ 
+ png("images/sympt-network-diff-mdx-cdx-males.png")
+ network.differences(scale.mdx.m, scale.cdx.m, "Network difference between correct and misdiagnoses in males")
+dev.off()
+png("images/sympt-network-diff-mdx-cdx-females.png")
+  network.differences(scale.mdx.f, scale.cdx.f, "Network difference between correct and misdiagnoses in females")
+ dev.off()
+ # png("images/sympt-network-diff-mdx-cdx-other-gender.png")
+ # network.differences(scale.mdx.o, scale.cdx.o, "Network difference between correct and misdiagnoses in other genders")
+ # dev.off()
+ png("images/sympt-network-diff-mdx-males-females.png")
+ network.differences(scale.mdx.m, scale.mdx.f, "Network difference of misdiagnoses between males and females")
+ dev.off()
  ###
  # Length dx
  ###

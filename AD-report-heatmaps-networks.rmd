@@ -80,8 +80,35 @@ net_diff_ <- "images/sympt-network-diff-chron-control.png"
 knitr::include_graphics(net_diff_)
 ```
 
+### Gender difference between chronic and control cohorts
+
+#### Control male cohort
+![image](images/sympt-heatmap-male-control-cohort.png)
+![image](images/sympt-network-male-control-cohort.png)
+
+#### Control female cohort
+![image](images/sympt-heatmap-female-control-cohort.png)
+![image](images/sympt-network-female-control-cohort.png)
+
+#### Chronic male cohort
+![image](images/sympt-heatmap-male-chronic-cohort.png)
+![image](images/sympt-network-male-chronic-cohort.png)
+
+#### Chronic female cohort
+![image](images/sympt-heatmap-female-chronic-cohort.png)
+![image](images/sympt-network-female-chronic-cohort.png)
+
+#### Network differences between male chronic and control cohorts
+![image](images/sympt-network-diff-male-chron-control.png)
+
+#### Network differences between female chronic and control cohorts
+![image](images/sympt-network-diff-female-chron-control.png)
+
+#### Network differences between female and male chronic cohorts
+![image](images/sympt-network-diff-female-male-chron.png)
+
 ## Misdiagnosis and diagnosis
-### Correct diagnosis
+### Overall correct diagnosis
 ```{r sympt heat cdx, echo=FALSE}
 heat_correct_diagnosed <- "images/sympt-heatmap-correct-diagnosed.png"
 knitr::include_graphics(heat_correct_diagnosed)
@@ -90,7 +117,7 @@ knitr::include_graphics(heat_correct_diagnosed)
 net_correct_diagnosed <- "images/sympt-network-correct-diagnosed.png"
 knitr::include_graphics(net_correct_diagnosed)
 ```
-### Misdagnosis
+### Overall misdagnosis
 ```{r sympt heat mdx, echo=FALSE}
 heat_misdiagnosed <- "images/sympt-heatmap-misdiagnosed.png"
 knitr::include_graphics(heat_misdiagnosed)
@@ -100,8 +127,33 @@ net_misdiagnosed <- "images/sympt-network-misdiagnosed.png"
 knitr::include_graphics(net_misdiagnosed)
 ```
 
-### Differential network between correct and misdiagnosis
+### Differential network between overall correct and misdiagnosis
 ```{r sympt netdiff mdx cdx, echo=FALSE}
 net_diff_mdx_cdx <- "images/sympt-network-diff-mdx-cdx.png"
 knitr::include_graphics(net_diff_mdx_cdx)
 ```
+
+### Correct diagnosis in males
+![image](images/sympt-heatmap-misdiagnosed-male.png)
+![image](images/sympt-network-misdiagnosed-male.png)
+
+### Correct diagnosis in females
+![image](images/sympt-heatmap-misdiagnosed-female.png)
+![image](images/sympt-network-misdiagnosed-female.png)
+
+### Misdiagnosis in males
+![image](images/sympt-heatmap-misdiagnosed-male.png)
+![image](images/sympt-network-misdiagnosed-male.png)
+
+### Misdiagnosis in females
+![image](images/sympt-heatmap-misdiagnosed-female.png)
+![image](images/sympt-network-misdiagnosed-female.png)
+
+### Difference in mis- and correct diagnosis in males
+![image](images/sympt-network-diff-mdx-cdx-males.png)
+
+### Difference in mis- and correct diagnosis in females
+![image](images/sympt-network-diff-mdx-cdx-females.png)
+
+### Difference in misdiagnosis between females and males
+![image](images/sympt-network-diff-mdx-males-females.png)
