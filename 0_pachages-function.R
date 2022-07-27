@@ -26,6 +26,8 @@ library(ggstatsplot)
 library(GGally)
 library(paletteer)
 library(igraph)
+#library(utilities)
+#library(cooccur) damn it, specific for species co-occurence
 
 #Functions
 count_comp <- function(x) sum(as.numeric(x))

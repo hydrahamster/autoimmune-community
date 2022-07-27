@@ -157,3 +157,18 @@ knitr::include_graphics(net_diff_mdx_cdx)
 
 ### Difference in misdiagnosis between females and males
 ![image](images/sympt-network-diff-mdx-males-females.png)
+
+# AD co-occurence
+
+## AD co-occurence with ADs log2 transformed
+```{r AD heat cooc, echo=FALSE}
+heat_cooc_ad <- "images/AD-cooc-log2.pdf"
+knitr::include_graphics(heat_cooc_ad)
+```
+
+
+## AD and co-morbidities co-occurence with ADs log2 transformed
+```{r AD heat cooc comorb, echo=FALSE}
+heat_cooc_ad_comorb <- "images/AD-comorb-cooc-log2.pdf"
+knitr::include_graphics(heat_cooc_ad_comorb)
+```
