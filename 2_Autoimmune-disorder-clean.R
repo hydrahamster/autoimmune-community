@@ -1542,8 +1542,11 @@ df.ad <- df.ad %>%
     ad.sum == 0 ~ "control",
     ad.sum > 0 ~ "chronically ill",
     is.na(ad.sum) ~ NA_character_
+  )) %>%
+  mutate(autoimmune_id___44 = case_when(
+    ad.sum == 0 ~ 1,
+    ad.sum > 0 ~ 0
   ))
-#TODO sort out classification and check before saving
 saveRDS(df.ad, file = "df-ad.rds")
 
 
