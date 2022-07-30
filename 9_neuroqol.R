@@ -49,7 +49,6 @@ ggscatterstats(
 nqol.t10 <- top10.ad %>%
   left_join((df.nqol %>% select(record_id, neuroqol_bank_v10_fatigueol_tscore, neuroqol_bank_v10_fatigueol_std_error)), by = "record_id")
 
-
 ggbetweenstats(
   data = nqol.t10,
   x = disorder,
@@ -58,13 +57,35 @@ ggbetweenstats(
   ggplot.component =
     ## modify further with `{ggplot2}` functions
     list(
-      scale_color_manual(values = paletteer::paletteer_c("viridis::turbo", 7)),
+      scale_color_manual(values = paletteer::paletteer_c("viridis::turbo", 10)),
       theme(axis.text.x = element_text(angle = 90))
     )
 )
+##############
+# removing any double dipping between 10 most common ADs 
+##############
+
+nqol.t10.unique <- nqol.t10 %>%
+  group_by(record_id) %>%
+  filter(n()<2) %>%
+  ungroup()
+
+ggbetweenstats(
+  data = nqol.t10.unique,
+  x = disorder,
+  y = neuroqol_bank_v10_fatigueol_tscore,
+  annotation.args = list(title = "Differences in Neuro-QoL fatigue score between illnesses"),
+  ggplot.component =
+    ## modify further with `{ggplot2}` functions
+    list(
+      scale_color_manual(values = paletteer::paletteer_c("viridis::turbo", 10)),
+      theme(axis.text.x = element_text(angle = 90))
+    )
+)
+ggsave("images/nqol-top10AD-unique-entries.png")
 
 grouped_ggbetweenstats(
-  data = nqol.t10 %>% dplyr::filter(ad.sum < 4) %>% dplyr::filter(disorder != "SLE") %>% dplyr::filter(disorder != "hsd")  %>% dplyr::filter(disorder != "pots"),
+  data = nqol.t10.unique %>% dplyr::filter(ad.sum < 4), # %>% dplyr::filter(disorder != "SLE") %>% dplyr::filter(disorder != "hsd")  %>% dplyr::filter(disorder != "pots"),
   x = disorder,
   y = neuroqol_bank_v10_fatigueol_tscore,
   grouping.var = ad.sum,
@@ -72,11 +93,38 @@ grouped_ggbetweenstats(
   ggplot.component =
     ## modify further with `{ggplot2}` functions
     list(
-      scale_color_manual(values = paletteer::paletteer_c("viridis::turbo", 7)),
+      scale_color_manual(values = paletteer::paletteer_c("viridis::turbo", 10)),
       theme(axis.text.x = element_text(angle = 90)),
       ylim(20, 100) # set y-axis
     )
 )
+ggsave("images/nqol-top10AD-unique-entries-faceted-numADs.png")
+
+#SF36 w/o double dipping
+ggbetweenstats(
+  data = nqol.t10.unique,
+  x = disorder,
+  y = broad.mentsum,
+  type = "robust",
+  xlab = "Disorder", ## label for the x-axis
+  ylab = "QoL score (0 = poor, 100 = excellent)", ## label for the y-axis
+  title = "Comparison of QoL between 10 most reported illnesses",
+  annotation.args = list(title = "Differences in RAND36 score between illnesses"),
+  outlier.tagging = TRUE, ## whether outliers should be flagged
+  outlier.coef = 1.5, ## coefficient for Tukey's rule
+  outlier.label = employment.id,
+  ggplot.component =
+    ## modify further with `{ggplot2}` functions
+    list(
+      scale_color_manual(values = paletteer::paletteer_c("viridis::turbo", 10)),
+      theme(axis.text.x = element_text(angle = 90))
+    )
+) + ## modifying the plot further
+  ggplot2::scale_y_continuous(
+    limits = c(0, 140),
+    breaks = seq(from = 0, to = 100, by = 25)
+  )
+ggsave("images/sf36-top10AD-unique-entries.png")
 
 #   select(-contains(".factor"), -contains("_tscore"), -contains ("_stderror"), -contains("qposition"), -contains("complete"), -c(neuroqol_bank_v10_fatigue_timestamp,neuroqol_bank_v10_fatigueol_std_error )) %>%
 #   mutate(across(neuroqol_nqftg13:neuroqol_nqftg20, .fns = as.numeric)) %>%

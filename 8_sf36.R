@@ -142,6 +142,43 @@ ggscatterstats(
 )
 ggsave("images/sf36-allADs-physical.png")
 
+# upset plot to look at how interconnected the illnesses are
+
+ad.names.df <- df.ad %>%
+  select(contains("autoimmune_id"), -autoimmune_id___44)
+#ad.names.df <- ad.names.df[, colSums(ad.names.df)>40]
+# ad.labels <- ad.names.df %>%
+#   get_label %>% gsub("\\(.*", "", .) %>%
+#   str_trim 
+# colnames(ad.names.df) <- ad.labels
+ad.names <- ad.names.df %>%  
+  colnames()
+upset(ad.info,
+      ad.names,
+      name = "Autoimmune disorders interconnectivity",
+      min_degree = 1,
+      max_degree = 1,
+      set_sizes=(
+        upset_set_size(
+          geom=geom_bar(
+            aes(fill= employment.id, x=group), #misdiag.id, dx.group
+            width=0.8
+          )
+        ) +
+          scale_fill_viridis_d(na.value = "grey")
+      ),
+      base_annotations = list(
+        'Intersection size' = intersection_size(
+          mapping = aes(fill = employment.id), #misdiag.id, gender.group, dx.group
+          text_colors=c(
+            on_background='black', on_bar='black'
+          )
+        ) +
+          scale_fill_viridis_d(#option = "mako",
+                               name = "Employment status",
+                               na.value = "grey") 
+      )) #del comma before ")" shouldn't affect running though
+
 #split into sub dataframes of top 10 diseases
 ### coeliac
 df.coeliac <- ad.info %>%
@@ -352,16 +389,6 @@ ggscatterstats(
 )
 ggsave("images/sf36-hsd-physical-numAD.png")
 
-
-#TODO relevant later on 
-# #look at interconnextivity
-# me.co <- me.short %>%
-#   select(contains("autoimmune_id"))%>%
-#   names()
-# upset(me.short, 
-#       me.co, 
-#       name = "Autoimmune disorders with ME",
-#       min_degree=1) #del comma before ")" shouldn't affect running though
 
 ### me
 df.me <- ad.info %>%
