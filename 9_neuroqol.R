@@ -74,6 +74,9 @@ ggbetweenstats(
   data = nqol.t10.unique,
   x = disorder,
   y = neuroqol_bank_v10_fatigueol_tscore,
+  type = "robust",
+  xlab = "Disorder", ## label for the x-axis
+  ylab = "QoL score (0 = excellent, 100 = poor)", ## label for the y-axis
   annotation.args = list(title = "Differences in Neuro-QoL fatigue score between illnesses"),
   ggplot.component =
     ## modify further with `{ggplot2}` functions
@@ -81,24 +84,35 @@ ggbetweenstats(
       scale_color_manual(values = paletteer::paletteer_c("viridis::turbo", 10)),
       theme(axis.text.x = element_text(angle = 90))
     )
-)
-ggsave("images/nqol-top10AD-unique-entries.png")
+)  + ## modifying the plot further
+  ggplot2::scale_y_continuous(
+    limits = c(0, 140),
+    breaks = seq(from = 0, to = 100, by = 25)
+  )
+#ggsave("images/nqol-top10AD-unique-entries.png")
 
 grouped_ggbetweenstats(
   data = nqol.t10.unique %>% dplyr::filter(ad.sum < 4), # %>% dplyr::filter(disorder != "SLE") %>% dplyr::filter(disorder != "hsd")  %>% dplyr::filter(disorder != "pots"),
   x = disorder,
   y = neuroqol_bank_v10_fatigueol_tscore,
   grouping.var = ad.sum,
+  type = "robust",
+  xlab = "Disorder", ## label for the x-axis
+  ylab = "QoL score (0 = excellent, 100 = poor)", ## label for the y-axis
+  #title = "Comparison of QoL between 10 most reported illnesses, by number of overall illnesses",
   annotation.args = list(title = "Differences in Neuro-QoL fatigue score between illnesses per number of illnesses"),
   ggplot.component =
     ## modify further with `{ggplot2}` functions
     list(
       scale_color_manual(values = paletteer::paletteer_c("viridis::turbo", 10)),
-      theme(axis.text.x = element_text(angle = 90)),
-      ylim(20, 100) # set y-axis
+      theme(axis.text.x = element_text(angle = 90))
     )
-)
-ggsave("images/nqol-top10AD-unique-entries-faceted-numADs.png")
+)  + ## modifying the plot further /// doesn't work for all faceted plots
+  ggplot2::scale_y_continuous(
+    limits = c(0, 140),
+    breaks = seq(from = 0, to = 100, by = 25)
+  )
+#ggsave("images/nqol-top10AD-unique-entries-faceted-numADs.png")
 
 #SF36 w/o double dipping
 ggbetweenstats(
@@ -108,7 +122,7 @@ ggbetweenstats(
   type = "robust",
   xlab = "Disorder", ## label for the x-axis
   ylab = "QoL score (0 = poor, 100 = excellent)", ## label for the y-axis
-  title = "Comparison of QoL between 10 most reported illnesses",
+  title = "Mental QoL score for 10 most reported illnesses",
   annotation.args = list(title = "Differences in RAND36 score between illnesses"),
   outlier.tagging = TRUE, ## whether outliers should be flagged
   outlier.coef = 1.5, ## coefficient for Tukey's rule
@@ -124,7 +138,67 @@ ggbetweenstats(
     limits = c(0, 140),
     breaks = seq(from = 0, to = 100, by = 25)
   )
-ggsave("images/sf36-top10AD-unique-entries.png")
+#ggsave("images/sf36-mental-top10AD-unique-entries.png")
+
+ggbetweenstats(
+  data = nqol.t10.unique,
+  x = disorder,
+  y = broad.physsum,
+  type = "robust",
+  xlab = "Disorder", ## label for the x-axis
+  ylab = "QoL score (0 = poor, 100 = excellent)", ## label for the y-axis
+  title = "Physical QoL score for 10 most reported illnesses",
+  annotation.args = list(title = "Differences in RAND36 score between illnesses"),
+  outlier.tagging = TRUE, ## whether outliers should be flagged
+  outlier.coef = 1.5, ## coefficient for Tukey's rule
+  outlier.label = employment.id,
+  ggplot.component =
+    ## modify further with `{ggplot2}` functions
+    list(
+      scale_color_manual(values = paletteer::paletteer_c("viridis::turbo", 10)),
+      theme(axis.text.x = element_text(angle = 90))
+    )
+) + ## modifying the plot further
+  ggplot2::scale_y_continuous(
+    limits = c(0, 140),
+    breaks = seq(from = 0, to = 100, by = 25)
+  )
+
+
+#################
+# single vs. multi illnesses
+#################
+
+#### singles with 20 or more entries vs. 2, 3 etc ADs
+ test <- df.nqol %>%
+  mutate(illness.grouped = case_when(
+    ad.sum == 0 ~ "control",
+    ad.sum == 1 & autoimmune_id___6 == 1 ~ "coeliac",
+    ad.sum == 1 & autoimmune_id___55 == 1 ~ "ME",
+    ad.sum == 1 & autoimmune_id___17 == 1 ~ "hashimotos",
+    ad.sum == 1 & autoimmune_id___35 == 1 ~ "RA",
+    ad.sum == 1 & autoimmune_id___26 == 1 ~ "MS",
+    ad.sum == 1 & autoimmune_id___34 == 1 ~ "PsA",
+    ad.sum == 1 & autoimmune_id___1 == 1 ~ "AS",
+    ad.sum == 1 ~ "1 other illnesses",
+    ad.sum == 2 ~ "2 illnesses",
+    ad.sum == 3 ~ "3 illnesses",
+    ad.sum == 4 ~ "4 illnesses",
+    ad.sum > 4 ~ "5+ illnesses",
+    TRUE ~ NA_character_
+  ))
+
+test %>%
+  tabyl(illness.grouped) %>%
+  adorn_totals(where = "row") %>%
+  adorn_percentages(denominator = "col") %>%
+  adorn_pct_formatting() %>%
+  adorn_ns(position = "rear") %>%
+  adorn_title(
+    row_name = "Illness group"
+  )
+
+#### singles vs. blanket multi ADs
 
 #   select(-contains(".factor"), -contains("_tscore"), -contains ("_stderror"), -contains("qposition"), -contains("complete"), -c(neuroqol_bank_v10_fatigue_timestamp,neuroqol_bank_v10_fatigueol_std_error )) %>%
 #   mutate(across(neuroqol_nqftg13:neuroqol_nqftg20, .fns = as.numeric)) %>%
