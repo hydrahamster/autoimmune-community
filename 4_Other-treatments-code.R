@@ -10,8 +10,9 @@ library(wordcloud2)
 library(sjlabelled)
 library(viridis)
 
+#TODO this needs to be adapted to new data
 
-source("1_1-22_data-clean.R")
+#source("1_1-22_data-clean.R")
 
 ########
 #

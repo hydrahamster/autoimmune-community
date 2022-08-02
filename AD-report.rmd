@@ -250,16 +250,26 @@ knitr::include_graphics(sym_allAD)
 ```
 
 #### Symptoms for top 10 most represented illnesses
-![image](images/coeliac-symptoms.png)
-![image](images/mecfs-symptoms.png)
-![image](images/hashi-symptoms.png)
-![image](images/ra-symptoms.png)
-![image](images/sjog-symptoms.png)
-![image](images/fibro-symptoms.png)
-![image](images/lupus-symptoms.png)
-![image](images/hsd-symptoms.png)
-![image](images/pots-symptoms.png)
-![image](images/psa-symptoms.png)
+
+![image](images/symptoms/symptoms-comparisons.png)
+From this, the similarity between some of the ME, HSD and POTS scores is obvious. Querying co-occurence:
+
+* ME, POTS & HSD co-occur in 13 instances
+* ME & POTS co-occur in 36 instances
+* ME & HSD co-occur in 17 instances
+* POTS & HSD co-occur in 35 instances
+
+
+![image](images/symptoms/coeliac-symptoms.png)
+![image](images/symptoms/mecfs-symptoms.png)
+![image](images/symptoms/hashi-symptoms.png)
+![image](images/symptoms/ra-symptoms.png)
+![image](images/symptoms/sjog-symptoms.png)
+![image](images/symptoms/fibro-symptoms.png)
+![image](images/symptoms/lupus-symptoms.png)
+![image](images/symptoms/hsd-symptoms.png)
+![image](images/symptoms/pots-symptoms.png)
+![image](images/symptoms/psa-symptoms.png)
 #### Individual symptoms for controls vs. chronic cohorts
 
 ```{r bar fatigue , echo=FALSE}

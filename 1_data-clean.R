@@ -1097,7 +1097,7 @@ progress.check <- data.clean %>%
 saveRDS(data.clean, file = "AD-data-clean.rds")
 
 #clean up
-# rm(data, data.base, multi.mail, multi.mail.df, removals)
+# rm(data, data.base, data.identifiable, results.contact, take.test, query, progress.check,  multi.mail, multi.mail.df, removals)
 
 # ad.uni2 <- data.clean %>%  # for future stuff include: filter_all(any_vars(str_detect(., pattern = ""))) %>%
 #   select(autoimmune_id_other) %>%

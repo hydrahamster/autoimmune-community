@@ -61,10 +61,13 @@ sympt.count <- sympt.long %>%
 ggplot(sympt.count, aes(symptom, n, fill= forcats::fct_rev(severity))) +
   geom_col() +
   theme_bw() +
-  scale_fill_viridis_d(na.value = "grey")+
+  scale_fill_viridis_d(name = "Severity",
+                       na.value = "grey")+
   coord_flip() +
-  facet_wrap( ~ cohort.id, scales = "free") 
-ggsave("images/Symptoms-summary.png")
+ # theme(axis.text=element_text(size=18, face="bold")) +
+    facet_wrap( ~ cohort.id, scales = "free") 
+pdf("images/symptoms/symptoms-summary.pdf")
+ggsave("images/symptoms/symptoms-summary.png")
 
 ### top 10 illnesses symptoms
 #coeliac
@@ -81,8 +84,8 @@ sympt.coeliac.long <- sympt.coeliac %>%
   pivot_longer(!dx.id, names_to = "symptom", values_to = "severity") 
 count.coeliac <- sympt.coeliac.long %>%
   count(dx.id, symptom, severity)
-ggplot(count.coeliac, aes(symptom, n, fill= forcats::fct_rev(severity))) +
-  labs(title = "Coeliac symptoms",
+s.coeliac <- ggplot(count.coeliac, aes(symptom, n, fill= forcats::fct_rev(severity))) +
+  labs(title = "Coeliac",
        x = "Symptom", 
        y = "Number of respondents",
        fill = "Severity") +
@@ -90,7 +93,7 @@ ggplot(count.coeliac, aes(symptom, n, fill= forcats::fct_rev(severity))) +
   theme_bw() +
   scale_fill_viridis_d(na.value = "grey")+
   coord_flip()  
-ggsave("images/coeliac-symptoms.png")
+ggsave("images/symptoms/coeliac-symptoms.png")
 
 ### hashi
 id.hashi <- df.ad %>%
@@ -106,8 +109,8 @@ sympt.hashi.long <- sympt.hashi %>%
   pivot_longer(!dx.id, names_to = "symptom", values_to = "severity") 
 count.hashi <- sympt.hashi.long %>%
   count(dx.id, symptom, severity)
-ggplot(count.hashi, aes(symptom, n, fill= forcats::fct_rev(severity))) +
-  labs(title = "Hashimoto's symptoms",
+s.hashi <- ggplot(count.hashi, aes(symptom, n, fill= forcats::fct_rev(severity))) +
+  labs(title = "Hashimoto's",
        x = "Symptom", 
        y = "Number of respondents",
        fill = "Severity") +
@@ -115,7 +118,7 @@ ggplot(count.hashi, aes(symptom, n, fill= forcats::fct_rev(severity))) +
   theme_bw() +
   scale_fill_viridis_d(na.value = "grey")+
   coord_flip()
-ggsave("images/hashi-symptoms.png")
+ggsave("images/symptoms/hashi-symptoms.png")
 
 ### lupus
 id.lupus <- df.ad %>%
@@ -131,8 +134,8 @@ sympt.lupus.long <- sympt.lupus %>%
   pivot_longer(!dx.id, names_to = "symptom", values_to = "severity") 
 count.lupus <- sympt.lupus.long %>%
   count(dx.id, symptom, severity)
-ggplot(count.lupus, aes(symptom, n, fill= forcats::fct_rev(severity))) +
-  labs(title = "Lupus symptoms",
+s.lupus <-ggplot(count.lupus, aes(symptom, n, fill= forcats::fct_rev(severity))) +
+  labs(title = "Lupus",
        x = "Symptom", 
        y = "Number of respondents",
        fill = "Severity") +
@@ -140,7 +143,7 @@ ggplot(count.lupus, aes(symptom, n, fill= forcats::fct_rev(severity))) +
   theme_bw() +
   scale_fill_viridis_d(na.value = "grey")+
   coord_flip()
-ggsave("images/lupus-symptoms.png")
+ggsave("images/symptoms/lupus-symptoms.png")
 
 ### me
 id.me <- df.ad %>%
@@ -156,8 +159,8 @@ sympt.me.long <- sympt.me %>%
   pivot_longer(!dx.id, names_to = "symptom", values_to = "severity") 
 count.me <- sympt.me.long %>%
   count(dx.id, symptom, severity)
-ggplot(count.me, aes(symptom, n, fill= forcats::fct_rev(severity))) +
-  labs(title = "ME/CFS symptoms",
+s.me <- ggplot(count.me, aes(symptom, n, fill= forcats::fct_rev(severity))) +
+  labs(title = "ME/CFS",
        x = "Symptom", 
        y = "Number of respondents",
        fill = "Severity") +
@@ -165,7 +168,7 @@ ggplot(count.me, aes(symptom, n, fill= forcats::fct_rev(severity))) +
   theme_bw() +
   scale_fill_viridis_d(na.value = "grey")+
   coord_flip()
-ggsave("images/mecfs-symptoms.png")
+ggsave("images/symptoms/mecfs-symptoms.png")
 
 ### ra
 id.ra <- df.ad %>%
@@ -181,8 +184,8 @@ sympt.ra.long <- sympt.ra %>%
   pivot_longer(!dx.id, names_to = "symptom", values_to = "severity") 
 count.ra <- sympt.ra.long %>%
   count(dx.id, symptom, severity)
-ggplot(count.ra, aes(symptom, n, fill= forcats::fct_rev(severity))) +
-  labs(title = "Rheumatoid arthritis symptoms",
+s.ra <- ggplot(count.ra, aes(symptom, n, fill= forcats::fct_rev(severity))) +
+  labs(title = "Rheumatoid arthritis",
        x = "Symptom", 
        y = "Number of respondents",
        fill = "Severity") +
@@ -190,7 +193,7 @@ ggplot(count.ra, aes(symptom, n, fill= forcats::fct_rev(severity))) +
   theme_bw() +
   scale_fill_viridis_d(na.value = "grey")+
   coord_flip()
-ggsave("images/ra-symptoms.png")
+ggsave("images/symptoms/ra-symptoms.png")
 
 ### sjog
 id.sjog <- df.ad %>%
@@ -206,8 +209,8 @@ sympt.sjog.long <- sympt.sjog %>%
   pivot_longer(!dx.id, names_to = "symptom", values_to = "severity") 
 count.sjog <- sympt.sjog.long %>%
   count(dx.id, symptom, severity)
-ggplot(count.sjog, aes(symptom, n, fill= forcats::fct_rev(severity))) +
-  labs(title = "Sjogren's symptoms",
+s.sjog <- ggplot(count.sjog, aes(symptom, n, fill= forcats::fct_rev(severity))) +
+  labs(title = "Sjogren's",
        x = "Symptom", 
        y = "Number of respondents",
        fill = "Severity") +
@@ -215,7 +218,7 @@ ggplot(count.sjog, aes(symptom, n, fill= forcats::fct_rev(severity))) +
   theme_bw() +
   scale_fill_viridis_d(na.value = "grey")+
   coord_flip()
-ggsave("images/sjog-symptoms.png")
+ggsave("images/symptoms/sjog-symptoms.png")
 
 
 ### PsA
@@ -232,8 +235,8 @@ sympt.psa.long <- sympt.psa %>%
   pivot_longer(!dx.id, names_to = "symptom", values_to = "severity") 
 count.psa <- sympt.psa.long  %>%
   count(dx.id, symptom, severity)
-ggplot(count.psa, aes(symptom, n, fill= forcats::fct_rev(severity))) +
-  labs(title = "Psoriatic arthritis symptoms",
+s.psa <- ggplot(count.psa, aes(symptom, n, fill= forcats::fct_rev(severity))) +
+  labs(title = "Psoriatic arthritis",
        x = "Symptom", 
        y = "Number of respondents",
        fill = "Severity") +
@@ -241,7 +244,7 @@ ggplot(count.psa, aes(symptom, n, fill= forcats::fct_rev(severity))) +
   theme_bw() +
   scale_fill_viridis_d(na.value = "grey")+
   coord_flip()
-ggsave("images/psa-symptoms.png")
+ggsave("images/symptoms/psa-symptoms.png")
 
 ### fibro
 id.fibro <- df.ad %>%
@@ -257,8 +260,8 @@ sympt.fibro.long <- sympt.fibro %>%
   pivot_longer(!dx.id, names_to = "symptom", values_to = "severity") 
 count.fibro <- sympt.fibro.long %>%
   count(dx.id, symptom, severity)
-ggplot(count.fibro, aes(symptom, n, fill= forcats::fct_rev(severity))) +
-  labs(title = "Fibromyalgia symptoms",
+s.fibro <- ggplot(count.fibro, aes(symptom, n, fill= forcats::fct_rev(severity))) +
+  labs(title = "Fibromyalgia",
        x = "Symptom", 
        y = "Number of respondents",
        fill = "Severity") +
@@ -266,7 +269,7 @@ ggplot(count.fibro, aes(symptom, n, fill= forcats::fct_rev(severity))) +
   theme_bw() +
   scale_fill_viridis_d(na.value = "grey")+
   coord_flip()
-ggsave("images/fibro-symptoms.png")
+ggsave("images/symptoms/fibro-symptoms.png")
 
 ### pots
 id.pots <- df.ad %>%
@@ -282,8 +285,8 @@ sympt.pots.long <- sympt.pots %>%
   pivot_longer(!dx.id, names_to = "symptom", values_to = "severity") 
 count.pots <- sympt.pots.long %>%
   count(dx.id, symptom, severity)
-ggplot(count.pots, aes(symptom, n, fill= forcats::fct_rev(severity))) +
-  labs(title = "Postural orthostatic tachycardia syndrome symptoms",
+s.pots <- ggplot(count.pots, aes(symptom, n, fill= forcats::fct_rev(severity))) +
+  labs(title = "POTS",
        x = "Symptom", 
        y = "Number of respondents",
        fill = "Severity") +
@@ -291,7 +294,7 @@ ggplot(count.pots, aes(symptom, n, fill= forcats::fct_rev(severity))) +
   theme_bw() +
   scale_fill_viridis_d(na.value = "grey")+
   coord_flip()
-ggsave("images/pots-symptoms.png")
+ggsave("images/symptoms/pots-symptoms.png")
 
 ### hsd
 id.hsd <- df.ad %>%
@@ -307,8 +310,8 @@ sympt.hsd.long <- sympt.hsd %>%
   pivot_longer(!dx.id, names_to = "symptom", values_to = "severity") 
 count.hsd <- sympt.hsd.long %>%
   count(dx.id, symptom, severity)
-ggplot(count.hsd, aes(symptom, n, fill= forcats::fct_rev(severity))) +
-  labs(title = "Hypermobility disorders symptoms",
+s.hsd <- ggplot(count.hsd, aes(symptom, n, fill= forcats::fct_rev(severity))) +
+  labs(title = "Hypermobility disorders",
        x = "Symptom", 
        y = "Number of respondents",
        fill = "Severity") +
@@ -316,7 +319,35 @@ ggplot(count.hsd, aes(symptom, n, fill= forcats::fct_rev(severity))) +
   theme_bw() +
   scale_fill_viridis_d(na.value = "grey")+
   coord_flip()
-ggsave("images/hsd-symptoms.png")
+ggsave("images/symptoms/hsd-symptoms.png")
+
+## figure of all the symptoms and the controls together
+id.cont <- df.ad %>%
+  filter(autoimmune_id___44 == 1) %>%
+  select(record_id) %>%
+  mutate(dx.id = "control") 
+sympt.cont <- id.cont %>%
+  left_join((symptoms.factor %>% select(-cohort.id)), by = "record_id") %>%
+  filter(!if_all(fatigue.factor:bruise.factor, is.na)) %>%
+  select(-c(record_id))
+colnames(sympt.cont)<-gsub(".factor","",colnames(sympt.cont))
+sympt.cont.long <- sympt.cont %>%
+  pivot_longer(!dx.id, names_to = "symptom", values_to = "severity") 
+count.cont <- sympt.cont.long %>%
+  count(dx.id, symptom, severity)
+s.cont <- ggplot(count.cont, aes(symptom, n, fill= forcats::fct_rev(severity))) +
+  labs(title = "Controls",
+       x = "Symptom", 
+       y = "Number of respondents",
+       fill = "Severity") +
+  geom_col() +
+  theme_bw() +
+  scale_fill_viridis_d(na.value = "grey")+
+  coord_flip()
+
+ggarrange(s.cont, s.coeliac, s.fibro, s.hashi, s.hsd, s.lupus, s.me, s.pots, s.psa, s.ra, s.sjog,
+          labels = c("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"),
+          common.legend = TRUE, legend = "right")
 
 ################################################################################################################
 
@@ -331,9 +362,9 @@ ggsave("images/hsd-symptoms.png")
 
 sympt.all <- data.clean %>% select(fatigue:bruise)
 sympt.heat(sympt.all)
-ggsave("images/sympt-heatmap-all.png")
+#ggsave("images/sympt-heatmap-all.png")
 sympt.network(sympt.all, "Symptoms of all respondents")
-ggsave("images/sympt-network-all.png")
+#ggsave("images/sympt-network-all.png")
 
 
 ###

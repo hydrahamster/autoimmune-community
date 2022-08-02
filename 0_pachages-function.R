@@ -26,6 +26,7 @@ library(ggstatsplot)
 library(GGally)
 library(paletteer)
 library(igraph)
+library(ggpubr)
 #library(utilities)
 #library(cooccur) damn it, specific for species co-occurence
 
