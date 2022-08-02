@@ -95,7 +95,7 @@ sympt.network <- function(input, title){
   inet <- igraph::graph_from_data_frame(pairs, directed=F)
   
   ## Stylize edges
-  coords <- layout_as_star(diff_inet) 
+  coords <- layout_as_star(inet) #diff_? 
   igraph::E(inet)$weight <- rank(weights)/length(weights)
   igraph::E(inet)$width <- (igraph::E(inet)$weight^2 * 10)
   igraph::E(inet)$color <- viridis(101)[ round(igraph::E(inet)$weight * 100) + 1  ]
