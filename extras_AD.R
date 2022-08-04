@@ -317,7 +317,8 @@ gplots::heatmap.2( (symp_co[f1&!f2,f1&!f2]),
 # borrowing code from outdeco, adjust for this work (https://github.com/ballouzlab/OutDeCo_lite/blob/master/R/cluster_coexp.R)
 clust_net = OutDeCo::cluster_coexp(symp_co[f1,f1], flag_plot = T, flag_med = F, flag_dist = T, col=cols, method="complete")
 # look through clusters to see which illnesses all cooccur 
-clust_net$clusters 
+filt.clust.f1 <- clust_net$clusters 
+filt.clust.f1f2 <- filt.clusts #from prev stricter filtering
 
 
 # joint df to get scatter plots 
@@ -330,7 +331,7 @@ f.d = !is.na(m)
 f.a = m[f.d]
 
 df.temp =  cbind( data.clean[f.d2,],  df.sumstats[f.d,], df.ad[f.a2,])
-
+#TODO adapt this for some of the single/multiple AD stuff?
 ## color by misdiag
 tempcols = c(magma(10)[4], viridis(5)[3])
 tempcols2 = as.numeric(df.temp$misdiag.factor)
@@ -364,6 +365,7 @@ plot( jitter(df.temp$ad.sum[filt]) , nqscore[filt], pch=19, col = tempcols3[filt
 
 # pvals of overlap, also using outdeco stuff https://github.com/ballouzlab/OutDeCo_lite/blob/master/R/gene_set_enrichment.R
 voc = cbind(rownames(k), rownames(k), rowSums(k)  )
+#TODO Error in t(k)[, i] : subscript out of bounds
 overlaps = lapply(1:dim(k)[2], function(i) OutDeCo::gene_set_enrichment (rownames(t(k))[which(t(k)[,i] > 0  )] , t(k), voc) )
 pp = sapply(1:length(overlaps), function(i) as.numeric(overlaps[[i]][,3])+1  )
 pval = sapply(1:length(overlaps), function(i) as.numeric(overlaps[[i]][,5])  )
