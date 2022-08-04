@@ -32,7 +32,7 @@ z <- j %>% as.data.frame() %>% mutate(across(.fns =  ~case_when(. != 0 ~ log2(. 
                                                                       . == 0 ~ log2(1), 
                                                                       TRUE ~ 1000)))
 y <- as.matrix(z[,])
-diag(y) <- 0
+#diag(y) <- 0
 # pdf("images/AD-cooc-log2.pdf")
 #manually save 30 x 35 inches
 gplots::heatmap.2(t(y), 
@@ -47,7 +47,8 @@ gplots::heatmap.2(t(y),
 # dev.off()
 
 ## with more than 10 entries
-# ad.co.10 <- ad.co[, colSums(ad.co)>10]
+ # ad.co.10 <- ad.co[, colSums(ad.co)>10]
+ # ad.com.co.10 <- ad.com.co[, colSums(ad.com.co)>10]
 # ad.co.10 <- ad.co.10 %>% t()
 # m <- as.matrix(ad.co.10[,])
 # n <- m %*% t(m)
@@ -83,7 +84,7 @@ l <- l %>% as.data.frame() %>% mutate(across(.fns =  ~case_when(. != 0 ~ log2(. 
                                                                 . == 0 ~ log2(1), 
                                                                 TRUE ~ 1000)))
 l <- as.matrix(l[,])
-diag(l) <- 0
+#diag(l) <- 0
 # pdf("images/AD-comorb-cooc-log2.pdf")
 #manually save 30 x 35 inches
 gplots::heatmap.2(t(l), 
@@ -95,7 +96,23 @@ gplots::heatmap.2(t(l),
                   keysize=1,
                   key.xlab="Tally",
                   key.title="NULL")
-# dev.off()
+
+## correlation matrix of 10 or more entries
+ad.co.10 <- ad.co[, colSums(ad.co)>10]
+ad.com.co.10 <- ad.com.co[, colSums(ad.com.co)>10] #supposed to incl co-morbs but it isn't
+ggcorrmat(
+  data     = ad.com.co.10,
+  type = "non-parametric",
+  colors   = c("#B2182B", "white", "#4D4D4D"),
+  title    = "Correlalogram for illness co-occurence"
+)
+#play with this
+ggcorrmat(
+  data     = test2 %>% select(-neuroqol_bank_v10_fatigueol_std_error),
+  type = "robust",
+  colors   = c("#B2182B", "white", "#4D4D4D"),
+  title    = "Correlalogram for qol"
+)
 
 ## just more than 10 responses
 # ad.com.co <- ad.com.co[, colSums(ad.com.co)>10]

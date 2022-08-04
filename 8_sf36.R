@@ -87,7 +87,7 @@ plot.autdis %>%
   theme(plot.title=element_text(size=15, face="bold"),
         axis.title=element_text(size=15),
         axis.text=element_text(size=15, face="bold"))
-
+ggsave("images/ads/AD-prevalence-barplot.png")
 
 ## interconnextivity is nuts. So need to look at how many ADs people have in total per top 5
 ad.short <- ad.short %>%
@@ -129,7 +129,7 @@ ggscatterstats(
   ylab = "QoL score (0 = poor, 100 = excellent)",
   title = "Mental QoL score per number of ADs in all patients"
 )
-ggsave("images/sf36-allADs-mental.png")
+ggsave("images/qol/sf36-allADs-mental.png")
 
 ggscatterstats(
   data = ad.info,
@@ -140,7 +140,7 @@ ggscatterstats(
   ylab = "QoL score (0 = poor, 100 = excellent)",
   title = "Physical QoL score per number of ADs in all patients"
 )
-ggsave("images/sf36-allADs-physical.png")
+ggsave("images/qol/sf36-allADs-physical.png")
 
 # upset plot to look at how interconnected the illnesses are
 
@@ -193,7 +193,7 @@ ggscatterstats(
   ylab = "QoL score (0 = poor, 100 = excellent)",
   title = "Mental QoL score per number of ADs in Coeliac patients"
 )
-ggsave("images/sf36-coeliac-mental-numADS.png")
+ggsave("images/qol/sf36-coeliac-mental-numADS.png")
 
 ggscatterstats(
   data = df.coeliac,
@@ -204,7 +204,7 @@ ggscatterstats(
   ylab = "QoL score (0 = poor, 100 = excellent)",
   title = "Physical QoL score per number of ADs in Coeliac patients"
 )
-ggsave("images/sf36-coeliac-physical-numADS.png")
+ggsave("images/qol/sf36-coeliac-physical-numADS.png")
 
 ### hashi
 df.hashi <- ad.info %>%
@@ -219,7 +219,7 @@ ggscatterstats(
   ylab = "QoL score (0 = poor, 100 = excellent)",
   title = "Mental QoL score per number of ADs in Hashimoto's patients"
 )
-ggsave("images/sf36-hashi-mental-numAD.png")
+ggsave("images/qol/sf36-hashi-mental-numAD.png")
 
 ggscatterstats(
   data = df.hashi,
@@ -230,7 +230,7 @@ ggscatterstats(
   ylab = "QoL score (0 = poor, 100 = excellent)",
   title = "Physical QoL score per number of ADs in Hashimoto's patients"
 )
-ggsave("images/sf36-hashi-physical-numAD.png")
+ggsave("images/qol/sf36-hashi-physical-numAD.png")
 
 ### lupus
 df.lupus <- ad.info %>%
@@ -245,7 +245,7 @@ ggscatterstats(
   ylab = "QoL score (0 = poor, 100 = excellent)",
   title = "Mental QoL score per number of ADs in SLE patients"
 )
-ggsave("images/sf36-lupus-mental-numAD.png")
+ggsave("images/qol/sf36-lupus-mental-numAD.png")
 
 ggscatterstats(
   data = df.lupus,
@@ -256,7 +256,7 @@ ggscatterstats(
   ylab = "QoL score (0 = poor, 100 = excellent)",
   title = "Physical QoL score per number of ADs in SLE patients"
 )
-ggsave("images/sf36-lupus-physical-numAD.png")
+ggsave("images/qol/sf36-lupus-physical-numAD.png")
 
 ### RA
 df.rheum <- ad.info %>%
@@ -271,7 +271,7 @@ ggscatterstats(
   ylab = "QoL score (0 = poor, 100 = excellent)",
   title = "Mental QoL score per number of ADs in RA patients"
 )
-ggsave("images/sf36-ra-mental-numAD.png")
+ggsave("images/qol/sf36-ra-mental-numAD.png")
 
 ggscatterstats(
   data = df.rheum,
@@ -282,7 +282,7 @@ ggscatterstats(
   ylab = "QoL score (0 = poor, 100 = excellent)",
   title = "Physical QoL score per number of ADs in RA patients"
 )
-ggsave("images/sf36-ra-physical-numAD.png")
+ggsave("images/qol/sf36-ra-physical-numAD.png")
 
 ### sjoegren's
 df.sjog <- ad.info %>%
@@ -297,7 +297,7 @@ ggscatterstats(
   ylab = "QoL score (0 = poor, 100 = excellent)",
   title = "Mental QoL score per number of ADs in Sjoegren's patients"
 )
-ggsave("images/sf36-sjog-mental-numAD.png")
+ggsave("images/qol/sf36-sjog-mental-numAD.png")
 
 ggscatterstats(
   data = df.sjog,
@@ -308,7 +308,7 @@ ggscatterstats(
   ylab = "QoL score (0 = poor, 100 = excellent)",
   title = "Physical QoL score per number of ADs in Sjoegren's patients"
 )
-ggsave("images/sf36-sjog-physical-numAD.png")
+ggsave("images/qol/sf36-sjog-physical-numAD.png")
 
 ### fibro
 df.fibro <- ad.info %>%
@@ -323,7 +323,7 @@ ggscatterstats(
   ylab = "QoL score (0 = poor, 100 = excellent)",
   title = "Mental QoL score per number of ADs in fibro patients"
 )
-ggsave("images/sf36-fibro-mental-numAD.png")
+ggsave("images/qol/sf36-fibro-mental-numAD.png")
 
 ggscatterstats(
   data = df.fibro,
@@ -334,7 +334,7 @@ ggscatterstats(
   ylab = "QoL score (0 = poor, 100 = excellent)",
   title = "Physical QoL score per number of ADs in fibro patients"
 )
-ggsave("images/sf36-fibro-physical-numAD.png")
+ggsave("images/qol/sf36-fibro-physical-numAD.png")
 
 
 ### pots
@@ -350,7 +350,7 @@ ggscatterstats(
   ylab = "QoL score (0 = poor, 100 = excellent)",
   title = "Mental QoL score per number of ADs in POTS patients"
 )
-ggsave("images/sf36-pots-mental-numAD.png")
+ggsave("images/qol/sf36-pots-mental-numAD.png")
 
 ggscatterstats(
   data = df.pots,
@@ -361,7 +361,7 @@ ggscatterstats(
   ylab = "QoL score (0 = poor, 100 = excellent)",
   title = "Physical QoL score per number of ADs in POTS patients"
 )
-ggsave("images/sf36-pots-physical-numAD.png")
+ggsave("images/qol/sf36-pots-physical-numAD.png")
 
 ### hypermobility
 df.hsd <- ad.info %>%
@@ -376,7 +376,7 @@ ggscatterstats(
   ylab = "QoL score (0 = poor, 100 = excellent)",
   title = "Mental QoL score per number of ADs in hypermobile patients"
 )
-ggsave("images/sf36-hsd-mental-numAD.png")
+ggsave("images/qol/sf36-hsd-mental-numAD.png")
 
 ggscatterstats(
   data = df.hsd,
@@ -387,7 +387,7 @@ ggscatterstats(
   ylab = "QoL score (0 = poor, 100 = excellent)",
   title = "Physical QoL score per number of ADs in hypermobile patients"
 )
-ggsave("images/sf36-hsd-physical-numAD.png")
+ggsave("images/qol/sf36-hsd-physical-numAD.png")
 
 
 ### me
@@ -403,7 +403,7 @@ ggscatterstats(
   ylab = "QoL score (0 = poor, 100 = excellent)",
   title = "Mental QoL score per number of ADs in ME patients"
 )
-ggsave("images/sf36-me-mental-numAD.png")
+ggsave("images/qol/sf36-me-mental-numAD.png")
 
 ggscatterstats(
   data = df.me,
@@ -414,7 +414,7 @@ ggscatterstats(
   ylab = "QoL score (0 = poor, 100 = excellent)",
   title = "Physical QoL score per number of ADs in ME patients"
 )
-ggsave("images/sf36-me-physical-numAD.png") #save manually for size ratio
+ggsave("images/qol/sf36-me-physical-numAD.png") #save manually for size ratio
 
 ### psa
 
@@ -430,7 +430,7 @@ ggscatterstats(
   ylab = "QoL score (0 = poor, 100 = excellent)",
   title = "Mental QoL score per number of ADs in ME patients"
 )
-ggsave("images/sf36-psa-mental-numAD.png")
+ggsave("images/qol/sf36-psa-mental-numAD.png")
 
 ggscatterstats(
   data = df.psa,
@@ -448,10 +448,10 @@ ggscatterstats(
       #ggside::stat_bin(binwidth=15) #can't work out correct syntacx here
     #)
 )
-ggsave("images/sf36-psa-physical-numAD.png") 
+ggsave("images/qol/sf36-psa-physical-numAD.png") 
 
 ### compare QoL betweeen illnesses by how many ADs
-
+#TODO is this below redundant bc of the nqol section eliminating double di[pping?] but need top10.ad df for nqol
 df.coeliac <- df.coeliac %>%
   mutate(disorder = "coeliac")
 
@@ -498,7 +498,7 @@ grouped_ggbetweenstats(
       theme(axis.text.x = element_text(angle = 90))
     )
 )
-# ggsave("images/sf36-top6-physical-numAD3.png") save manually for dimensions
+# ggsave("images/qol/sf36-top6-physical-numAD3.png") save manually for dimensions
 
 # grouped_ggbetweenstats(
 #   data = top10.ad %>% dplyr::filter(ad.sum < 5),
@@ -528,7 +528,7 @@ grouped_ggbetweenstats(
      # ggside::geom_xsidehistogram(stat = "count", binwidth=15) #adds histogram at top
     )
 )
-# ggsave("images/sf36-top6-mental-numAD3.png")save manually for dimensions
+# ggsave("images/qol/sf36-top6-mental-numAD3.png")save manually for dimensions
 
 #scatterplot top 5 vs. number of ADs
 #function for plots and saving

@@ -693,7 +693,7 @@ gender.data <- data.clean %>% select(record_id, fatigue:bruise) %>% left_join((d
  ###
  # Length dx
  ###
- #TODO up to here re-saving
+ #TODO this section not yet saved
  scale.less6m <- df.sumstats %>%
    select(record_id, dx.group) %>%
    filter(dx.group == "< 6 months") %>%
@@ -749,7 +749,7 @@ gender.data <- data.clean %>% select(record_id, fatigue:bruise) %>% left_join((d
  sympt.network(scale.9plus)
  ggsave("images/sympt-network-dx-9plus.png")
  
-#TODO next question: how does this pan out between AD vs. non-ad chron cohort? 
+#TODO next question: how does this pan out between AD vs. non-ad chron cohort? Would need to class as AD, other, both depending on combo
  # Other/continuation/questions 
  
  ## Symptom co-occurences (network edges) 

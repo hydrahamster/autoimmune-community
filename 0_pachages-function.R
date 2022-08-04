@@ -27,6 +27,7 @@ library(GGally)
 library(paletteer)
 library(igraph)
 library(ggpubr)
+library(scales)
 #library(utilities)
 #library(cooccur) damn it, specific for species co-occurence
 
@@ -199,8 +200,7 @@ network.differences <- function(input_a, input_b, title) {
   coords <- layout_as_star(diff_inet)
   igraph::E(diff_inet)$color <-
     pgcols[round((igraph::E(diff_inet)$weights + 1) * 100) + 1]  # since the "weights" can be negative, transpose by 1
-  igraph::E(diff_inet)$width <-
-    ((igraph::E(diff_inet)$weights + 1) ^ 2 * 5) # play around with this to make sure it looks okay
+  igraph::E(diff_inet)$width <- ( abs(igraph::E(diff_inet)$weights) * 10 )  # play around with this to make sure it looks okay
   x <- plot(diff_inet,
             vertex.label.color=c("black"),
             vertex.label.font=c(2), 

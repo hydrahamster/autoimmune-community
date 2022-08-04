@@ -179,7 +179,7 @@ knitr::include_graphics(ad_wcloud)
 
 Another visual representation with more informative values are bar charts, as shown below. For this example, any illnesses with more than 10 entries are selected
 ```{r ADs barchart , echo=FALSE}
-ad_barc <- "images/AD-barplot.png"
+ad_barc <- "images/ads/AD-prevalence-barplot.png"
 knitr::include_graphics(ad_barc)
 ```
 

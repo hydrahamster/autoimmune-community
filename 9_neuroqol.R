@@ -4,23 +4,27 @@ source("0_pachages-function.R")
 #load data
 df.sumstats <- readRDS("AD-sumstats.rds")
 df.ad <- readRDS("df-ad.rds")
+top10.ad <- readRDS("sf36-top10-ads.rds")
 
 # data cleaning step removed decimal points, so go back to raw data for neuroqol extraction
 # script 1_data-clean.R comment out line 25: mutate_all(~str_replace_all(., "\\.", "")) %>%
 #re-run script, extract neuroqol scores, then uncomment line 25
 
-df.neuroqol <- data.clean %>%
-  select(record_id, contains("neuroqol")) %>%
-  filter(neuroqol_bank_v10_fatigue_complete.factor != "Incomplete") #%>%
-saveRDS(df.neuroqol, "df-neuroqol-all.rds")
+#use rds below rather than re-running this part of the script so decimal points are ptresent
+# df.neuroqol <- data.clean %>%
+#   select(record_id, contains("neuroqol")) %>%
+#   filter(neuroqol_bank_v10_fatigue_complete.factor != "Incomplete") #%>%
+# saveRDS(df.neuroqol, "df-neuroqol-all.rds")
+# 
+# df.nqol <- df.neuroqol %>%
+#   select(record_id,
+#          neuroqol_bank_v10_fatigueol_tscore,
+#          neuroqol_bank_v10_fatigueol_std_error) %>%
+#   mutate(across(neuroqol_bank_v10_fatigueol_tscore:neuroqol_bank_v10_fatigueol_std_error, .fns = as.numeric))
+# saveRDS(df.nqol, "df-neuroqol.rds")
 
-df.nqol <- df.neuroqol %>%
-  select(record_id,
-         neuroqol_bank_v10_fatigueol_tscore,
-         neuroqol_bank_v10_fatigueol_std_error) %>%
-  mutate(across(neuroqol_bank_v10_fatigueol_tscore:neuroqol_bank_v10_fatigueol_std_error, .fns = as.numeric))
-saveRDS(df.nqol, "df-neuroqol.rds")
 
+df.neuroqol <- readRDS("df-neuroqol.rds")
 df.nqol <- df.nqol %>%
   left_join(sf36.domain, by = "record_id") %>%
   left_join(df.sumstats, by = "record_id") %>%
@@ -35,6 +39,7 @@ ggbetweenstats(
   ylab = "Neuro-QoL score (0 = excellent, 100 = poor)",
   title = "Neuro-QoL score between chronic and control cohorts"
 )
+ggsave("images/qol/nqol-control-chron-comparison.png")
 
 ggscatterstats(
   data = df.nqol,
@@ -45,6 +50,7 @@ ggscatterstats(
   ylab = "Neuro-QoL score (0 = excellent, 100 = poor)",
   title = "Neuro-QoL score per number of ADs in all patients"
 )
+ggsave("images/qol/nqol-per-number-illnesses.png")
 
 nqol.t10 <- top10.ad %>%
   left_join((df.nqol %>% select(record_id, neuroqol_bank_v10_fatigueol_tscore, neuroqol_bank_v10_fatigueol_std_error)), by = "record_id")
@@ -61,6 +67,7 @@ ggbetweenstats(
       theme(axis.text.x = element_text(angle = 90))
     )
 )
+ggsave("images/qol/nqol-top10AD-multiple-entries.png")
 ##############
 # removing any double dipping between 10 most common ADs 
 ##############
@@ -89,7 +96,7 @@ ggbetweenstats(
     limits = c(0, 140),
     breaks = seq(from = 0, to = 100, by = 25)
   )
-#ggsave("images/nqol-top10AD-unique-entries.png")
+ggsave("images/qol/nqol-top10AD-unique-entries.png")
 
 grouped_ggbetweenstats(
   data = nqol.t10.unique %>% dplyr::filter(ad.sum < 4), # %>% dplyr::filter(disorder != "SLE") %>% dplyr::filter(disorder != "hsd")  %>% dplyr::filter(disorder != "pots"),
@@ -112,7 +119,7 @@ grouped_ggbetweenstats(
     limits = c(0, 140),
     breaks = seq(from = 0, to = 100, by = 25)
   )
-#ggsave("images/nqol-top10AD-unique-entries-faceted-numADs.png")
+ggsave("images/qol/nqol-top10AD-unique-entries-faceted-numADs.png")
 
 #SF36 w/o double dipping
 ggbetweenstats(
@@ -138,7 +145,7 @@ ggbetweenstats(
     limits = c(0, 140),
     breaks = seq(from = 0, to = 100, by = 25)
   )
-#ggsave("images/sf36-mental-top10AD-unique-entries.png")
+ggsave("images/qol/sf36-mental-top10AD-unique-entries.png")
 
 ggbetweenstats(
   data = nqol.t10.unique,
@@ -163,14 +170,68 @@ ggbetweenstats(
     limits = c(0, 140),
     breaks = seq(from = 0, to = 100, by = 25)
   )
-
+ggsave("images/qol/sf36-physical-top10AD-unique-entries.png")
 
 #################
 # single vs. multi illnesses
 #################
 
 #### singles with 20 or more entries vs. 2, 3 etc ADs
- test <- df.nqol %>%
+#  test <- df.nqol %>%
+#   mutate(illness.grouped = case_when(
+#     ad.sum == 0 ~ "control",
+#     ad.sum == 1 & autoimmune_id___6 == 1 ~ "coeliac",
+#     ad.sum == 1 & autoimmune_id___55 == 1 ~ "ME",
+#     ad.sum == 1 & autoimmune_id___17 == 1 ~ "hashimotos",
+#     ad.sum == 1 & autoimmune_id___35 == 1 ~ "RA",
+#     ad.sum == 1 & autoimmune_id___26 == 1 ~ "MS",
+#     ad.sum == 1 & autoimmune_id___34 == 1 ~ "PsA",
+#     ad.sum == 1 & autoimmune_id___1 == 1 ~ "AS",
+#     ad.sum == 1 ~ "1 other illnesses",
+#     ad.sum == 2 ~ "2 illnesses",
+#     ad.sum == 3 ~ "3 illnesses",
+#     ad.sum == 4 ~ "4 illnesses",
+#     ad.sum > 4 ~ "5+ illnesses",
+#     TRUE ~ NA_character_
+#   ))
+# 
+# test %>%
+#   tabyl(illness.grouped) %>%
+#   adorn_totals(where = "row") %>%
+#   adorn_percentages(denominator = "col") %>%
+#   adorn_pct_formatting() %>%
+#   adorn_ns(position = "rear") %>%
+#   adorn_title(
+#     row_name = "Illness group"
+#   )
+# 
+# ggbetweenstats(
+#   data = test,
+#   x = illness.grouped,
+#   y = broad.physsum,
+#   type = "robust",
+#   xlab = "Disorder", ## label for the x-axis
+#   ylab = "QoL score (0 = poor, 100 = excellent)", ## label for the y-axis
+#   title = "Physical QoL score for 10 most reported illnesses",
+#   annotation.args = list(title = "Differences in RAND36 score between illnesses"),
+#   outlier.tagging = TRUE, ## whether outliers should be flagged
+#   outlier.coef = 1.5, ## coefficient for Tukey's rule
+#   outlier.label = employment.id,
+#   ggplot.component =
+#     ## modify further with `{ggplot2}` functions
+#     list(
+#       scale_color_manual(values = paletteer::paletteer_c("viridis::turbo", 13)),
+#       theme(axis.text.x = element_text(angle = 90))
+#     )
+# ) + ## modifying the plot further
+#   ggplot2::scale_y_continuous(
+#     limits = c(0, 140),
+#     breaks = seq(from = 0, to = 100, by = 25)
+#   )
+
+#### singles vs. blanket multi ADs 
+#TODO go with this
+df.nqol <- df.nqol %>%
   mutate(illness.grouped = case_when(
     ad.sum == 0 ~ "control",
     ad.sum == 1 & autoimmune_id___6 == 1 ~ "coeliac",
@@ -181,14 +242,10 @@ ggbetweenstats(
     ad.sum == 1 & autoimmune_id___34 == 1 ~ "PsA",
     ad.sum == 1 & autoimmune_id___1 == 1 ~ "AS",
     ad.sum == 1 ~ "1 other illnesses",
-    ad.sum == 2 ~ "2 illnesses",
-    ad.sum == 3 ~ "3 illnesses",
-    ad.sum == 4 ~ "4 illnesses",
-    ad.sum > 4 ~ "5+ illnesses",
+    ad.sum > 1 ~ "multiple illnesses",
     TRUE ~ NA_character_
   ))
-
-test %>%
+df.nqol %>%
   tabyl(illness.grouped) %>%
   adorn_totals(where = "row") %>%
   adorn_percentages(denominator = "col") %>%
@@ -198,8 +255,112 @@ test %>%
     row_name = "Illness group"
   )
 
-#### singles vs. blanket multi ADs
+ggbetweenstats(
+  data = df.nqol,# %>% filter(illness.broad != "1 other illnesses"),
+  x = illness.grouped,
+  y = broad.mentsum,
+  type = "robust",
+  xlab = "Disorder", ## label for the x-axis
+  ylab = "QoL score (0 = poor, 100 = excellent)", ## label for the y-axis
+  title = "Mental QoL score for most reported illnesses vs. multi-illness groupings",
+  annotation.args = list(title = "Differences in RAND36 score between illnesses"),
+  outlier.tagging = TRUE, ## whether outliers should be flagged
+  outlier.coef = 1.5, ## coefficient for Tukey's rule
+  outlier.label = employment.id,
+  ggplot.component =
+    ## modify further with `{ggplot2}` functions
+    list(
+      scale_color_manual(values = paletteer::paletteer_c("viridis::turbo", 10)),
+      theme(axis.text.x = element_text(angle = 90))
+    )
+) + ## modifying the plot further
+  ggplot2::scale_y_continuous(
+    limits = c(0, 140),
+    breaks = seq(from = 0, to = 100, by = 25)
+  )
 
+ggbetweenstats(
+  data = df.nqol,# %>% filter(illness.broad != "1 other illnesses"),
+  x = illness.grouped,
+  y = neuroqol_bank_v10_fatigueol_tscore,
+  type = "robust",
+  xlab = "Disorder", ## label for the x-axis
+  ylab = "QoL score (0 = excellent, 100 = poor)", ## label for the y-axis
+  title = "Neuro-QoL score for most reported illnesses vs. multi-illness groupings",
+  annotation.args = list(title = "Differences in RAND36 score between illnesses"),
+  outlier.tagging = TRUE, ## whether outliers should be flagged
+  outlier.coef = 1.5, ## coefficient for Tukey's rule
+  outlier.label = employment.id,
+  ggplot.component =
+    ## modify further with `{ggplot2}` functions
+    list(
+      scale_color_manual(values = paletteer::paletteer_c("viridis::turbo", 10)),
+      theme(axis.text.x = element_text(angle = 90))
+    )
+) + ## modifying the plot further
+  ggplot2::scale_y_continuous(
+    limits = c(0, 140),
+    breaks = seq(from = 0, to = 100, by = 25)
+  )
+grouped_ggbetweenstats(
+  data = df.nqol,# %>% filter(illness.broad != "1 other illnesses"),
+  x = illness.grouped,
+  y = neuroqol_bank_v10_fatigueol_tscore,
+  grouping.var = misdiag.id,
+  type = "robust",
+  xlab = "Disorder", ## label for the x-axis
+  ylab = "QoL score (0 = excellent, 100 = poor)", ## label for the y-axis
+  #title = "Neuro-QoL score for most reported illnesses vs. multi-illness groupings",
+  annotation.args = list(title = "Differences in RAND36 score between illnesses"),
+  outlier.tagging = TRUE, ## whether outliers should be flagged
+  outlier.coef = 1.2, ## coefficient for Tukey's rule
+  outlier.label = gender.group,
+  ggplot.component =
+    ## modify further with `{ggplot2}` functions
+    list(
+      scale_color_manual(values = paletteer::paletteer_c("viridis::turbo", 10)),
+      theme(axis.text.x = element_text(angle = 90))
+    )
+) + ## modifying the plot further
+  ggplot2::scale_y_continuous(
+    limits = c(0, 140),
+    breaks = seq(from = 0, to = 100, by = 25)
+  )
+
+### scatterplot between QoL and employment
+# ggdotplotstats(
+#   data = df.nqol,
+#   x = employment.id,
+#   y = neuroqol_bank_v10_fatigueol_tscore,
+#  # ggplot.component = list(ggplot2::scale_x_continuous(breaks = seq(1, 14, 1)), ggplot2::scale_y_continuous(breaks = seq(0, 100, 25), limits = (c(0, 100)))),
+#   xlab = "Number of ADs",
+#   ylab = "Neuro-QoL score (0 = excellent, 100 = poor)",
+#   title = "Neuro-QoL score per number of ADs in all patients"
+# )
+
+# ggbetweenstats(
+#   data = df.nqol,# %>% filter(illness.broad != "1 other illnesses"),
+#   x = as.character(employment.id),
+#   y = neuroqol_bank_v10_fatigueol_tscore,
+#   type = "robust",
+#   xlab = "Disorder", ## label for the x-axis
+#   ylab = "QoL score (0 = excellent, 100 = poor)", ## label for the y-axis
+#   title = "Neuro-QoL score for most reported illnesses vs. multi-illness groupings",
+#   annotation.args = list(title = "Differences in RAND36 score between illnesses"),
+#   outlier.tagging = TRUE, ## whether outliers should be flagged
+#   outlier.coef = 1.5, ## coefficient for Tukey's rule
+#   outlier.label = employment.id,
+#   ggplot.component =
+#     ## modify further with `{ggplot2}` functions
+#     list(
+#       scale_color_manual(values = paletteer::paletteer_c("viridis::turbo", 10)),
+#       theme(axis.text.x = element_text(angle = 90))
+#     )
+# ) + ## modifying the plot further
+#   ggplot2::scale_y_continuous(
+#     limits = c(0, 140),
+#     breaks = seq(from = 0, to = 100, by = 25)
+#   )
 #   select(-contains(".factor"), -contains("_tscore"), -contains ("_stderror"), -contains("qposition"), -contains("complete"), -c(neuroqol_bank_v10_fatigue_timestamp,neuroqol_bank_v10_fatigueol_std_error )) %>%
 #   mutate(across(neuroqol_nqftg13:neuroqol_nqftg20, .fns = as.numeric)) %>%
 #   rowwise() %>%
