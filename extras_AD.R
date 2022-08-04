@@ -264,6 +264,7 @@ legend( "bottom", leg=legend2[,2], col=legend2[,3], pch=15)
 
 # Co-occurence heatmaps 
 # Full (ad + co)
+symp_co <- as.matrix(symp_co)
 gplots::heatmap.2((symp_co[,]), 
                   col=cols,
                   ColSideCol = vertices_col[], 
@@ -271,6 +272,7 @@ gplots::heatmap.2((symp_co[,]),
                   density="none", trace="none", 
                   margins=c(8,8),
                   keysize=1,
+                  # cexRow= 1.1,
                   key.xlab="Tally",
                   key.title="NULL")
 
@@ -311,7 +313,7 @@ gplots::heatmap.2( (symp_co[f1&!f2,f1&!f2]),
 
 
 
-
+#TODO up to here
 # borrowing code from outdeco, adjust for this work (https://github.com/ballouzlab/OutDeCo_lite/blob/master/R/cluster_coexp.R)
 clust_net = OutDeCo::cluster_coexp(symp_co[f1,f1], flag_plot = T, flag_med = F, flag_dist = T, col=cols, method="complete")
 # look through clusters to see which illnesses all cooccur 
