@@ -1546,6 +1546,19 @@ df.ad <- df.ad %>%
   mutate(autoimmune_id___44 = case_when(
     ad.sum == 0 ~ 1,
     ad.sum > 0 ~ 0
+  )) %>%
+  mutate(illness.grouped = case_when(
+    ad.sum == 0 ~ "control",
+    ad.sum == 1 & autoimmune_id___6 == 1 ~ "coeliac",
+    ad.sum == 1 & autoimmune_id___55 == 1 ~ "ME",
+    ad.sum == 1 & autoimmune_id___17 == 1 ~ "hashimotos",
+    ad.sum == 1 & autoimmune_id___35 == 1 ~ "RA",
+    ad.sum == 1 & autoimmune_id___26 == 1 ~ "MS",
+    ad.sum == 1 & autoimmune_id___34 == 1 ~ "PsA",
+    ad.sum == 1 & autoimmune_id___1 == 1 ~ "AS",
+    ad.sum == 1 ~ "1 other illnesses",
+    ad.sum > 1 ~ "multiple illnesses",
+    TRUE ~ NA_character_
   ))
 saveRDS(df.ad, file = "df-ad.rds")
 
