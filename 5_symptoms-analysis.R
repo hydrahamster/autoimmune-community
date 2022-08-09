@@ -72,7 +72,7 @@ ggsave("images/symptoms/symptoms-summary.png")
 ### top 10 illnesses symptoms
 #coeliac
 id.coeliac <- df.ad %>%
-  filter(autoimmune_id___6 == 1) %>%
+  filter(autoimmune_id___6 == 1 & ad.sum ==1) %>%
   select(record_id) %>%
   mutate(dx.id = "coeliac") 
 sympt.coeliac <- id.coeliac %>%
@@ -97,7 +97,7 @@ ggsave("images/symptoms/coeliac-symptoms.png")
 
 ### hashi
 id.hashi <- df.ad %>%
-  filter(autoimmune_id___17 == 1) %>%
+  filter(autoimmune_id___17 == 1 & ad.sum ==1) %>%
   select(record_id) %>%
   mutate(dx.id = "hashimotos") 
 sympt.hashi <- id.hashi %>%
@@ -122,7 +122,7 @@ ggsave("images/symptoms/hashi-symptoms.png")
 
 ### lupus
 id.lupus <- df.ad %>%
-  filter(autoimmune_id___22 == 1) %>%
+  filter(autoimmune_id___22 == 1 & ad.sum ==1) %>%
   select(record_id) %>%
   mutate(dx.id = "lupus") 
 sympt.lupus <- id.lupus %>%
@@ -147,7 +147,7 @@ ggsave("images/symptoms/lupus-symptoms.png")
 
 ### me
 id.me <- df.ad %>%
-  filter(autoimmune_id___55 == 1) %>%
+  filter(autoimmune_id___55 == 1 & ad.sum ==1) %>%
   select(record_id) %>%
   mutate(dx.id = "mecfs") 
 sympt.me <- id.me %>%
@@ -172,7 +172,7 @@ ggsave("images/symptoms/mecfs-symptoms.png")
 
 ### ra
 id.ra <- df.ad %>%
-  filter(autoimmune_id___35 == 1) %>%
+  filter(autoimmune_id___35 == 1 & ad.sum ==1) %>%
   select(record_id) %>%
   mutate(dx.id = "ra") 
 sympt.ra <- id.ra %>%
@@ -197,7 +197,7 @@ ggsave("images/symptoms/ra-symptoms.png")
 
 ### sjog
 id.sjog <- df.ad %>%
-  filter(autoimmune_id___38 == 1) %>%
+  filter(autoimmune_id___38 == 1 & ad.sum ==1) %>%
   select(record_id) %>%
   mutate(dx.id = "sjog") 
 sympt.sjog <- id.sjog %>%
@@ -223,7 +223,7 @@ ggsave("images/symptoms/sjog-symptoms.png")
 
 ### PsA
 id.psa <- df.ad %>%
-  filter(autoimmune_id___34 == 1) %>%
+  filter(autoimmune_id___34 == 1 & ad.sum ==1) %>%
   select(record_id) %>%
   mutate(dx.id = "psa") 
 sympt.psa <- id.psa %>%
@@ -248,7 +248,7 @@ ggsave("images/symptoms/psa-symptoms.png")
 
 ### fibro
 id.fibro <- df.ad %>%
-  filter(autoimmune_id___64 == 1) %>%
+  filter(autoimmune_id___64 == 1 & ad.sum ==1) %>%
   select(record_id) %>%
   mutate(dx.id = "fibro") 
 sympt.fibro <- id.fibro %>%
@@ -273,7 +273,7 @@ ggsave("images/symptoms/fibro-symptoms.png")
 
 ### pots
 id.pots <- df.ad %>%
-  filter(autoimmune_id___116 == 1) %>%
+  filter(autoimmune_id___116 == 1 & ad.sum ==1) %>%
   select(record_id) %>%
   mutate(dx.id = "pots") 
 sympt.pots <- id.pots %>%
@@ -296,22 +296,22 @@ s.pots <- ggplot(count.pots, aes(symptom, n, fill= forcats::fct_rev(severity))) 
   coord_flip()
 ggsave("images/symptoms/pots-symptoms.png")
 
-### hsd
-id.hsd <- df.ad %>%
-  filter(autoimmune_id___172 == 1) %>%
+### ms
+id.ms <- df.ad %>%
+  filter(autoimmune_id___26 == 1 & ad.sum ==1) %>%
   select(record_id) %>%
-  mutate(dx.id = "hsd") 
-sympt.hsd <- id.hsd %>%
+  mutate(dx.id = "ms") 
+sympt.ms <- id.ms %>%
   left_join((symptoms.factor %>% select(-cohort.id)), by = "record_id") %>%
   filter(!if_all(fatigue.factor:bruise.factor, is.na)) %>%
   select(-c(record_id))
-colnames(sympt.hsd)<-gsub(".factor","",colnames(sympt.hsd))
-sympt.hsd.long <- sympt.hsd %>%
+colnames(sympt.ms)<-gsub(".factor","",colnames(sympt.hsd))
+sympt.ms.long <- sympt.ms %>%
   pivot_longer(!dx.id, names_to = "symptom", values_to = "severity") 
-count.hsd <- sympt.hsd.long %>%
+count.ms <- sympt.ms.long %>%
   count(dx.id, symptom, severity)
-s.hsd <- ggplot(count.hsd, aes(symptom, n, fill= forcats::fct_rev(severity))) +
-  labs(title = "Hypermobility disorders",
+s.ms <- ggplot(count.ms, aes(symptom, n, fill= forcats::fct_rev(severity))) +
+  labs(title = "Multiple sclerosis",
        x = "Symptom", 
        y = "Number of respondents",
        fill = "Severity") +
@@ -319,7 +319,32 @@ s.hsd <- ggplot(count.hsd, aes(symptom, n, fill= forcats::fct_rev(severity))) +
   theme_bw() +
   scale_fill_viridis_d(na.value = "grey")+
   coord_flip()
-ggsave("images/symptoms/hsd-symptoms.png")
+ggsave("images/symptoms/ms-symptoms.png")
+
+### as
+id.as <- df.ad %>%
+  filter(autoimmune_id___1 == 1 & ad.sum ==1) %>%
+  select(record_id) %>%
+  mutate(dx.id = "as") 
+sympt.as <- id.as %>%
+  left_join((symptoms.factor %>% select(-cohort.id)), by = "record_id") %>%
+  filter(!if_all(fatigue.factor:bruise.factor, is.na)) %>%
+  select(-c(record_id))
+colnames(sympt.as)<-gsub(".factor","",colnames(sympt.hsd))
+sympt.as.long <- sympt.as %>%
+  pivot_longer(!dx.id, names_to = "symptom", values_to = "severity") 
+count.as <- sympt.as.long %>%
+  count(dx.id, symptom, severity)
+s.as <- ggplot(count.as, aes(symptom, n, fill= forcats::fct_rev(severity))) +
+  labs(title = "Ankylosing spondylitis",
+       x = "Symptom", 
+       y = "Number of respondents",
+       fill = "Severity") +
+  geom_col() +
+  theme_bw() +
+  scale_fill_viridis_d(na.value = "grey")+
+  coord_flip()
+ggsave("images/symptoms/as-symptoms.png")
 
 ## figure of all the symptoms and the controls together
 id.cont <- df.ad %>%
@@ -345,9 +370,10 @@ s.cont <- ggplot(count.cont, aes(symptom, n, fill= forcats::fct_rev(severity))) 
   scale_fill_viridis_d(na.value = "grey")+
   coord_flip()
 
-ggarrange(s.cont, s.coeliac, s.fibro, s.hashi, s.hsd, s.lupus, s.me, s.pots, s.psa, s.ra, s.sjog,
+ggarrange(s.cont, s.as, s.coeliac, s.hashi, s.me, s.ms, s.psa, s.ra, 
           labels = c("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"),
           common.legend = TRUE, legend = "right")
+ggsave("images/symptoms/symptoms-comparisons.png")
 
 ################################################################################################################
 

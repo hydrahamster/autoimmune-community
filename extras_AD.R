@@ -193,22 +193,29 @@ inet <- igraph::graph_from_data_frame(pairs, directed=F)
 m = match( node_names, df.ad.labels$label_edit  ) 
 vertices_col = df.ad.labels$AD_col[m]
 vertices_col2 = df.ad.labels$type_col[m] 
+vertices_col3 = df.ad.labels$AD[m] 
 
 # make filters 
 f1 = df.ad.labels$AD[m] != 0            # filter for only AD  
 f2 = (2^diag(as.matrix(symp_co))-1) <  10   # filter for those less than 10 (note, take complement/NOT(!) to get those greater)   
+
+# f.ad = df.ad.labels$AD[m] == 1 
+# f.nad = df.ad.labels$AD[m] == 2 
+# f.unk = df.ad.labels$AD[m] == 3
 
 # color and adjust graph
 igraph::E(inet)$width <-  igraph::E(inet)$weights  
 igraph::E(inet)$color <- cols[ (2^igraph::E(inet)$weights  )+1 ]  
 igraph::V(inet)$size <-  diag(as.matrix(symp_co)) + 1  * 2  
 igraph::V(inet)$color <- vertices_col
+igraph::V(inet)$type <- vertices_col3
 
 # filter for plots 
 threshold = 1 # remove overlaps threshold (ie greater than 1, mostly visual)
 
 # plot only those with more than threshold 
 inet_sub <-  igraph::delete_edges(inet, igraph::E(inet)[weights <= threshold])
+igraph::V(inet_sub)$shape <- ifelse(igraph::V(inet_sub)$type == 1, "circle", ifelse(igraph::V(inet_sub)$type == 2, "square", ifelse(igraph::V(inet_sub)$type == 3, "csquare", "vrectangle")))
 # plot with labels 
   plot(inet_sub ) 
 # plot without labels 
@@ -233,9 +240,8 @@ plot(inet_sub,
      vertex.label.dist=1.5)  
 
 # plot only larger overlaps + co (ie remove !f1 and f2 filter) and threshold 
-inet_sub_2 <-  igraph::delete_vertices(inet, igraph::V(inet)[ !(f1 & !f2)  ] )
+inet_sub_2 <-  igraph::delete_vertices(inet, igraph::V(inet)[ f2  ] )
 inet_sub_2 <-  igraph::delete_edges(inet_sub_2, igraph::E(inet_sub_2)[E(inet_sub_2)$weights <= threshold])
-#lab.locs <- radian.rescale(x=1:43, direction=-1, start=0)
 plot(inet_sub_2 ,
      layout=layout_with_kk(inet_sub_2),
      vertex.label.color=c("black"),
@@ -255,6 +261,11 @@ leg2 = unique(df.ad.labels[,4:5])
 o = order(as.numeric(leg2[,1])  ) 
 leg2 = leg2[o,]
 legend2 = cbind(leg2[,1], c("Comorbid", "Autoimmune", "Other", "Unknown") , leg2[,2])
+
+leg3 = unique(df.ad.labels[2:3])
+o = order(as.numeric(leg3[,1]))
+leg3 = leg3[o,]
+legend3 = cbind(leg3[,1], c("none", "Asthma", "T2D", "Cancer", "Mental illness", "Heart disease", "Autism", "Migranes", "ADHD", "Chronic kidney disease", "Inflammatory lung disease", "Chemically induced illness", "Chronic pain", "Epilepsy", "sleep disorder", "MTHFR gene variant", "Hypertension", "Cerebral palsy"))
 
 # save legend for figure  
 plot(0,0)
@@ -313,12 +324,12 @@ gplots::heatmap.2( (symp_co[f1&!f2,f1&!f2]),
 
 
 
-#TODO up to here
 # borrowing code from outdeco, adjust for this work (https://github.com/ballouzlab/OutDeCo_lite/blob/master/R/cluster_coexp.R)
 clust_net = OutDeCo::cluster_coexp(symp_co[f1,f1], flag_plot = T, flag_med = F, flag_dist = T, col=cols, method="complete")
 # look through clusters to see which illnesses all cooccur 
 filt.clust.f1 <- clust_net$clusters 
 filt.clust.f1f2 <- filt.clusts #from prev stricter filtering
+filt.clust.f2 <- clust_net$clusters
 
 
 # joint df to get scatter plots 
@@ -411,6 +422,100 @@ gplots::heatmap.2( -log10(padj[f3,f3]),
                    key.title="NULL")
 
 
+### individual heatmaps
+pgcols <- colorRampPalette(brewer.pal(11, "PRGn"))(201) # generate new palette for the differences
 
+indiv.mat <- as.matrix( ad.com.co %>% t() )
+sample.cor = cor(indiv.mat) 
+sample.cor[is.na(sample.cor)] = 0 
+ad_cols = viridis(15)[ as.numeric(as.factor(df.ad$ad.sum) )  ] 
+ad_cols[df.ad$ad.sum==0 ] = "grey"
+stat_cols = c("black", "purple")[ as.numeric(df.ad$autoimmune_id___44) + 1  ] 
+me_cols = c("black", "blue")[ as.numeric(df.ad$autoimmune_id___55) + 1  ] 
+
+
+gplots::heatmap.2( sample.cor, 
+                   col=pgcols,
+                   ColSideCol = ad_cols , 
+                   RowSideCol = me_cols  , 
+                   density="none", trace="none", 
+                   margins=c(8,8),
+                   key.title="NULL")
+pots_cols = c("black", "orange")[ as.numeric(df.ad$autoimmune_id___116) + 1  ]
+gplots::heatmap.2( sample.cor, 
+                   col=pgcols,
+                   ColSideCol = ad_cols , 
+                   RowSideCol = pots_cols  , 
+                   density="none", trace="none", 
+                   margins=c(8,8),
+                   key.title="NULL")
+
+fibro_cols = c("black", "yellow")[ as.numeric(df.ad$autoimmune_id___64) + 1  ] 
+gplots::heatmap.2( sample.cor, 
+                   col=pgcols,
+                   ColSideCol = ad_cols , 
+                   RowSideCol = fibro_cols  , 
+                   density="none", trace="none", 
+                   margins=c(8,8),
+                   key.title="NULL")
+mcas_cols = c("black", "purple")[ as.numeric(df.ad$autoimmune_id___133) + 1  ]
+gplots::heatmap.2( sample.cor, 
+                   col=pgcols,
+                   ColSideCol = ad_cols , 
+                   RowSideCol = mcas_cols  , 
+                   density="none", trace="none", 
+                   margins=c(8,8),
+                   key.title="NULL")
+endo_cols = c("black", "red")[ as.numeric(df.ad$autoimmune_id___65) + 1  ]
+gplots::heatmap.2( sample.cor, 
+                   col=pgcols,
+                   ColSideCol = ad_cols , 
+                   RowSideCol = endo_cols  , 
+                   density="none", trace="none", 
+                   margins=c(8,8),
+                   key.title="NULL")
+hsd_cols = c("black", "pink")[ as.numeric(df.ad$autoimmune_id___172) + 1  ]
+gplots::heatmap.2( sample.cor, 
+                   col=pgcols,
+                   ColSideCol = ad_cols , 
+                   RowSideCol = hsd_cols  , 
+                   density="none", trace="none", 
+                   margins=c(8,8),
+                   key.title="NULL")
+
+
+
+coel_cols = c("black", "green")[ as.numeric(df.ad$autoimmune_id___6) + 1  ] 
+gplots::heatmap.2( sample.cor, 
+                   col=pgcols,
+                   ColSideCol = ad_cols , 
+                   RowSideCol = coel_cols  , 
+                   density="none", trace="none", 
+                   margins=c(8,8),
+                   key.title="NULL")
+hashi_cols = c("black", "cyan")[ as.numeric(df.ad$autoimmune_id___17) + 1  ]
+gplots::heatmap.2( sample.cor, 
+                   col=pgcols,
+                   ColSideCol = ad_cols , 
+                   RowSideCol = hashi_cols  , 
+                   density="none", trace="none", 
+                   margins=c(8,8),
+                   key.title="NULL")
+sjog_cols = c("black", "orange")[ as.numeric(df.ad$autoimmune_id___38) + 1  ]
+gplots::heatmap.2( sample.cor, 
+                   col=pgcols,
+                   ColSideCol = ad_cols , 
+                   RowSideCol = sjog_cols  , 
+                   density="none", trace="none", 
+                   margins=c(8,8),
+                   key.title="NULL")
+ra_cols = c("black", "yellow")[ as.numeric(df.ad$autoimmune_id___35) + 1  ]
+gplots::heatmap.2( sample.cor, 
+                   col=pgcols,
+                   ColSideCol = ad_cols , 
+                   RowSideCol = ra_cols  , 
+                   density="none", trace="none", 
+                   margins=c(8,8),
+                   key.title="NULL")
 
 

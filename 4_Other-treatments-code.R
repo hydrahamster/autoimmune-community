@@ -3050,7 +3050,41 @@ tr.count.df <- as.data.frame(do.call(cbind, tr.count)) %>%
   rename(., word = rowname, freq = V1)
 tr.count.df$freq <- as.numeric(as.character(tr.count.df$freq))
 
-wordcloud2(tr.count.df, shape = 'diamond', color = "random-light", backgroundColor = "grey")
+wordcloud2(tr.count.df, shape = 'diamond', color = "random-dark", backgroundColor = "white")
+
+
+### illicit drugs
+# shows yes no drug_other
+data.clean %>%
+  tabyl(drug_other.factor) %>%
+  adorn_totals(where = "row") %>%
+  adorn_percentages(denominator = "col") %>%
+  adorn_pct_formatting() %>%
+  adorn_ns(position = "rear") %>%
+  adorn_title(
+    row_name = "Gender"
+  )
+
+##shows which drug_other_other
+data.clean %>%
+  tabyl(drug_other_other) %>%
+  adorn_totals(where = "row") %>%
+  adorn_percentages(denominator = "col") %>%
+  adorn_pct_formatting() %>%
+  adorn_ns(position = "rear") %>%
+  adorn_title(
+    row_name = "Gender"
+  )
+
+ggpiestats(
+  data         = data.clean,
+  x            = drug_other,
+  #y            = gender.id,
+  package      = "RColorBrewer",
+  palette = "Spectral",
+  title        = "Responses by state",
+  legend.title = "State"
+)
 
 #check which column labels are duplicated
 # if_else(duplicated(tr.labels) == TRUE, print(tr.labels), "NA")
@@ -3065,7 +3099,7 @@ tr.count.ord <- tr.count.df %>%
 
 #ad.plot <- 
 ggplot(tr.count.ord, aes(x = freq, y = treatment)) +
-  geom_col(fill = viridis(24)) +
+  geom_col(fill = viridis(13)) +
   scale_y_discrete(limits=rev(tr.count.ord$treatment)) +
   labs(title = NULL,
        x = NULL, #"Number of respondents",

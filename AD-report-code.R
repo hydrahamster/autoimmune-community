@@ -107,9 +107,8 @@ ggpiestats(
   title        = "Responses by state",
   legend.title = "State"
 )
-ggsave("images/AD-state-responses-pie.png")
+ggsave("images/sumstats/AD-state-responses-pie.png")
 
-### Age gender histogram
 ggplot(df.sumstats, aes(x = age, fill = gender.id, color = gender.id)) +
   geom_histogram(binwidth = 5,
                  alpha = 0.5) +
@@ -345,7 +344,7 @@ como.count.df <- as.data.frame(do.call(cbind, como.count)) %>%
   rename(., word = rowname, freq = V1)
 como.count.df$freq <- as.numeric(as.character(como.count.df$freq))
 
-#wordcloud2(como.count.df, shape = 'diamond', color = "random-light", backgroundColor = "grey", size = .4)
+wordcloud2(como.count.df, shape = 'diamond', color = "random-dark", backgroundColor = "white", size = .4)
 #not informative
 como.count.ord <- como.count.df %>%
   #filter(freq > 9)%>%
@@ -441,6 +440,48 @@ upset.10 <- c("Coeliac disease", "Hashimoto's disease", "Systemic lupus erythema
 upset(ad.upset, 
       upset.10, 
       name = "Autoimmune disorders",
+      min_degree=1,
+      min_size=3,
+      themes=upset_default_themes(text=element_text(size=20, face='bold')),
+      set_sizes=(
+        upset_set_size(
+          geom=geom_bar(
+            aes(fill=employment.id, x=group), #misdiag.id
+            width=0.8
+          )
+        )+
+          scale_fill_viridis_d(option = "mako",
+                               na.value = "grey")
+      ),
+      base_annotations = list(
+        'Intersection size' = intersection_size(
+          #counts = F,
+          mapping = aes(fill = misdx.written) #dia.length, gender.group, employment.id
+        ) +
+          scale_fill_viridis_d(na.value = "grey") +
+          theme(legend.title=element_blank())
+      ),
+      guides= "over") #del comma before ")" shouldn't affect running though
+
+#########chosen illnesses
+final.upset <- df.ad %>%
+  rename("Coeliac disease" = "autoimmune_id___6") %>%
+  rename("Hashimoto's disease" = "autoimmune_id___17") %>%
+  rename("Multiple sclerosis" = "autoimmune_id___26") %>%
+  rename("Psoriatic arthritis" = "autoimmune_id___34") %>%
+  rename("Rheumatoid arthritis" = "autoimmune_id___35") %>%
+  rename("Ankylosing spondylitis" = "autoimmune_id___1") %>%
+  rename("ME/CFS" = "autoimmune_id___55") %>%
+  left_join(df.sumstats, by = "record_id") %>%
+  mutate(misdx.written = case_when(
+    misdiag.id == "Yes" ~ "Misdiagnosed",
+    misdiag.id == "No" ~ "Not misdiagnosed",
+    is.na(misdiag.id) ~ NA_character_
+  ))
+upset.final <- c("Coeliac disease", "Hashimoto's disease", "Multiple sclerosis", "Psoriatic arthritis", "Rheumatoid arthritis", "Ankylosing spondylitis", "ME/CFS")
+upset(final.upset, 
+      upset.final, 
+      name = "Chronic illnesses",
       min_degree=1,
       min_size=3,
       themes=upset_default_themes(text=element_text(size=20, face='bold')),
