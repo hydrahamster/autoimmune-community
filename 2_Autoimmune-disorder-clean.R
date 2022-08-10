@@ -1227,7 +1227,22 @@ mutate_at(vars(c(chronic___24)), ~ ifelse(otherchronic == "hypertension, arrhyth
                                                      otherchronic == "hsd/eds - chronic pain fibromyalgia" |
                                                      otherchronic == "endometriosis, adenomyosis, pots, hypermobility, suspected mcas, arthritis, fibromyalgia / central sensitisation" |
                                                      otherchronic == "ehlers danlos syndrome - hsd type", 1, .)) 
- 
+ ### include relevant sections from other parts of the survey
+ df.ad <- df.ad %>%
+   mutate_at(vars(c(chronic___11)), ~ case_when(
+     str_detect(data.clean$mental_diagn_other, "adhd") ~ 1,
+     str_detect(data.clean$mental_diagn_other, "attention deficit") ~ 1,
+     TRUE ~ .
+   )) %>%
+   mutate_at(vars(c(chronic___9)), ~ case_when(
+     str_detect(data.clean$mental_diagn_other, "autism") ~ 1,
+     TRUE ~ .
+   ))  %>%
+   mutate_at(vars(c(autoimmune_id___184)), ~ case_when(
+     str_detect(data.clean$mental_diagn_other, "pre-menstrual dysphor") ~ 1,
+     TRUE ~ .
+   )) 
+ #TODO continue running from here aftert other sections are complete
   ### merging some illnesses like EDS
 df.ad <- df.ad %>%
   mutate(autoimmune_id___172 = ifelse(autoimmune_id___120 == "1" |
@@ -1560,6 +1575,9 @@ df.ad <- df.ad %>%
     ad.sum > 1 ~ "multiple illnesses",
     TRUE ~ NA_character_
   ))
+label(df.ad$illness.grouped)="Illness grouped"
+label(df.ad$ad.sum)="Illness count"
+
 saveRDS(df.ad, file = "df-ad.rds")
 
 
