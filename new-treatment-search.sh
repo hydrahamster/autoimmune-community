@@ -8,10 +8,10 @@ touch new-treatments.txt
 while read treatment;
 do
 #    echo "$treatment" ;
-    if grep -q "$treatment" 4_1-22_Other-treatments-code.R
+    if grep -q "$treatment" 4_Other-treatments-code.R
     then #if found
         continue
     else #if not found
         printf "$treatment \n"  >> new-treatments.txt
     fi     
-done <treatments-other-all_1-22.txt 
+done <treatments-other-all_final.txt 

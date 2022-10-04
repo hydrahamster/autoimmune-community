@@ -1,14 +1,4 @@
-library(plyr)
-library(tidyverse)
-library(magrittr)
-library(RColorBrewer)
-library(wesanderson)
-library(ggrepel)
-library(arsenal) # for comparing dfs, to check if mutations on columns worked
-library(ggbeeswarm)
-library(wordcloud2)
-library(sjlabelled)
-library(viridis)
+source("0_pachages-function.R")
 
 #TODO this needs to be adapted to new data
 
@@ -19,15 +9,16 @@ library(viridis)
 # Other treatments used by participants
 #
 ######
-# other.treatments <- data.clean %>%  # for future stuff include: filter_all(any_vars(str_detect(., pattern = ""))) %>%
-#    select(symptoms_other) %>%
-#    mutate_all(tolower) %>%
-#    mutate_all(str_trim) %>%
-#    unique(.)
-#  write.table(x = other.treatments,
-#              file = "treatments-other-all_1-22.txt",
-#              row.names = FALSE,
-#              sep = "\t")
+
+## because a lot of this was written before more stringent initial data cleaning, use data pre-processed as input. It would take way too long to go through the script otherwise to change. need to go back to the data clenaing step and only apply tolower & str_trim
+
+other.treatments <- data.clean %>%  # for future stuff include: filter_all(any_vars(str_detect(., pattern = ""))) %>%
+   select(symptoms_other) %>%
+   unique(.)
+ write.table(x = other.treatments,
+             file = "treatments-other-all_final.txt",
+             row.names = FALSE,
+             sep = "\t")
 ## then run new-treatment-search.sh
 
  ########
@@ -35,24 +26,21 @@ library(viridis)
  # Other drugs used by participants
  #
  # ######
- # other.drugs <- data.clean %>%
- #   select(drug_other_other) %>%
- #   mutate_all(tolower) %>%
- #   mutate_all(str_trim) %>%
- #   unique(.)
- # 
- # write.table(x = other.drugs,
- #            file = "drugs-other-all_1-22.txt",
- #            row.names = FALSE,
- #            sep = "\t")
+
+ other.drugs <- data.clean %>%
+   select(drug_other_other) %>%
+   unique(.)
+
+ write.table(x = other.drugs,
+            file = "drugs-other-all_final.txt",
+            row.names = FALSE,
+            sep = "\t")
 # then run new-drugs-search.sh
  
 
 #make other treatments df
 df.other.treatments <- data.clean %>% 
-  select(record_id,	symptoms_other, drug_other_other) %>%
-  mutate_all(tolower) %>%
-  mutate_all(str_trim)
+  select(record_id,	symptoms_other, drug_other_other, drug_other) 
 
 
 df.other.treatments <- df.other.treatments %>%
@@ -70,6 +58,7 @@ df.other.treatments <- df.other.treatments %>%
   mutate(cl.dmard = 0) %>%
   mutate(cl.ahist = 0) %>%
   mutate(cl.recdr = 0) %>%
+  mutate(cl.meddr = 0) %>%
   mutate(cl.stool = 0) %>%
   mutate(cl.antiem = 0) %>%
   mutate(cl.afung = 0) %>%
@@ -246,7 +235,6 @@ df.other.treatments <- df.other.treatments %>%
   mutate(tr.thc = 0) %>%
   mutate(tr.cbd = 0) %>%
   mutate(tr.surg = 0) %>%
-  mutate(tr.nasl = 0) %>%
   mutate(tr.ntzl = 0) %>%
   mutate(tr.herb = 0) %>%
   mutate(tr.yoga = 0) %>%
@@ -374,7 +362,6 @@ df.other.treatments <- df.other.treatments %>%
   mutate(tr.testo = 0) %>%
   mutate(tr.psylo = 0) %>%
   mutate(tr.coca = 0) %>%
-  mutate(tr.medca = 0) %>%
   mutate(tr.acyc = 0) %>%
   mutate(tr.colos = 0) %>%
   mutate(tr.sert = 0) %>%
@@ -416,7 +403,29 @@ df.other.treatments <- df.other.treatments %>%
   mutate(tr.plph = 0) %>%
     mutate(de.smok = 0) %>%
   mutate(de.edib = 0) %>%
-  mutate(de.oil = 0) 
+  mutate(de.oil = 0) %>%
+  mutate(tr.thmz = 0)%>%
+  mutate(tr.iverm = 0)%>%
+  mutate(cl.apar = 0)%>%
+  mutate(tr.omzm = 0)%>%
+  mutate(tr.mirena = 0)%>%
+  mutate(tr.ldpat = 0)%>%
+  mutate(tr.aconv = 0)%>%
+  mutate(tr.bprph = 0)%>%
+  mutate(tr.codei = 0)%>%
+  mutate(tr.nprx = 0)%>%
+  mutate(tr.atnl = 0)%>%
+  mutate(tr.ging = 0)%>%
+  mutate(tr.astx = 0)%>%
+  mutate(tr.uvli = 0)%>%
+  mutate(tr.dclfn = 0)%>%
+  mutate(tr.aspas = 0)%>%
+  mutate(tr.cafei = 0)%>%
+  mutate(cl.aconv = 0)%>%
+  mutate(tr.rfab = 0) %>%
+  mutate(tr.hmrp = 0) %>%
+  mutate(tr.flxt = 0) %>%
+  mutate(cl.aspas = 0)
 
 df.other.treatments <- df.other.treatments %>% 
   mutate_at(vars(c(tr.esom, 
@@ -536,8 +545,7 @@ df.other.treatments <- df.other.treatments %>%
                    tr.mdma,
                    tr.lsd,
                    tr.keta,
-                   tr.petco,
-                   cl.recdr)), ~ ifelse(symptoms_other == "do you want the full run down? might as well give you the full run down. i have a rap sheet on hand for new doctors :^p    o	propranalol 40mg twice daily (morn/eve), + 30mg once daily (mid)  o	effexor 37.5mg once daily (morn)  o	microgynon once daily (morn)  o	modafinil 100mg once daily (morn), 50mg once daily (mid)  o	zyrtec three times daily (morn/mid/eve)  o	paracetamol 1330mg twice daily (morn/eve)  o	tapentadol 150mg twice daily (morn/eve)  o	coloxyl once daily (eve)  o	celebrex 200mg once daily (eve)  o	phenergan 25mg once daily (eve)    there are also other modes of treatment: physiotherapy, osteopathy, psychological therapy, controlled dietary intake and exposure to environmental allergens, using heat packs and electric blankets, and memory foam. i also find cuddling my cat helps - thankfully she's hypoallergenic.    and, of course self medication, mostly with alcohol to take the edge off the pain, though that's just deferment with interest. i used to take recreational drugs (mdma, acid, ketamine) as a kind of circuit breaker, but they usually induce trans ischemic attacks these days so i had to stop.     i often use sleep aids to overcome 'painsomnia' (inability to sleep due to, well, pain), usually phenergan and/or restavit.     occasionally i take short acting opiates if my pain is too severe, obtained through both legal and less than legal means, but this is hard to balance with gastrointestinal issues.    ritalin is also very effective at improving executive dysfunction and allowing me to work through pain or other symptoms.", 1, .)) %>%
+                   tr.petco)), ~ ifelse(symptoms_other == "do you want the full run down? might as well give you the full run down. i have a rap sheet on hand for new doctors :^p    o	propranalol 40mg twice daily (morn/eve), + 30mg once daily (mid)  o	effexor 37.5mg once daily (morn)  o	microgynon once daily (morn)  o	modafinil 100mg once daily (morn), 50mg once daily (mid)  o	zyrtec three times daily (morn/mid/eve)  o	paracetamol 1330mg twice daily (morn/eve)  o	tapentadol 150mg twice daily (morn/eve)  o	coloxyl once daily (eve)  o	celebrex 200mg once daily (eve)  o	phenergan 25mg once daily (eve)    there are also other modes of treatment: physiotherapy, osteopathy, psychological therapy, controlled dietary intake and exposure to environmental allergens, using heat packs and electric blankets, and memory foam. i also find cuddling my cat helps - thankfully she's hypoallergenic.    and, of course self medication, mostly with alcohol to take the edge off the pain, though that's just deferment with interest. i used to take recreational drugs (mdma, acid, ketamine) as a kind of circuit breaker, but they usually induce trans ischemic attacks these days so i had to stop.     i often use sleep aids to overcome 'painsomnia' (inability to sleep due to, well, pain), usually phenergan and/or restavit.     occasionally i take short acting opiates if my pain is too severe, obtained through both legal and less than legal means, but this is hard to balance with gastrointestinal issues.    ritalin is also very effective at improving executive dysfunction and allowing me to work through pain or other symptoms.", 1, .)) %>%
   mutate_at(vars(c(tr.melox,
                    cl.antinf,
                    tr.phys,
@@ -597,8 +605,8 @@ df.other.treatments <- df.other.treatments %>%
                    tr.celeb,cl.antinf,
                    tr.hydrx,
                    cl.imod)), ~ ifelse(symptoms_other == "fish oil tablets, celebrex, plaquinal", 1, .)) %>%
-  mutate_at(vars(c(tr.cana,
-                   cl.recdr)), ~ ifelse(symptoms_other == "have tried cannibis", 1, .)) %>%
+  mutate_at(vars(c(tr.cana#,                   cl.recdr
+                   )), ~ ifelse(symptoms_other == "have tried cannibis", 1, .)) %>%
   mutate_at(vars(c(tr.vit,
                    cl.suppl)), ~ ifelse(symptoms_other == "vitamins", 1, .)) %>%
   mutate_at(vars(c(tr.bldth,
@@ -644,7 +652,6 @@ df.other.treatments <- df.other.treatments %>%
                    cl.lifest,
                    tr.sleep,
                    tr.alco,
-                   cl.recdr,
                    tr.magn,
                    cl.suppl,
                    tr.hydrx,
@@ -655,13 +662,13 @@ df.other.treatments <- df.other.treatments %>%
   mutate_at(vars(c(tr.warf,
                    cl.heart)), ~ ifelse(symptoms_other == "warfarin", 1, .)) %>%
   mutate_at(vars(c(tr.keta,
-                   cl.recdr,
+                   cl.meddr,
                    tr.ldn,
                    cl.imod)), ~ ifelse(symptoms_other == "ketamine infusions.  ldn (low dose naltrexone)", 1, .)) %>%
   mutate_at(vars(c(tr.hydrx,
                    cl.imod,
                    tr.eyero,
-                   cl.lifest,
+                   cl.nomed,
                    tr.orca,
                    tr.skca,
                    tr.lerca,
@@ -726,7 +733,7 @@ df.other.treatments <- df.other.treatments %>%
 
 df.other.treatments <- df.other.treatments %>% 
   mutate_at(vars(c(tr.eyero,
-                   cl.lifest,
+                   cl.nomed,
                    tr.orca)), ~ ifelse(symptoms_other == "for eyes refresh plus eye drops, dry mouth toothpaste.", 1, .)) %>%
   mutate_at(vars(c(tr.strav,
                    tr.wrkna,
@@ -881,7 +888,7 @@ df.other.treatments <- df.other.treatments %>%
   mutate_at(vars(c(tr.fish,
                    cl.suppl)), ~ ifelse(symptoms_other == "fish oil for clicking joints", 1, .)) %>%
   mutate_at(vars(c(tr.cana,
-                   cl.recdr)), ~ ifelse(symptoms_other == "i help to control my pain and fatigue and general quality of life with cannabis oil taken orally.", 1, .)) %>%
+                   de.oil)), ~ ifelse(symptoms_other == "i help to control my pain and fatigue and general quality of life with cannabis oil taken orally.", 1, .)) %>%
   mutate_at(vars(c(tr.adep,
                    cl.psych,
                    tr.pill,
@@ -905,8 +912,8 @@ df.other.treatments <- df.other.treatments %>%
                    tr.galcz,
                    cl.imod,
                    tr.thc,
-                   cl.recdr,
-                   tr.cbd)), ~ ifelse(symptoms_other == "botox, emgality, propanolol, ssri, osteo, thc/cbd oil, physio, acupuncture, massage, heat and ice", 1, .))
+                   tr.cbd,
+                   de.oil)), ~ ifelse(symptoms_other == "botox, emgality, propanolol, ssri, osteo, thc/cbd oil, physio, acupuncture, massage, heat and ice", 1, .))
 
 df.other.treatments <- df.other.treatments %>% 
   mutate_at(vars(c(tr.hydrco,
@@ -925,10 +932,9 @@ df.other.treatments <- df.other.treatments %>%
                    cl.surg)), ~ ifelse(symptoms_other == "surgery", 1, .)) %>%
   mutate_at(vars(c(tr.diet,
                    cl.diet)), ~ ifelse(symptoms_other == "diet", 1, .)) %>%
-  mutate_at(vars(c(tr.nasl,
+  mutate_at(vars(c(tr.swri,
                    cl.lifest,
                    tr.orca,
-                   tr.skca,
                    tr.skca,
                    tr.lifest,
                    tr.rest,
@@ -978,8 +984,7 @@ df.other.treatments <- df.other.treatments %>%
                    cl.endoc)), ~ ifelse(symptoms_other == "melatonin tablets.", 1, .)) %>%
   mutate_at(vars(c(tr.rest,
                    cl.lifest,
-                   tr.thc,
-                   cl.recdr)), ~ ifelse(symptoms_other == "rest and self medicating with thc", 1, .)) %>%
+                   tr.thc)), ~ ifelse(symptoms_other == "rest and self medicating with thc", 1, .)) %>%
   mutate_at(vars(c(tr.yoga,
                    cl.lifest,
                    tr.walk,
@@ -1021,8 +1026,8 @@ df.other.treatments <- df.other.treatments %>%
                    tr.pace,
                    cl.lifest)), ~ ifelse(symptoms_other == "vitamins and supplements, ldn and pacing", 1, .)) %>%
   mutate_at(vars(c(tr.cbd,
-                   cl.recdr,
                    tr.thc,
+                   de.oil,
                    tr.vitb12,
                    cl.suppl,
                    tr.vitd,
@@ -1115,7 +1120,7 @@ df.other.treatments <- df.other.treatments %>%
                    tr.exer,
                    cl.lifest)), ~ ifelse(symptoms_other == "exercise, diet, hot baths", 1, .)) %>%
   mutate_at(vars(c(tr.cbd,
-                   cl.recdr)), ~ ifelse(symptoms_other == "cbd oil; no thc", 1, .)) %>%
+                   de.oil)), ~ ifelse(symptoms_other == "cbd oil; no thc", 1, .)) %>%
   mutate_at(vars(c(tr.tocrt,
                    cl.antinf)), ~ ifelse(symptoms_other == "daivobet topical ointment", 1, .)) %>%
   mutate_at(vars(c(tr.ldn,
@@ -1180,8 +1185,8 @@ df.other.treatments <- df.other.treatments %>%
   mutate_at(vars(c(tr.heat,
                    cl.nomed,
                    tr.cbd,
-                   cl.recdr,
                    tr.thc,
+                   de.oil,
                    tr.alco,
                    tr.stret,
                    cl.lifest)), ~ ifelse(symptoms_other == "heat packs, cbd oil, alcohol, edibles, stretching", 1, .)) %>%
@@ -1213,7 +1218,7 @@ df.other.treatments <- df.other.treatments %>%
   mutate_at(vars(c(tr.drndl,
                    cl.altpr,
                    tr.cbd,
-                   cl.recdr)), ~ ifelse(symptoms_other == "dry needling and cbd oil", 1, .)) %>%
+                   de.oil)), ~ ifelse(symptoms_other == "dry needling and cbd oil", 1, .)) %>%
   mutate_at(vars(c(tr.diet,
                    cl.diet,
                    tr.exer,
@@ -1251,7 +1256,7 @@ df.other.treatments <- df.other.treatments %>%
 
 df.other.treatments <- df.other.treatments %>% 
   mutate_at(vars(c(tr.cbd,
-                   cl.recdr)), ~ ifelse(symptoms_other == "cbd oil", 1, .)) %>%
+                   de.oil)), ~ ifelse(symptoms_other == "cbd oil", 1, .)) %>%
   mutate_at(vars(c(tr.massa,
                    cl.nomed,
                    tr.exer,
@@ -1362,7 +1367,7 @@ df.other.treatments <- df.other.treatments %>%
                    tr.melat,
                    cl.endoc)), ~ ifelse(symptoms_other == "valtrex, lexapro and melatonin", 1, .)) %>%
   mutate_at(vars(c(tr.keta,
-                   cl.recdr,
+                   cl.meddr,
                    tr.medit,
                    cl.lifest,
                    tr.meds)), ~ ifelse(symptoms_other == "ketamine infusions   meditation  pain medication", 1, .)) %>%
@@ -1432,7 +1437,7 @@ df.other.treatments <- df.other.treatments %>%
   mutate_at(vars(c(tr.suppl,
                    cl.suppl,
                    tr.cbd,
-                   cl.recdr,
+                   de.oil,
                    tr.diet,
                    cl.diet)), ~ ifelse(symptoms_other == "cbd oil and natural holistic oils and supplements to help me sleep and support my liver health etc along with strict dietary habits such as plant based health foods no alcohol or high sugary foods etc", 1, .)) %>%
   mutate_at(vars(c(tr.stim,
@@ -1458,7 +1463,7 @@ df.other.treatments <- df.other.treatments %>%
                    cl.nomed,
                    tr.medit,
                    tr.cana,
-                   cl.recdr,
+                   cl.meddr,
                    tr.diet,
                    cl.diet)), ~ ifelse(symptoms_other == "iv supplements and long list of things like physio, yoga, meditation, diet and medicinal cannabis", 1, .)) %>%
   mutate_at(vars(c(tr.cortst,
@@ -1588,8 +1593,8 @@ df.other.treatments <- df.other.treatments %>%
                    cl.lifest,
                    tr.swm,
                    cl.nomed)), ~ ifelse(symptoms_other == "'grounding' (sleeping in a tent on the ground/ocean swimming)  outdoor sleeping not in a tent  extremely careful diet, includes many veg and also meat  supplemented zinc, vit d, vit e, b vitamins, biotin, atp fuel, omega 3, occasional other trace minerals  fresh air outside the city  trees", 1, .)) %>%
-  mutate_at(vars(c(tr.medca,
-                   cl.recdr,
+  mutate_at(vars(c(tr.cana,
+                   cl.meddr,
                    tr.meds)), ~ ifelse(symptoms_other == "medical cannabis with occasional prescription pain relief", 1, .)) %>%
    mutate_at(vars(c(tr.tens,
                    cl.nomed,
@@ -1602,7 +1607,7 @@ df.other.treatments <- df.other.treatments %>%
   mutate_at(vars(c(tr.diet,
                    cl.diet,
                    tr.eyero,
-                   cl.lifest)), ~ ifelse(symptoms_other == "gluten free diet. saline eye drops.", 1, .)) %>%
+                   cl.nomed)), ~ ifelse(symptoms_other == "gluten free diet. saline eye drops.", 1, .)) %>%
   mutate_at(vars(c(tr.sleep,
                    cl.lifest,
                    tr.rest)), ~ ifelse(symptoms_other == "sleep and rest alot", 1, .))
@@ -1753,7 +1758,8 @@ df.other.treatments <- df.other.treatments %>%
   mutate_at(vars(c(tr.orca,
                    cl.lifest,
                    tr.water,
-                   tr.eyero)), ~ ifelse(symptoms_other == "eye drops, chewing gum, sip water", 1, .)) %>%
+                   tr.eyero,
+                   cl.nomed)), ~ ifelse(symptoms_other == "eye drops, chewing gum, sip water", 1, .)) %>%
   mutate_at(vars(c(tr.celeb,
                    cl.antinf,
                    tr.peas,
@@ -1763,7 +1769,7 @@ df.other.treatments <- df.other.treatments %>%
                    tr.phen,
                    cl.ahist,
                    tr.eyero,
-                   cl.lifest)), ~ ifelse(symptoms_other == "celebrex, palmitoylethanolamide, fish oil, vitamin d, genteal gel eye drops, poly visc eye ointment, phenergan", 1, .)) %>%
+                   cl.nomed)), ~ ifelse(symptoms_other == "celebrex, palmitoylethanolamide, fish oil, vitamin d, genteal gel eye drops, poly visc eye ointment, phenergan", 1, .)) %>%
   mutate_at(vars(c(tr.vitd,
                    cl.suppl)), ~ ifelse(symptoms_other == "vitamin d", 1, .)) %>%
   mutate_at(vars(c(tr.walk,
@@ -1796,12 +1802,10 @@ df.other.treatments <- df.other.treatments %>%
                    tr.propr,
                    cl.heart,
                    tr.thc,
-                   cl.recdr,
                    tr.melat,
                    cl.endoc,
                    tr.cbd)), ~ ifelse(symptoms_other == "head pain/pressure treated with amitriptyline (prescribed by gp),  dizziness and lightheadedness treated with florinef (prescribed by cardiologist)  fight or flight/panic attacks treated with propranolol (prescribed by gp)  cbd/thc and melatonin for sleep (prescribed by gp)", 1, .)) %>%
   mutate_at(vars(c(tr.alco,
-                   cl.recdr,
                    tr.cana)), ~ ifelse(symptoms_other == "alcohol, marijuana", 1, .)) %>%
   mutate_at(vars(c(tr.imth,
                    cl.imod)), ~ ifelse(symptoms_other == "immunotherapy", 1, .)) %>%
@@ -1839,12 +1843,14 @@ df.other.treatments <- df.other.treatments %>%
                    tr.pace,
                    tr.massa,
                    tr.sleep)), ~ ifelse(symptoms_other == "ldn, duluxotine, naltrexone, supplements (magnesium, coq10, b, immune and relax), bath salts, essential oils, remedial massage, acupuncture, physio (pre me/cfs), pacing, hrm, sleep tracking, meditation", 1, .)) %>%
-  mutate_at(vars(c(tr.diet,
-                   cl.diet,
-                   tr.pace,
+  mutate_at(vars(c(tr.pace,
                    cl.lifest,
+                   tr.diet,
+                   cl.diet,
                    tr.suppl,
-                   cl.suppl)), ~ ifelse(symptoms_other == "symptom contingent pacing.  strict diet.  nutritional supplements.  (note that my immunosuppressants are not \\\\\\\\\\\\\\for my me/cfs. i take one for ulcerative colitis and one for asthma; i have been offered humira for the enthesitis, but i have skin cancers, so i manage without.)", 1, .)) %>%
+                   cl.suppl,
+                   tr.imsup,
+                   cl.imsup)), ~ ifelse(symptoms_other == "symptom contingent pacing.  strict diet.  nutritional supplements.  (note that my immunosuppressants are not \\\\\\\\\\\\\\for my me/cfs. i take one for ulcerative colitis and one for asthma; i have been offered humira for the enthesitis, but i have skin cancers, so i manage without.)", 1, .)) %>%
   mutate_at(vars(c(tr.vit,
                    cl.suppl,
                    tr.bath,
@@ -1852,96 +1858,67 @@ df.other.treatments <- df.other.treatments %>%
 
 #Include drug_other_other
 df.other.treatments <- df.other.treatments %>% 
+  mutate_at(vars(c(tr.cana)), ~ ifelse(drug_other_other == "occasional marijuana for pain relief and assistance sleeping.", 1, .)) %>%
+  mutate_at(vars(c(tr.cana)), ~ ifelse(drug_other_other == "marijuana", 1, .)) %>%
   mutate_at(vars(c(tr.cana,
-                   cl.recdr)), ~ ifelse(drug_other_other == "occasional marijuana for pain relief and assistance sleeping.", 1, .)) %>%
-  mutate_at(vars(c(tr.cana,
-                   cl.recdr)), ~ ifelse(drug_other_other == "marijuana", 1, .)) %>%
-  mutate_at(vars(c(tr.cana,
-                   cl.recdr,
                    de.smok)), ~ ifelse(drug_other_other == "infrequently smoke cannabis", 1, .)) %>%
+  mutate_at(vars(c(tr.cana)), ~ ifelse(drug_other_other == "cannabis", 1, .)) %>%
   mutate_at(vars(c(tr.cana,
-                   cl.recdr)), ~ ifelse(drug_other_other == "cannabis", 1, .)) %>%
-  mutate_at(vars(c(tr.cana,
-                   cl.recdr,
                    de.edib)), ~ ifelse(drug_other_other == "marijuana cookies.", 1, .)) %>%
   mutate_at(vars(c(tr.cana,
-                   cl.recdr,
                    de.oil)), ~ ifelse(drug_other_other == "oil very rarely", 1, .)) %>%
   mutate_at(vars(c(tr.cana,
-                   cl.recdr,
                    de.oil)), ~ ifelse(drug_other_other == "sometime marajuana oil to help sleep", 1, .)) %>%
   mutate_at(vars(c(tr.cana,
-                   cl.recdr,
                    cl.endoc,
                    tr.testo)), ~ ifelse(drug_other_other == "i don't regularly but have used canabis and testosterone in the past", 1, .)) %>%
   mutate_at(vars(c(tr.cbd,
-                   cl.recdr,
                    de.oil,
                    tr.thc)), ~ ifelse(drug_other_other == "cbd oil, cbd with tcd", 1, .)) %>%
   mutate_at(vars(c(tr.cbd,
-                   cl.recdr,
                    de.oil,
                    tr.thc)), ~ ifelse(drug_other_other == "cbd/thc oil", 1, .)) %>%
-  mutate_at(vars(c(tr.alco,
-                   cl.recdr)), ~ ifelse(drug_other_other == "alcohol.", 1, .)) %>%
-  mutate_at(vars(c(tr.cana,
-                   cl.recdr)), ~ ifelse(drug_other_other == "marijauna", 1, .)) %>%
-  mutate_at(vars(c(tr.cana,
-                   cl.recdr)), ~ ifelse(drug_other_other == "marijuanas", 1, .)) %>%
+  mutate_at(vars(c(tr.alco)), ~ ifelse(drug_other_other == "alcohol.", 1, .)) %>%
+  mutate_at(vars(c(tr.cana)), ~ ifelse(drug_other_other == "marijauna", 1, .)) %>%
+  mutate_at(vars(c(tr.cana)), ~ ifelse(drug_other_other == "marijuanas", 1, .)) %>%
   mutate_at(vars(c(tr.cbd,
                    cl.recdr,
                    de.oil)), ~ ifelse(drug_other_other == "cbd oil", 1, .)) %>%
-  mutate_at(vars(c(tr.thc,
-                   cl.recdr)), ~ ifelse(drug_other_other == "thc", 1, .)) %>%
-  mutate_at(vars(c(tr.cbd,
-                   cl.recdr)), ~ ifelse(drug_other_other == "cbd", 1, .)) %>%
+  mutate_at(vars(c(tr.thc)), ~ ifelse(drug_other_other == "thc", 1, .)) %>%
+  mutate_at(vars(c(tr.cbd)), ~ ifelse(drug_other_other == "cbd", 1, .)) %>%
   mutate_at(vars(c(tr.cana,
-                   cl.recdr,
                    de.oil,
                    tr.cbd)), ~ ifelse(drug_other_other == "weed, cbd oil", 1, .)) %>%
+  mutate_at(vars(c(tr.cana)), ~ ifelse(drug_other_other == "occasionally smoke weed to help sleep   it calms my mind, and takes the edge of the pain", 1, .)) %>%
+  mutate_at(vars(c(tr.cana)), ~ ifelse(drug_other_other == "i have tried marijuana. it helped, but i cannot take it legally and drive so haven't used in years.", 1, .)) %>%
+  mutate_at(vars(c(tr.alco)), ~ ifelse(drug_other_other == "etoh", 1, .)) %>%
   mutate_at(vars(c(tr.cana,
-                   cl.recdr)), ~ ifelse(drug_other_other == "occasionally smoke weed to help sleep   it calms my mind, and takes the edge of the pain", 1, .)) %>%
-  mutate_at(vars(c(tr.cana,
-                   cl.recdr)), ~ ifelse(drug_other_other == "i have tried marijuana. it helped, but i cannot take it legally and drive so haven't used in years.", 1, .)) %>%
-  mutate_at(vars(c(tr.alco,
-                   cl.recdr)), ~ ifelse(drug_other_other == "etoh", 1, .)) %>%
-  mutate_at(vars(c(cl.recdr,
                    de.oil,
-                   tr.medca)), ~ ifelse(drug_other_other == "no longer illicit- canaboid oil under the care of my gp", 1, .)) %>%
-  mutate_at(vars(c(tr.medca,
-                   cl.recdr)), ~ ifelse(drug_other_other == "i take medicinal cannabis, which is legal - maybe doesn't belong in this section?", 1, .)) %>%
+                   cl.meddr)), ~ ifelse(drug_other_other == "no longer illicit- canaboid oil under the care of my gp", 1, .)) %>%
+  mutate_at(vars(c(tr.cana,
+                   cl.meddr)), ~ ifelse(drug_other_other == "i take medicinal cannabis, which is legal - maybe doesn't belong in this section?", 1, .)) %>%
   mutate_at(vars(c(tr.stim,
                    cl.stim)), ~ ifelse(drug_other_other == "the onset of my symptoms was after g.f it triggered me to sleep in a coma-like sleep for 23hrs a day for 8 looong yrs. i was planning my death as i couldn't function at all. so i tried illegal stimulants since my dr refused any other treatment and diagnosis apart from stress", 1, .)) %>%
-  mutate_at(vars(c(tr.cana,
-                   cl.recdr)), ~ ifelse(drug_other_other == "cannabis sometimes", 1, .)) %>%
+  mutate_at(vars(c(tr.cana,)), ~ ifelse(drug_other_other == "cannabis sometimes", 1, .)) %>%
   mutate_at(vars(c(tr.cbd,
-                   cl.recdr,
                    de.oil,
                    tr.thc)), ~ ifelse(drug_other_other == "cbd/thc oil - helps with difficulty sleeping and pain.", 1, .)) %>%
   mutate_at(vars(c(tr.thc,
-                   cl.recdr,
                    de.edib)), ~ ifelse(drug_other_other == "occasional use of thc honey at night to help break through pain", 1, .)) %>%
+  mutate_at(vars(c(tr.cana)), ~ ifelse(drug_other_other == "occasional marijuana", 1, .)) %>%
   mutate_at(vars(c(tr.cana,
-                   cl.recdr)), ~ ifelse(drug_other_other == "occasional marijuana", 1, .)) %>%
-  mutate_at(vars(c(tr.cana,
-                   tr.cbd,
-                   cl.recdr)), ~ ifelse(drug_other_other == "cbd rich cannabis", 1, .)) %>%
-  mutate_at(vars(c(tr.psylo,
-                   cl.recdr)), ~ ifelse(drug_other_other == "psilocybin", 1, .)) %>%
-  mutate_at(vars(c(cl.recdr,
-                   tr.alco,
+                   tr.cbd)), ~ ifelse(drug_other_other == "cbd rich cannabis", 1, .)) %>%
+  mutate_at(vars(c(tr.psylo)), ~ ifelse(drug_other_other == "psilocybin", 1, .)) %>%
+  mutate_at(vars(c(tr.alco,
                    tr.keta,
                    tr.dexi,
                    cl.stim,
                    tr.coca)), ~ ifelse(drug_other_other == "alcohol, ketamine, cocaine, illicit dexamphetamine. stimulants help with fatigue and concentration issues. alcohol and ketamine for enjoyment and to support mental health", 1, .)) %>%
-  mutate_at(vars(c(tr.cana,
-                   cl.recdr)), ~ ifelse(drug_other_other == "weed for migraine pain.", 1, .)) %>%
-  mutate_at(vars(c(cl.recdr,
-                   tr.alco,
+  mutate_at(vars(c(tr.cana)), ~ ifelse(drug_other_other == "weed for migraine pain.", 1, .)) %>%
+  mutate_at(vars(c(tr.alco,
                    tr.cbd,
                    de.edib)), ~ ifelse(drug_other_other == "alcohol, cbd edibles", 1, .)) %>%
-  mutate_at(vars(c(tr.cana,
-                   cl.recdr)), ~ ifelse(drug_other_other == "very occasionally marijuana for pain", 1, .))
+  mutate_at(vars(c(tr.cana)), ~ ifelse(drug_other_other == "very occasionally marijuana for pain", 1, .))
 
 ##################
 #
@@ -2005,14 +1982,13 @@ df.other.treatments <- df.other.treatments %>%
                    cl.diet)), ~ ifelse(symptoms_other == "i do try different diets", 1, .)) %>%
   mutate_at(vars(c(tr.diet,
                    cl.diet,
-                   tr.medca,
-                   cl.recdr,
+                   tr.cana,
+                   cl.meddr,
                    tr.bath,
                    cl.nomed)), ~ ifelse(symptoms_other == "anti-inflammatory diet, acupuncture, magnesium salt baths, medicinal cannabis ( quest initiative )", 1, .)) %>%
   mutate_at(vars(c(tr.magn,
                    cl.suppl,
                    tr.eyero,
-                   cl.lifest,
                    tr.orca,
                    tr.detc,
                    tr.heat,
@@ -2031,7 +2007,7 @@ df.other.treatments <- df.other.treatments %>%
                    cl.suppl,
                    tr.suppl,
                    tr.eyero,
-                   cl.lifest,
+                   cl.nomed,
                    tr.meds)), ~ ifelse(symptoms_other == "medication to stop blood vessel spasms due to raynaud's, medication for restless leg, medication for reflux, inflammation throughout the body, medication for motility through the digestive tract, medication for bowel issues, supplements for skin issues, medicated drops for the eyes, b12 injections, iron infusions.", 1, .)) %>%
   mutate_at(vars(c(tr.ivig,
                    cl.imod,
@@ -2081,8 +2057,7 @@ df.other.treatments <- df.other.treatments %>%
                    cl.nomed)), ~ ifelse(symptoms_other == "heat, hot water, heat packs.", 1, .)) %>%
   mutate_at(vars(c(tr.diet,
                    cl.diet,
-                   tr.alco,
-                   cl.recdr)), ~ ifelse(symptoms_other == "try to eat healthy.   alcohol.", 1, .)) %>%
+                   tr.alco)), ~ ifelse(symptoms_other == "try to eat healthy.   alcohol.", 1, .)) %>%
   mutate_at(vars(c(tr.exer,
                    cl.lifest,
                    cl.nomed,
@@ -2096,7 +2071,6 @@ df.other.treatments <- df.other.treatments %>%
                    cl.nomed,
                    tr.osteo)), ~ ifelse(symptoms_other == "massage  osteopathy", 1, .)) %>%
   mutate_at(vars(c(tr.cana,
-                   cl.recdr,
                    de.smok,
                    de.oil)), ~ ifelse(symptoms_other == "cannabis oil, balms & smoked/vaporised buds or oil", 1, .)) %>%
   mutate_at(vars(c(tr.cortst,
@@ -2133,7 +2107,7 @@ df.other.treatments <- df.other.treatments %>%
                    tr.tocrt,
                    cl.antinf,
                    tr.eyero,
-                   cl.lifest,
+                   cl.nomed,
                    tr.thyrx,
                    cl.endoc)), ~ ifelse(symptoms_other == "coeliac disease - gluten free diet  psoriasis - steroid cream and lotion  sjogrens - eye drops  hashimotos - thyroxine", 1, .)) %>%
   mutate_at(vars(c(tr.diet,
@@ -2237,7 +2211,7 @@ df.other.treatments <- df.other.treatments %>%
                    tr.irin,
                    cl.suppl,
                    tr.eyero,
-                   cl.lifest)), ~ ifelse(symptoms_other == "eye drops, iron infusions, gluten free diet", 1, .)) %>%
+                   cl.nomed)), ~ ifelse(symptoms_other == "eye drops, iron infusions, gluten free diet", 1, .)) %>%
   mutate_at(vars(c(cl.nomed,
                    tr.vens,
                    cl.diet,
@@ -2293,8 +2267,8 @@ df.other.treatments <- df.other.treatments %>%
 
 df.other.treatments <- df.other.treatments %>% 
   mutate_at(vars(c(tr.cbd,
-                   cl.recdr,
-                   tr.medca,
+                   cl.meddr,
+                   tr.cana,
                    tr.heat,
                    cl.nomed,
                    tr.cool,
@@ -2364,8 +2338,8 @@ df.other.treatments <- df.other.treatments %>%
                    tr.mins,
                    tr.vit)), ~ ifelse(symptoms_other == "the most effective measure: prudent avoidance of food and chemical triggers. i'm sensitive to most pharmaceutical drugs, and find the unwanted side effects usually heavily outweigh any benefits.     lots of rest; heat packs, hydration; vitamin, mineral & herbal supplements in moderation. magnesium baths. massage can help, if i can afford it.", 1, .)) %>%
   mutate_at(vars(c(tr.cbd,
-                   cl.recdr,
-                   de.oil)), ~ ifelse(symptoms_other == "cbd oil   compounding pharmacy items prescribed by my gp", 1, .)) %>%
+                   de.oil,
+                   tr.meds)), ~ ifelse(symptoms_other == "cbd oil   compounding pharmacy items prescribed by my gp", 1, .)) %>%
   mutate_at(vars(c(tr.rest,
                    cl.lifest)), ~ ifelse(symptoms_other == "rest. rest and rest is key to symptom abatement.  i use the research based protocol published by the workwell foundation to use heart rate monitoring to manage my me/cfs.  rest has resulted in me being able to do more and  not be 99% bedbound in severe pain, severe tiinnitis and 10 kg under weight.", 1, .)) %>%
   mutate_at(vars(c(tr.vit,
@@ -2434,8 +2408,7 @@ df.other.treatments <- df.other.treatments %>%
                    tr.elctr,
                    tr.cmpst,
                    tr.meds)), ~ ifelse(symptoms_other == "medications, supplements, rest, electrolytes, compression socks", 1, .)) %>%
-  mutate_at(vars(c(cl.recdr,
-                   tr.dmt,
+  mutate_at(vars(c(tr.dmt,
                    tr.ocrz,
                    cl.imsup)), ~ ifelse(symptoms_other == "trialled a dmt - ocrelizumab - in 2020, but due to side-effects did not continue.    pain relief is difficult as i cannot tolerate anti-inflammatory meds.", 1, .)) %>%
   mutate_at(vars(c(tr.diet,
@@ -2538,7 +2511,7 @@ df.other.treatments <- df.other.treatments %>%
                    tr.tocrt,
                    cl.antinf,
                    tr.eyero,
-                   cl.lifest,
+                   cl.nomed,
                    tr.orca,
                    tr.swri)), ~ ifelse(symptoms_other == "pantoprazole, low fodmap diet. amitriptiline, elcon lotion, pos a ointment hi lo forte eye drops, nasal spray, biotene toothpaste.", 1, .)) %>%
   mutate_at(vars(c(tr.bed,
@@ -2604,36 +2577,695 @@ df.other.treatments <- df.other.treatments %>%
   
 #1-22 drug_other_other
 df.other.treatments <- df.other.treatments %>% 
-  mutate_at(vars(c(tr.medca,
-                   cl.recdr,
-                   tr.cbd)), ~ ifelse(drug_other_other == "cannabis and cbd which has been discussed with my healthcare providers", 1, .)) %>%
   mutate_at(vars(c(tr.cana,
-                   cl.recdr)), ~ ifelse(drug_other_other == "when able cannabis but it only helps a little and if i have too much it increases pain.", 1, .)) %>%
-  mutate_at(vars(c(cl.recdr,
-                   tr.cana)), ~ ifelse(drug_other_other == "ocassional joint for severe pain", 1, .)) %>%
-  mutate_at(vars(c(cl.recdr,
-                   tr.alco)), ~ ifelse(drug_other_other == "alcohol", 1, .)) %>%
-  mutate_at(vars(c(cl.recdr,
-                   tr.cana)), ~ ifelse(drug_other_other == "cannabis for joint pain and muscle soreness", 1, .)) %>%
-  mutate_at(vars(c(cl.recdr,
-                   de.oil,
+                   cl.meddr,
+                   tr.cbd)), ~ ifelse(drug_other_other == "cannabis and cbd which has been discussed with my healthcare providers", 1, .)) %>%
+  mutate_at(vars(c(tr.cana)), ~ ifelse(drug_other_other == "when able cannabis but it only helps a little and if i have too much it increases pain.", 1, .)) %>%
+  mutate_at(vars(c(tr.cana)), ~ ifelse(drug_other_other == "ocassional joint for severe pain", 1, .)) %>%
+  mutate_at(vars(c(tr.alco)), ~ ifelse(drug_other_other == "alcohol", 1, .)) %>%
+  mutate_at(vars(c(tr.cana)), ~ ifelse(drug_other_other == "cannabis for joint pain and muscle soreness", 1, .)) %>%
+  mutate_at(vars(c(de.oil,
                    tr.thc)), ~ ifelse(drug_other_other == "tsh oil", 1, .)) %>%
  # mutate_at(vars(c()), ~ ifelse(drug_other_other == "i have to buy pain medication that isn't from a doctor because despite seeing a pain specialist and doing everything they've told me, i'm still in pain and doctors are worried about addiction. i'm worried more about being in pain every day. i couldn't give a hoot if i become drug dependent. it's less stress on my body. pain meds should be part of a holistic pain management process that also includes exercise, diet, herbs whatever", 1, .)) %>%
   mutate_at(vars(c(tr.diaz,
                    cl.diaz)), ~ ifelse(drug_other_other == "source valium often when having a particularly bad flare", 1, .)) %>%
-  mutate_at(vars(c(cl.recdr,
-                   tr.cana)), ~ ifelse(drug_other_other == "weed", 1, .)) %>%
-  mutate_at(vars(c(cl.recdr,
-                   tr.cana)), ~ ifelse(drug_other_other == "i have used marijuana for pain relief and to address the psychological distress of having ra since diagnosis 40 years ago. my first rheumatologist believed the addiction risk too high to prescribe adequate pain relief so i was forced to seek help elsewhere.", 1, .)) %>%
-  mutate_at(vars(c(cl.recdr,
-                   tr.cana,
+  mutate_at(vars(c(tr.cana)), ~ ifelse(drug_other_other == "weed", 1, .)) %>%
+  mutate_at(vars(c(tr.cana)), ~ ifelse(drug_other_other == "i have used marijuana for pain relief and to address the psychological distress of having ra since diagnosis 40 years ago. my first rheumatologist believed the addiction risk too high to prescribe adequate pain relief so i was forced to seek help elsewhere.", 1, .)) %>%
+  mutate_at(vars(c(tr.cana,
                    de.smok)), ~ ifelse(drug_other_other == "cannabis flower (smoked) for pain, gastrointestinal symptoms, stress relief", 1, .)) %>%
-  mutate_at(vars(c(cl.recdr,
-                   tr.medca)), ~ ifelse(drug_other_other == "i have a prescription for medicinal cannabis, but do not take this continually as it is very cost-prohibitive.", 1, .)) %>%
-  mutate_at(vars(c(cl.recdr,
-                   tr.coca)), ~ ifelse(drug_other_other == "cocaine", 1, .)) 
+  mutate_at(vars(c(cl.meddr,
+                   tr.cana)), ~ ifelse(drug_other_other == "i have a prescription for medicinal cannabis, but do not take this continually as it is very cost-prohibitive.", 1, .)) %>%
+  mutate_at(vars(c(tr.coca)), ~ ifelse(drug_other_other == "cocaine", 1, .)) 
 
-#label classifiers
+### final data pull
+df.other.treatments <- df.other.treatments %>%
+  mutate_at(vars(c(tr.thc,
+                   tr.cbd,
+                   de.oil)), ~ ifelse(drug_other_other == "thc. preferred cbd oil, but expensive in australia and now difficult to ship due to covid.", 1, .)) %>%
+  mutate_at(vars(c(tr.cana)), ~ ifelse(drug_other_other == "i used cannabis to try and manage the pain", 1, .)) %>%
+  mutate_at(vars(c(tr.pntoz,
+                   cl.anac)), ~ ifelse(drug_other_other == "pantaprozole  for gord", 1, .)) %>%
+  mutate_at(vars(c(tr.cana,
+                   tr.cbd)), ~ ifelse(drug_other_other == "marijuana, cbd, usually only when flaring", 1, .)) %>%
+  mutate_at(vars(c(tr.cana,
+                   tr.psylo)), ~ ifelse(drug_other_other == "marijuana and shrooms", 1, .)) %>%
+  mutate_at(vars(c(tr.cana,
+                   de.edib)), ~ ifelse(drug_other_other == "marijuana (in the form of edibles)", 1, .)) %>%
+  mutate_at(vars(c(tr.cana)), ~ ifelse(drug_other_other == "medicinal cannabis for pain", 1, .)) %>%
+  mutate_at(vars(c(tr.dexi,
+                   cl.stim,
+                   cl.recdr)), ~ ifelse(drug_other_other == "dex", 1, .)) %>%
+  mutate_at(vars(c(tr.thc
+                   de.edib)), ~ ifelse(drug_other_other == "no regularly as supply is difficult - but gp refuses to prescribe codeine based medications (that i would get over the counter when things were bad - not a habit, nor addicted)- have tried cbd no effect. thc edibles works for pain and like codeine i only use it when absolutely necessary", 1, .)) %>%
+  mutate_at(vars(c(tr.cana
+                   de.oil,
+                   de.smok)), ~ ifelse(drug_other_other == "marijuana (taken orally and smoked)", 1, .)) %>%
+  mutate_at(vars(c(tr.cbd,
+                   de.oil)), ~ ifelse(drug_other_other == "cdb oil", 1, .)) %>%
+  mutate_at(vars(c(tr.cana)), ~ ifelse(drug_other_other == "in the passed i used marijuana for anxiety.", 1, .)) %>%
+  mutate_at(vars(c(tr.cana
+                   de.oil)), ~ ifelse(drug_other_other == "cannabis oil", 1, .)) %>%
+  mutate_at(vars(c(tr.cana,
+                   de.oil,
+                   tr.alco)), ~ ifelse(drug_other_other == "weed  alcohol", 1, .)) %>%
+  mutate_at(vars(c(tr.cana)), ~ ifelse(drug_other_other == "occasional marijuana.", 1, .)) %>%
+  mutate_at(vars(c(tr.mdma)), ~ ifelse(drug_other_other == "yes. recreational use of mdma over intervals of 3-4 months has helped provide temporary pain relief and minimise impact of spasticity in the short term.", 1, .))
+
+df.other.treatments <- df.other.treatments %>%
+  mutate_at(vars(c(tr.ldn,
+                   cl.imod,
+                   tr.preds,
+                   cl.antinf)), ~ ifelse(symptoms_other == "prednisone, low dose naltrexone" , 1, .)) %>%
+  mutate_at(vars(c(tr.vitd,
+                   tr.suppl,
+                   cl.suppl,
+                   tr.pila,
+                   cl.lifest,
+                   tr.phys,
+                   cl.nomed,
+                   tr.inex)), ~ ifelse(symptoms_other == "supplements:  flex seed oil, vit d  pilates / physio / exercise", 1, .)) %>%
+  #TODO cross ref MCAS?
+  mutate_at(vars(c(tr.ahist1,
+                   cl.ahist,
+                   tr.ahist2,
+                   tr.mcst,
+                   cl.imod)), ~ ifelse(symptoms_other == "also have mast cell activation disorder, formally diagnosed, blistering rash, diarrhoea, bone pain, treated h1, h2 blockers and mast cell stabilisers", 1,  .)) %>%
+  mutate_at(vars(c(tr.levo,
+                   cl.endoc,
+                   tr.thmz,
+                   cl.endoc)), ~ ifelse(symptoms_other == "thiamazol and levothyroxine.", 1, .)) %>%
+  mutate_at(vars(c(tr.inex,
+                   cl.lifest,
+                   tr.diet,
+                   cl.diet)), ~ ifelse(symptoms_other == "diet and exercise", 1, .)) %>%
+  mutate_at(vars(c(tr.diet,
+                   cl.diet,
+                   tr.accp,
+                   cl.nomed,
+                   tr.osteo,
+                   tr.nutr,
+                   tr.phys,
+                   tr.thyrx,
+                   cl.endoc)), ~ ifelse(symptoms_other == "* pain management - exercise physiology,  osteo   * malaise & other issues - accupuncture & osteo  * allergies, gut issues, inflammation management - avoidance of allergens, nutritionist   * nutritional supplements - as recommended by specialist  * endocrinologist - thyroxine   * specialist - currently trialing different drugs for me/cfs symptom management", 1, .)) %>%
+  mutate_at(vars(c(tr.diet,
+                   cl.diet,
+                   tr.meds)), ~ ifelse(symptoms_other == "medication, diet changes", 1, .)) %>%
+  mutate_at(vars(c(tr.diet,
+                   cl.diet,
+                   tr.mesal,
+                   cl.anac,
+                   tr.iverm,
+                   cl.apar)), ~ ifelse(symptoms_other == "mesalamine, oral and rectal. ivermectin face cream (soolantra). careful diet.", 1, .)) %>%
+  mutate_at(vars(c(tr.ibup,
+                   cl.antinf)), ~ ifelse(symptoms_other == "can't afford any other medical treatment or therapy, so it's just ibuprofen when it gets bad.", 1, .)) %>%
+  mutate_at(vars(c(tr.diet,
+                   cl.diet,
+                   tr.inex,
+                   cl.lifest)), ~ ifelse(symptoms_other == "exercise and healthy eating. specifically the aip diet", 1, .)) %>%
+  mutate_at(vars(c(tr.diet,
+                   cl.diet,
+                   tr.irin,
+                   cl.suppl,
+                   tr.pace,
+                   cl.lifest,
+                   tr.rest,
+                   tr.walk,
+                   tr.vitd,
+                   tr.phys,
+                   cl.nomed)), ~ ifelse(symptoms_other == "physio, eating healthy, taking vitamin d, iron infusions, pacing and rest, walking", 1, .))
+
+df.other.treatments <- df.other.treatments %>%
+  mutate_at(vars(c(tr.suppl,
+                   cl.suppl,
+                   tr.meds,
+                   tr.ahist,
+                   cl.ahist)), ~ ifelse(symptoms_other == "prescription drugs  over the counter antihistamines for mcas   supplements", 1, .)) %>%
+  mutate_at(vars(c(tr.diet,
+                   cl.diet,
+                   tr.brthe,
+                   cl.nomed,
+                   tr.pace,
+                   cl.lifest,
+                   tr.rest,
+                   tr.mndfl,
+                   tr.drib,
+                   cl.suppl,
+                   tr.coq10,
+                   tr.magn,
+                   tr.vitd,
+                   tr.zinc)), ~ ifelse(symptoms_other == "grain free diet, psychologist, mindfulness, deep breathing, vitamins including d ribose,  vit d, magnesium, zinc and coq10; rest, pacing" , 1, .)) %>%
+  mutate_at(vars(c(tr.cortst,
+                   cl.antinf)), ~ ifelse(symptoms_other == "corticosteroid", 1, .)) %>%
+  mutate_at(vars(c(tr.pace,
+                   cl.lifest,
+                   tr.vanst,
+                   cl.nomed)), ~ ifelse(symptoms_other == "symptom-contingent pacing https://mecfssa.org.au/resources/pacing  transcutaneous vagus nerve stimulation", 1, .)) %>%
+  mutate_at(vars(c(tr.suppl,
+                   cl.suppl,
+                   cl.lifest,
+                   tr.rest,
+                   tr.heat,
+                   cl.nomed,
+                   tr.inex,
+                   tr.accp)), ~ ifelse(symptoms_other == "acupuncture, exercise, heat pads, supplements, rest", 1, .)) %>%
+  mutate_at(vars(c(tr.antinf,
+                   cl.antinf)), ~ ifelse(symptoms_other == "anti inflammatories", 1, .)) %>%
+  mutate_at(vars(c(tr.dmard,
+                   cl.dmard)), ~ ifelse(symptoms_other == "dmards", 1, .)) %>%
+  mutate_at(vars(c(tr.sulfz,
+                   cl.dmard,
+                   tr.iginj,
+                   cl.imod)), ~ ifelse(symptoms_other == "sulfasalazine. infliximab", 1, .)) %>%
+  mutate_at(vars(c(tr.psych,
+                   cl.nomed,
+                   tr.yoga,
+                   cl.lifest,
+                   tr.smmp,
+                   tr.pila)), ~ ifelse(symptoms_other == "yoga, pilates and somatics.  psychologist appts", 1, .)) %>%
+  mutate_at(vars(c(tr.ppi,
+                   cl.anac,
+                   tr.aconv,
+                   cl.aconv)), ~ ifelse(symptoms_other == "proton pump inhibitor for gastritis, anti convulsants for migraine prophylaxis", 1, .)) %>%
+  mutate_at(vars(c(tr.natr,
+                   cl.altpr)), ~ ifelse(symptoms_other == "naturopathic clinic that specializes in psoriasis .. if i am disciplined with the regime i can get 'improvement'.. takes about three months", 1, .)) %>%
+  mutate_at(vars(c(tr.cortinj,
+                   cl.antinf,
+                   tr.inex,
+                   cl.lifest,
+                   tr.phys,
+                   cl.nomed,
+                   tr.psych,
+                   tr.strav,
+                   tr.hydt,
+                   cl.altpr,
+                   tr.heat,
+                   tr.cool,
+                   cl.surg,
+                   tr.rfab)), ~ ifelse(symptoms_other == "steroid injections, radio-frequency ablations, physio, exercise, stress management with psychologist, heat and cold therapy, hydrotherapy", 1, .)) %>%
+  mutate_at(vars(c(tr.ahist,
+                   cl.ahist,
+                   cl.stim,
+                   cl.stim,
+                   tr.qtpn,
+                   cl.psych)), ~ ifelse(symptoms_other == "vyvanse, seroquel, antihistamines", 1, .)) %>%
+  mutate_at(vars(c(tr.myth,
+                   cl.nomed)), ~ ifelse(symptoms_other == "regular myotheraphy treatment", 1, .)) %>%
+  mutate_at(vars(c(tr.lifest,
+                   cl.lifest)), ~ ifelse(symptoms_other == "avoidance", 1, .)) %>%
+  mutate_at(vars(c(tr.antinf,
+                   cl.antinf,
+                   tr.melox)), ~ ifelse(symptoms_other == "anti inflammatories, meloxicam", 1, .)) %>%
+  mutate_at(vars(c(tr.inex,
+                   cl.lifest,
+                   tr.diet,
+                   cl.diet)), ~ ifelse(symptoms_other == "exercise and diet", 1, .)) %>%
+  mutate_at(vars(c(tr.massa,
+                   cl.nomed)), ~ ifelse(symptoms_other == "regular massage", 1, .)) %>%
+  mutate_at(vars(c(tr.heat,
+                   cl.nomed)), ~ ifelse(symptoms_other == "heat via warm water or heat packs", 1, .)) %>%
+  mutate_at(vars(c(tr.diet,
+                   cl.diet,
+                   tr.chmed,
+                   cl.altpr,
+                   tr.suppl,
+                   cl.suppl)), ~ ifelse(symptoms_other == "diet/nutrition, chinese herbs, supplements", 1, .)) %>%
+  mutate_at(vars(c(tr.pace,
+                   cl.lifest,
+                   tr.exer,
+                   tr.diet,
+                   cl.diet,
+                   tr.sleep,
+                   tr.strav)), ~ ifelse(symptoms_other == "bridges & pathways me/cfs fibromyalgia self management programs, suuth australian me/cfs/fms cycle of care (structured self management programs vis bridgesandpathways.org.au  include pacing and  stepwise management sleep, stress, nutrition, movement (gentle), monitoring and tailored problemsolving with care manager toward optimal management  i was bedridden and was able live a reasonable life.", 1, .)) %>%
+  mutate_at(vars(c(tr.vitb12,
+                   cl.suppl,
+                   tr.ribo,
+                   tr.slnem,
+                   tr.mlbd,
+                   tr.iod)), ~ ifelse(symptoms_other == "i am getting good results from b12 therapy, including all the necessary co-factors b2, folate, iodine, selenium, molybdenum, iron etc. see b12 oils.com website.", 1, .)) %>%
+  mutate_at(vars(c(tr.ldn,
+                   cl.imod,
+                   cl.endoc,
+                   tr.hmrp)), ~ ifelse(symptoms_other == "it's a constantly revolving trial and error. some hormone replacement has been helpful.   took ldn for a while and that almost completely eliminated a few symptoms including sore throats.", 1, .)) %>%
+  mutate_at(vars(c(tr.pace,
+                   cl.lifest,
+                   tr.phys,
+                   cl.nomed,
+                   tr.massa,
+                   tr.hydt,
+                   cl.altpr)), ~ ifelse(symptoms_other == "pacing; massage; physio; hydrotherapy pool.", 1, .)) %>%
+  mutate_at(vars(c(tr.levo,
+                   cl.endoc,
+                   tr.lifest,
+                   cl.lifest,
+                   tr.inex,
+                   tr.rest,
+                   tr.water,
+                   tr.diet,
+                   cl.diet,
+                   tr.phys,
+                   cl.nomed,
+                   tr.ahist,
+                   cl.ahist,
+                   tr.parc,
+                   cl.antinf,
+                   tr.skca)), ~ ifelse(symptoms_other == "treatments and strategies     symptoms from the autoimmune condition: fatigue, slow gut transit, poor memory, poor concentration, maybe depression (hard to tell because of pre-existing depression). levothyroxine helps, but doesn't eliminate those symptoms.   so rest, exercise, memory games, drinking lots of water, writing to do lists, putting appointments, events, support worker shifts, and reminders in my phone calendar.     symptoms from heds: soft tissue pain (muscles, ligaments, tendons), low blood pressure, git problems, brain fog if my neck is out.   rest, exercise, staying hydrated, avoiding foods with anything more than low salicylate levels, physiotherapy.     symptoms from chemical sensitivities: ibs, rashes, headache, irritability, sinusitis.   antihistamines, paracetamol, lignocaine for skin, saline spray for sinuses.     side-effects of meds for anxiety & depression, and for adhd include increased sweating, so really need to keep hydrated.", 1, .)) %>%
+  mutate_at(vars(c(tr.preds,
+                   cl.antinf,
+                   tr.diet,
+                   cl.diet,
+                   tr.massa,
+                   cl.nomed,
+                   tr.osteo,
+                   tr.herb,
+                   cl.suppl,
+                   tr.tocrt,
+                   tr.essoi,
+                   cl.lifest)), ~ ifelse(symptoms_other == "prednisone, cortisol creams, massage, osteopath, essential oils, herbal teas, diet", 1, .)) %>%
+  mutate_at(vars(c(tr.ldn,
+                   cl.imod,
+                   tr.magn,
+                   cl.suppl,
+                   tr.melat,
+                   cl.endoc,
+                   tr.suppl,
+                   tr.vitd,
+                   tr.peas)), ~ ifelse(symptoms_other == "ldn, magnesium glycinate, pea, melatonin, vitamin supplements including vitamin d", 1, .)) %>%
+  mutate_at(vars(c(tr.tens,
+                   cl.nomed,
+                   tr.flxt,
+                   cl.psych,
+                   tr.tocrt,
+                   cl.antinf,
+                   tr.mtfr,
+                   cl.enzy,
+                   cl.altpr)), ~ ifelse(symptoms_other == "tens, prescription medications (elocon, lovan, prozac, ritalin, metformin), otc medications (flordis premular)", 1, .)) %>%
+  mutate_at(vars(c(tr.vbin,
+                   cl.suppl,
+                   tr.vit,
+                   tr.psych,
+                   cl.nomed,
+                   tr.ibup,
+                   cl.antinf,
+                   tr.parc,
+                   tr.nsai,
+                   cl.antinf,
+                   tr.ldpat,
+                   cl.neurp,
+                   tr.dclfn,
+                   tr.msccr,
+                   tr.anac,
+                   cl.anac)), ~ ifelse(symptoms_other == "b12 injection weekly.   taking co-factor vitamins.  righting vitamin deficiencies due to malabsorption caused by pernicious anemia. . psychologist for anxiety and depression.    awaiting proper treatment for proper diagnosis for suspected ra.  currently ibuprofen, paracetamol, voltaren emulgel, rapigel, salonpas patches.  anything really.  sometimes diclofenac.   then have to take famotidine so as not to get a stomach ulcer.", 1, .)) 
+
+df.other.treatments <- df.other.treatments %>%
+  mutate_at(vars(c(tr.cortst,
+                   cl.antinf,
+                   tr.diet,
+                   cl.diet)), ~ ifelse(symptoms_other == "gluten free diet   steroid medication to control flares", 1, .)) %>%
+  mutate_at(vars(c(tr.dmard,
+                   cl.dmard,
+                   tr.hydrx,
+                   cl.imod)), ~ ifelse(symptoms_other == "dmard - hydroxychloroquin", 1, .)) %>%
+  mutate_at(vars(c(tr.meds)), ~ ifelse(symptoms_other == "i treat pots with prescribed medication , i think my pots is a symptom of my me/cfs", 1, .)) %>%
+  mutate_at(vars(c(tr.adep,
+                   cl.psych)), ~ ifelse(symptoms_other == "antidepressants (for pain and help with sleep)", 1, .)) %>%
+  mutate_at(vars(c(tr.diet,
+                   cl.diet,
+                   tr.phys,
+                   cl.nomed,
+                   tr.ldn,
+                   cl.imod,
+                   tr.mcst)), ~ ifelse(symptoms_other == "physiotherapy, diet, etc (natural)  focused drugs (low dose naltrexone, sodium cromolyn, etc)", 1, .)) %>%
+  mutate_at(vars(c(tr.medit,
+                   cl.lifest,
+                   tr.lifest,
+                   tr.inex,
+                   tr.nutr,
+                   cl.nomed,
+                   tr.sleep)), ~ ifelse(symptoms_other == "meditation, lifestyle modification, sleep hygiene, personal trainer, regular exercise, nutrition", 1, .)) %>%
+  mutate_at(vars(c(cl.imod,
+                   tr.mcst,
+                   tr.ahist,
+                   cl.ahist)), ~ ifelse(symptoms_other == "antihistamines   mast cell stabiliser", 1, .)) %>%
+  mutate_at(vars(c(tr.diet,
+                   cl.diet,
+                   tr.water,
+                   cl.lifest,
+                   tr.rest,
+                   tr.pace)), ~ ifelse(symptoms_other == "pacing  rest  water  diet", 1, .)) %>%
+  mutate_at(vars(c(tr.ahist,
+                   cl.ahist)), ~ ifelse(symptoms_other == "hayfever tablets", 1, .)) %>%
+  mutate_at(vars(c(tr.inex,
+                   tr.mndfl,
+                   cl.lifest)), ~ ifelse(symptoms_other == "exercise, mindfulness, multiple pain relief interventions through pain specialist", 1, .)) %>%
+  mutate_at(vars(c(tr.rest,
+                   cl.lifest,
+                   tr.pace,
+                   tr.vit,
+                   cl.suppl,
+                   tr.accp,
+                   cl.nomed,
+                   tr.ppi,
+                   cl.anac)), ~ ifelse(symptoms_other == "rest, pacing, skin creams, ppi, vitamins, acupuncture", 1, .)) %>%
+  mutate_at(vars(c(tr.lifest,
+                   cl.lifest,
+                   tr.accp,
+                   cl.nomed,
+                   tr.inex)), ~ ifelse(symptoms_other == "self care, exercise and laser acupuncture", 1, .)) %>%
+  mutate_at(vars(c(tr.lifest,
+                   cl.lifest,
+                   tr.pace,
+                   tr.prob,
+                   cl.suppl,
+                   tr.magn)), ~ ifelse(symptoms_other == "pacing  avoidance  pre/probiotic's  molasses: constipation  magnesium", 1, .)) %>%
+  mutate_at(vars(c(tr.cupr,
+                   cl.suppl,
+                   tr.cbd,
+                   tr.cana,
+                   de.oil)), ~ ifelse(symptoms_other == "cusack protocol for eds  cbd oil, full spectrum, plus delta 8 oil.", 1, .)) %>%
+  mutate_at(vars(c(tr.pntoz,
+                   cl.anac,
+                   tr.ivig,
+                   cl.imod)), ~ ifelse(symptoms_other == "pantoprazole, ivig", 1, .)) %>%
+  mutate_at(vars(c(tr.ldn,
+                   cl.imod,
+                   tr.suppl,
+                   cl.suppl)), ~ ifelse(symptoms_other == "supplements and low dose naltrexone", 1, .)) %>%
+  mutate_at(vars(c(tr.vbin,
+                   cl.suppl)), ~ ifelse(symptoms_other == "b12 injection", 1, .)) %>%
+  mutate_at(vars(c(tr.cortst,
+                   cl.antinf,
+                   tr.hydrx,
+                   cl.imod)), ~ ifelse(symptoms_other == "plaquenil has been really the only treatment, apart from cortisone/steroids, that i have been on. i don't feel it's really doing anything and i rarely take steroids as i hate the way they make me crash and burn once you stop the short course. i would really like to try something different as my main symptom of general weakness is getting out of control and i could use some treatment targeted towards that.", 1, .)) %>%
+  mutate_at(vars(c(tr.ahist1,
+                   tr.ahist2,
+                   cl.ahist,
+                   tr.mcst,
+                   cl.imod,
+                   tr.adep,
+                   cl.psych,
+                   tr.splnt,
+                   cl.lifest,
+                   tr.blreg,
+                   cl.heart,
+                   tr.mcst,
+                   cl.imod,
+                   tr.omzm,
+                   tr.tens,
+                   cl.nomed,
+                   tr.mirena,
+                   cl.endoc,
+                   tr.ldpat,
+                   cl.neurp)), ~ ifelse(symptoms_other == "mast cell stabilisers, h1 & 2 blockers, leukotrine inhibitors, antihistamines, immunomodulatory (xolair), antidepressants and mood stabilisers, puffers, sedatives, blood pressure medication, mirena, tens machine, lidocaine patches, joint taping, braces and splints", 1, .)) %>%
+  mutate_at(vars(c(tr.metr,
+                   cl.imsup,
+                   tr.sulfz,
+                   cl.dmard,
+                   tr.dmard)), ~ ifelse(symptoms_other == "treated for first 2 years with immunosuppressants - methotrexate, sulphsalasine by the rheumatologist, my treatment changed to biiologic injections. the immunosuppressant regime reacted with my skin - multiple bcc, such and one melanoma.", 1, .)) %>%
+  mutate_at(vars(c(tr.tocrt,
+                   cl.antinf)), ~ ifelse(symptoms_other == "topical steroids for inflammation and ezcema.", 1, .)) %>%
+  mutate_at(vars(c(tr.dmard,
+                   cl.dmard,
+                   tr.aconv,
+                   cl.aconv)), ~ ifelse(symptoms_other == "jak inhibitors  anticonvulsants" , 1, .)) %>%
+  mutate_at(vars(c(tr.medit,
+                   cl.lifest,
+                   tr.brthe,
+                   cl.nomed)), ~ ifelse(symptoms_other == "meditation  controlled breathing", 1, .)) %>%
+  mutate_at(vars(c(tr.heat,
+                   cl.nomed,
+                   tr.massa,
+                   tr.sleep,
+                   tr.bprph,
+                   cl.opia,
+                   tr.codei)), ~ ifelse(symptoms_other == "heat packs  massage  hot showers   taking mersyndol forte/temgesic and sleeping it off if the pain is severe", 1, .)) %>%
+  mutate_at(vars(c(tr.dmard,
+                   cl.dmard)), ~ ifelse(symptoms_other == "jak inhibitors", 1, .)) %>%
+  mutate_at(vars(c(tr.vit,
+                   cl.suppl,
+                   tr.mins)), ~ ifelse(symptoms_other == "infusions n numerous  vitamins n minerals", 1, .)) %>%
+  mutate_at(vars(c(tr.thyrx,
+                   cl.endoc,
+                   tr.ldn,
+                   cl.imod,
+                   tr.levo)), ~ ifelse(symptoms_other == "thyroxine, t3, vitamins, ldn (fibromyalgia)", 1, .)) %>%
+  mutate_at(vars(c(tr.pace,
+                   cl.lifest,
+                   tr.massa,
+                   cl.nomed,
+                   tr.heat,
+                   tr.exer,
+                   cl.lifest,
+                   tr.blcfn,
+                   cl.msrlx,
+                   tr.nprx,
+                   cl.antinf)), ~ ifelse(symptoms_other == "pacing, massage/manual therapy, heat therapy, gentle exercise when able, many pain-modulating strategies. i take baclofen to manage hypertonicity particularly at night, and naproxen for flares but can't tolerate regular nsaids.", 1, .)) 
+
+df.other.treatments <- df.other.treatments %>%
+  mutate_at(vars(c(tr.suppl,
+                   cl.suppl,
+                   tr.magn,
+                   tr.acc,
+                   tr.ldn,
+                   cl.imod,
+                   tr.curc,
+                   tr.vitb12)), ~ ifelse(symptoms_other == "supplements, magnesium citrate, mega b complex, cucurmin, low dose naltrexone. n.a.c.", 1, .)) %>%
+  mutate_at(vars(c(tr.ldn,
+                   cl.imod,
+                   tr.atnl,
+                   cl.heart)), ~ ifelse(symptoms_other == "lose dose naltrexone - 3 mg at 9pm daily.  atenolol 5 mg at night.", 1, .)) %>%
+  mutate_at(vars(c(tr.mido,
+                   cl.vascon)), ~ ifelse(symptoms_other == "i was treated with midodrine for the hypotension", 1, .)) %>%
+  mutate_at(vars(c(tr.mido,
+                   cl.vascon,
+                   tr.heat,
+                   tr.antinf,
+                   cl.antinf,
+                   tr.pace,
+                   cl.lifest)), ~ ifelse(symptoms_other == "heat/ice; rest & energy management / pacing ; someone antiinflammatories but currently no due to contraindications with other medications", 1, .)) %>%
+  mutate_at(vars(c(tr.ivig,
+                   cl.imod,
+                   tr.plph,
+                   cl.nomed,
+                   tr.splpl,
+                   cl.diaz)), ~ ifelse(symptoms_other == "plasmapheresis, ivig, benzos", 1, .)) %>%
+  mutate_at(vars(c(tr.sulfz,
+                   cl.dmard,
+                   tr.preds,
+                   cl.antinf)), ~ ifelse(symptoms_other == "prednisolone and sulfasalazine", 1, .)) %>%
+  mutate_at(vars(c(tr.flrco,
+                   cl.antinf,
+                   tr.ivab,
+                   cl.heart)), ~ ifelse(symptoms_other == "ivabradine, fludrocortisone", 1, .)) %>%
+  mutate_at(vars(c(tr.amtrp,
+                   cl.psych,
+                   tr.pill,
+                   cl.endoc)), ~ ifelse(symptoms_other == "amitriptyline  qlaira", 1, .)) %>%
+  mutate_at(vars(c(tr.tens,
+                   cl.nomed)), ~ ifelse(symptoms_other == "tens therapy", 1, .)) %>%
+  mutate_at(vars(c(tr.rest,
+                   cl.lifest,
+                   tr.heat,
+                   cl.nomed,
+                   tr.ging,
+                   cl.suppl)), ~ ifelse(symptoms_other == "heat pack  hot baths  ginger tea  rest", 1, .)) %>%
+  mutate_at(vars(c(tr.psych,
+                   cl.nomed)), ~ ifelse(symptoms_other == "in addition to pain relief, i see a psychologist once a month at the minimum, which helps a little bit.", 1, .)) %>%
+  mutate_at(vars(c(tr.accp,
+                   cl.nomed,
+                   tr.exer,
+                   cl.lifest,
+                   tr.diet,
+                   cl.diet,
+                   tr.rest)), ~ ifelse(symptoms_other == "rest  nutrition   acupuncture  gentle exercise", 1, .)) %>%
+  mutate_at(vars(c(tr.diet,
+                   cl.diet,
+                   tr.phys,
+                   cl.nomed,
+                   tr.meds,
+                   tr.osteo,
+                   tr.cmpst,
+                   cl.lifest,
+                   tr.antinf,
+                   cl.antinf)), ~ ifelse(symptoms_other == "diet, compression, physiotherapy, osteopathy, prescribed medications, anti-inflammatory cream", 1, .)) %>%
+  mutate_at(vars(c(tr.diet,
+                   cl.diet,
+                   tr.rest,
+                   cl.lifest,
+                   tr.pace,
+                   tr.strav,
+                   tr.trav)), ~ ifelse(symptoms_other == "pacing  rest  diet - emanate gluten. monitoring   avoiding chemical and fragrance exposure due to multiple chemical sensitivity  sensory sensitivity especially odours and noise, light to lesser degree  intolerance to stress or exertion", 1, .)) %>%
+  mutate_at(vars(c(tr.cana,
+                   cl.meddr,
+                   tr.ldn,
+                   cl.imod,
+                   tr.suppl,
+                   cl.suppl)), ~ ifelse(symptoms_other == "ldn, medical cannabis, supplements", 1, .)) %>%
+  mutate_at(vars(c(tr.pregab,
+                   cl.neurp,
+                   tr.amtrp,
+                   cl.psych)), ~ ifelse(symptoms_other == "lyrica & amitryptline", 1, .)) %>%
+  mutate_at(vars(c(tr.heat,
+                   cl.nomed,
+                   tr.cool,
+                   tr.chiro,
+                   tr.phys,
+                   tr.suppl,
+                   cl.suppl,
+                   tr.tens)), ~ ifelse(symptoms_other == "heat - wheat bags, electric heat blankets/throws, ice, physio, chiropractic, tens machine, supplements, creams", 1, .)) %>%
+  mutate_at(vars(c(tr.msrlx,
+                   cl.msrlx,
+                   tr.antinf,
+                   cl.antinf)), ~ ifelse(symptoms_other == "anti-inflammatory, muscle relaxant.", 1, .)) %>%
+  mutate_at(vars(c(tr.cbd,
+                   de.oil,
+                   tr.ldn,
+                   cl.imod,
+                   tr.magn,
+                   cl.suppl)), ~ ifelse(symptoms_other == "low dose naltrexone (fatigue and muscle pain)   magnesium supplement (muscle pain)  cbd oil (fatigue)", 1, .)) %>%
+  mutate_at(vars(c(tr.heat,
+                   cl.nomed,
+                   tr.cool,
+                   tr.rest,
+                   cl.lifest,
+                   tr.pace,
+                   tr.tens)), ~ ifelse(symptoms_other == "pacing, rest, tens machine, heat and ice packs", 1, .)) %>%
+  mutate_at(vars(c(tr.pill,
+                   cl.endoc,
+                   tr.modaf,
+                   cl.stim)), ~ ifelse(symptoms_other == "modafinil, period suppression (pill)", 1, .)) %>%
+  mutate_at(vars(c(cl.stim,
+                   tr.stim)), ~ ifelse(symptoms_other == "central nervous system stimulants", 1, .)) %>%
+  mutate_at(vars(c(tr.heat,
+                   cl.nomed,
+                   tr.rest,
+                   cl.lifest,
+                   tr.pace,
+                   tr.tens,
+                   tr.accp)), ~ ifelse(symptoms_other == "acupuncture  heat packs  tens machine  pacing  rest", 1, .)) %>%
+  mutate_at(vars(c(tr.accp,
+                   cl.nomed,
+                   tr.accp,
+                   cl.nomed,
+                   tr.meds,
+                   tr.medit,
+                   cl.lifest,
+                   tr.suppl,
+                   cl.suppl,
+                   tr.yoga)), ~ ifelse(symptoms_other == "acupuncture, bowen therapy, medication, supplements, meditation & yoga", 1, .)) %>%
+  mutate_at(vars(c(tr.flrco,
+                   cl.antinf,
+                   tr.cmpst,
+                   cl.lifest,
+                   tr.mbai,
+                   cl.nomed,
+                   tr.lifest,
+                   tr.diet,
+                   cl.diet)), ~ ifelse(symptoms_other == "corticosteroids (fludrocortisone specifically), bracing/bandaging, use of mobility aids and lifestyle changes (ie learning my body's limits and sticking to them, sticking to foods i can actually digest, making notes and using systems to help me account for all the brain issues as they get worse if i try to ignore them)", 1, .)) %>%
+  mutate_at(vars(c(tr.astx,
+                   cl.suppl,
+                   tr.uvli,
+                   cl.nomed)), ~ ifelse(symptoms_other == "near infrared light on my knuckles for ~30m a day does anecdotally seem to help keep them more functional. i know sunbathing is a long-standing treatment for psa, but that is unfortunately not an option, so this is my stab at a next-best.    also, astaxanthin supplements do seem to help the inflammation a bit.", 1, .)) 
+
+df.other.treatments <- df.other.treatments %>%
+  mutate_at(vars(c(tr.water,
+                   cl.lifest,
+                   tr.salt,
+                   cl.diet,
+                   tr.pace)), ~ ifelse(symptoms_other == "pacing of activity   increased fluid and salts" , 1, .)) %>%
+  mutate_at(vars(c(tr.trcrms,
+                   cl.nomed,
+                   tr.ldpat,
+                   cl.neurp,
+                   tr.cmpst,
+                   cl.lifest,
+                   tr.heat,
+                   tr.bath,
+                   tr.prob,
+                   cl.suppl,
+                   tr.msccr,
+                   tr.dclfn,
+                   cl.antinf)), ~ ifelse(symptoms_other == "tens machine, heat packs, salon pas pain patches, voltaren gel, arnica for bruising, taping, splints and braces, cervical soft collar, epsom salt baths, fingerless compression gloves. deep heat cream. probiotics, low dose endep.", 1, .)) %>%
+  mutate_at(vars(c(tr.cmpst,
+                   cl.lifest,
+                   tr.lifest,
+                   tr.salt,
+                   cl.diet,
+                   tr.pace,
+                   tr.meds,
+                   tr.elctr,
+                   cl.suppl)), ~ ifelse(symptoms_other == "medication and lifestyle modifications, compression stockings, increased salt and water intake, electrolytes and pacing.", 1, .)) %>%
+  mutate_at(vars(c(tr.heat,
+                   cl.nomed,
+                   tr.massa,
+                   tr.msrlx,
+                   cl.msrlx,
+                   tr.stret,
+                   tr.aspas,
+                   cl.aspas)), ~ ifelse(symptoms_other == "massage, heat, stretching, anti-spasmodic medications and muscle relaxants.", 1, .)) %>%
+  mutate_at(vars(c(tr.rest,
+                   cl.lifest,
+                   tr.massa,
+                   cl.nomed)), ~ ifelse(symptoms_other == "rest and massage", 1, .)) %>%
+  mutate_at(vars(c(tr.adep,
+                   cl.psych)), ~ ifelse(symptoms_other == "anti depressant", 1, .)) %>%
+  mutate_at(vars(c(tr.cafei,
+                   cl.diet,
+                   tr.post,
+                   cl.lifest)), ~ ifelse(symptoms_other == "non-medicinal pain mitigation due to concerns about contraindications. i find caffeine helps with some of my headaches, but otherwise i have to do things like lie down to ease postural headaches or back pain.", 1, .)) %>%
+  mutate_at(vars(c(tr.hydrx,
+                   cl.imod,
+                   tr.vit,
+                   cl.suppl,
+                   tr.adep,
+                   cl.psych)), ~ ifelse(symptoms_other == "plaquenil  vitamins  ssri", 1, .)) %>%
+  mutate_at(vars(c(tr.drndl,
+                   cl.altpr,
+                   tr.neurp,
+                   cl.neurp,
+                   tr.cmpst,
+                   tr.lifest,
+                   cl.lifest,
+                   tr.cool,
+                   cl.nomed,
+                   tr.heat,
+                   tr.massa)), ~ ifelse(symptoms_other == "for the muscle pain, in addition to medication i go to dry needling once a week, and use a massage gun and trigger point massage tools as well as heat patches and gels throughout the day. as well as medication for nerve pain, i use ice and cold patches. for fatigue i use pacing. i make recordings and use visual cues to help with memory.  sometimes i wear a lanyard around my neck with what i'm meant to be focusing on that day and/or reminders written on it to help with concentration and memory. compression stockings.", 1, .)) %>%
+  mutate_at(vars(c(tr.phys,
+                   cl.nomed)), ~ ifelse(symptoms_other == "physiotherapy", 1, .)) %>%
+  mutate_at(vars(c(tr.imsup,
+                   cl.imsup,
+                   tr.iginj,
+                   cl.imod,
+                   tr.tocrt,
+                   cl.antinf,
+                   tr.cortst,
+                   tr.ahist,
+                   cl.ahist,
+                   tr.swri,
+                   tr.eyero,
+                   tr.skca,
+                   cl.nomed)), ~ ifelse(symptoms_other == "oral immunosuppressants, monoclonal antibody injections fortnightly, topical therapies (steroids and non-steroidal), oral antihistamines, tr.eyero use for moisturisation, steroid nasal sprays if required, antihistamine eye drops, lubricating eye drops for dry eyes", 1, .)) %>%
+  mutate_at(vars(c(tr.stret,
+                   cl.lifest,
+                   tr.walk,
+                   tr.yoga)), ~ ifelse(symptoms_other == "yoga, stretching, low-impact exercise (walking)", 1, .)) 
+
+df.other.treatments <- df.other.treatments %>%
+  mutate(cl.recdr = case_when(
+    drug_other == 1 ~ 1,
+    tr.alco == 1 ~ 1,
+    tr.coca == 1 ~ 1,
+    tr.dmt == 1 ~ 1,
+    tr.lsd == 1 ~ 1,
+    tr.mdma == 1 ~ 1,
+    tr.psylo == 1 ~ 1,
+    tr.cana == 1 & cl.meddr == 0 ~ 1,
+    tr.cbd == 1 & cl.meddr == 0 ~ 1,
+    tr.keta == 1 & cl.meddr == 0 ~ 1,
+    tr.thc == 1 & cl.meddr == 0 ~ 1,
+    TRUE ~ cl.recdr
+  ))
+
+#label variables
 label(df.other.treatments$cl.imsup)="immunosuppresants"
 label(df.other.treatments$cl.suppl)="supplements"
 label(df.other.treatments$cl.lifest)="lifestyle"
@@ -2647,7 +3279,8 @@ label(df.other.treatments$cl.psych)="psychiatric medication"
 label(df.other.treatments$cl.imod)="immunomodulator"
 label(df.other.treatments$cl.dmard)="disease-modifying antirheumatic drug"
 label(df.other.treatments$cl.ahist)="antihistamine"
-label(df.other.treatments$cl.recdr)="recreational drugs"
+label(df.other.treatments$cl.recdr)="recreational drug"
+label(df.other.treatments$cl.meddr)="medicinal drug"
 label(df.other.treatments$cl.stool)="bowel modulator"
 label(df.other.treatments$cl.vascon)="vasopressor"
 label(df.other.treatments$cl.antiem)="antiemetic"
@@ -2671,6 +3304,9 @@ label(df.other.treatments$cl.msrlx)="muscle relaxant"
 label(df.other.treatments$cl.tyki)="tyrosine kinase inhibitor"
 label(df.other.treatments$cl.thrag)="thrombopoietin receptor agonists"
 label(df.other.treatments$cl.albl)="alpha-blocker"
+label(df.other.treatments$cl.apar)="anti-parasitic"
+label(df.other.treatments$cl.aconv)="anticonvulsant"
+label(df.other.treatments$cl.aspas)="antispasmodic"
 
 #label treatments
 label(df.other.treatments$tr.esom)="esomeprazole"
@@ -2691,7 +3327,7 @@ label(df.other.treatments$tr.vitd)="vitamin d"
 label(df.other.treatments$tr.vitb12)="vitamin b12"
 label(df.other.treatments$tr.melat)="melatonin"
 label(df.other.treatments$tr.ndte)="natural desiccated thyroid extract"
-label(df.other.treatments$tr.exer)="exercise"
+label(df.other.treatments$tr.exer)="mild exercise"
 label(df.other.treatments$tr.suppl)="supplements"
 label(df.other.treatments$tr.sleep)="sleep hygiene"
 label(df.other.treatments$tr.blreg)="blood pressure regulators"
@@ -2829,7 +3465,6 @@ label(df.other.treatments$tr.galcz)="galcanezumab"
 label(df.other.treatments$tr.thc)="thc"
 label(df.other.treatments$tr.cbd)="cbd"
 label(df.other.treatments$tr.surg)="surgery"
-label(df.other.treatments$tr.nasl)="nasal care"
 label(df.other.treatments$tr.ntzl)="natalizumab"
 label(df.other.treatments$tr.herb)="herbal remedies"
 label(df.other.treatments$tr.yoga)="yoga"
@@ -2845,9 +3480,8 @@ label(df.other.treatments$tr.smmp)="somatic movement program"
 label(df.other.treatments$tr.dulox)="duloxetine"
 label(df.other.treatments$tr.endp)="endep"
 label(df.other.treatments$tr.peas)="palmitoylethanolamide"
-label(df.other.treatments$tr.splpl)="sleeping pills"
+label(df.other.treatments$tr.splpl)="benzodiazepines"
 label(df.other.treatments$tr.mxbst)="moxibustion"
-label(df.other.treatments$tr.afung)="antibiotcs"
 label(df.other.treatments$tr.afung)="antifungals"
 label(df.other.treatments$tr.myth)="myotherapy"
 label(df.other.treatments$tr.tocrt)="topical corticosteroid"
@@ -2956,7 +3590,6 @@ label(df.other.treatments$tr.abiot)="antibiotics"
 label(df.other.treatments$tr.testo)="testosterone"
 label(df.other.treatments$tr.psylo)="psilocybin"
 label(df.other.treatments$tr.coca)="cocaine"
-label(df.other.treatments$tr.medca)="medicinal canabis"
 label(df.other.treatments$tr.acyc)="acyclovir"
 label(df.other.treatments$tr.colos)="colostrum"
 label(df.other.treatments$tr.sert)="sertraline"
@@ -2986,7 +3619,7 @@ label(df.other.treatments$tr.ocrz)="ocrelizumab"
 label(df.other.treatments$tr.meds)="medication"
 label(df.other.treatments$tr.prkn)="prokinetics"
 label(df.other.treatments$tr.thia)="thiamine"
-label(df.other.treatments$tr.inex)="intensive exercise"
+label(df.other.treatments$tr.inex)="exercise"
 label(df.other.treatments$tr.tthr)="triiodothyronine"
 label(df.other.treatments$tr.niac)="niacin"
 label(df.other.treatments$tr.orth)="orthopedics"
@@ -2997,49 +3630,43 @@ label(df.other.treatments$tr.flmx)=" flowmaxtra"
 label(df.other.treatments$tr.mrtz)="mirtazapine"
 label(df.other.treatments$tr.vpap)="vpap"
 label(df.other.treatments$tr.plph)="plasmapheresis"
+label(df.other.treatments$tr.thmz)="thiamazole"
+label(df.other.treatments$tr.iverm)="ivermectin"
+label(df.other.treatments$tr.omzm)="omalizumab"
+label(df.other.treatments$tr.mirena)="levonorgestrel-releasing IUD"
+label(df.other.treatments$tr.ldpat)="lidocaine transdermal patches"
+label(df.other.treatments$tr.aconv)="anticonvulsants"
+label(df.other.treatments$tr.bprph)="buprenorphine"
+label(df.other.treatments$tr.codei)="codeine"
+label(df.other.treatments$tr.nprx)="naproxen"
+label(df.other.treatments$tr.atnl)="atenolol"
+label(df.other.treatments$tr.ging)="ginger"
+label(df.other.treatments$tr.astx)="astaxanthin"
+label(df.other.treatments$tr.uvli)="UV light"
+label(df.other.treatments$tr.dclfn)="diclofenac"
+label(df.other.treatments$tr.aspas)="antispasmodic"
+label(df.other.treatments$tr.cafei)="caffeine"
+label(df.other.treatments$tr.rfab)="radio-frequency ablations"
+label(df.other.treatments$tr.hmrp)="hormone replacement therapy"
+label(df.other.treatments$tr.flxt)="fluoxetine"
 
 #label recreational delivery method
 label(df.other.treatments$de.smok)="smoke"
 label(df.other.treatments$de.edib)="edibles"
 label(df.other.treatments$de.oil)="oil"
 
+saveRDS(df.other.treatments, "df-treatments.rds")
+
+
 #df.other.treatments %>% select(record_id, tr.cana, tr.cbd, tr.thc) %>% filter(tr.cana == 1 | tr.cbd == 1 | tr.thc == 1)
 
-##wordcloud individual treatment
+##wordcloud treatment
 tr.cloud <- df.other.treatments %>%
-  select(contains("tr.")) %>%
-  mutate(cannabis = 0) %>%
-  mutate(corticosteroids = 0)
-tr.cloud <- tr.cloud  %>%
-  mutate_at(vars(c(cannabis)), ~ ifelse(tr.cana == "1" |
-                                          tr.cbd == "1" |
-                                          tr.medca == "1" |
-                                          tr.thc == "1" , 1, .)) %>%
-  mutate_at(vars(c(corticosteroids)), ~ ifelse(tr.tocrt == "1" |
-                                                 tr.cortst == "1" |
-                                                 tr.cortinj== "1" |
-                                                 tr.flrco== "1" |
-                                                 tr.hydrco == "1" |
-                                                 tr.hcrtp== "1" |
-                                                 tr.mpred== "1" |
-                                                 tr.preds== "1", 1, .)) %>%
-  subset(., select = -c(tr.cana,
-            tr.cbd,
-            tr.medca,
-            tr.thc,
-            tr.tocrt,
-            tr.cortst,
-            tr.cortinj,
-            tr.flrco,
-            tr.hydrco,
-            tr.hcrtp,
-            tr.mpred,
-            tr.preds,
-            tr.meds))
-label(tr.cloud$cannabis)="cannabis"
-label(tr.cloud$corticosteroids)="corticosteroids"
+  select(contains("tr.")) 
 tr.labels <- tr.cloud %>%
   get_label 
+#check if column labels are duplicated
+# if_else(duplicated(tr.labels) == TRUE, print(tr.labels), "NA")
 colnames(tr.cloud) <- tr.labels
 
 tr.count <- tr.cloud %>% 
@@ -3052,65 +3679,6 @@ tr.count.df$freq <- as.numeric(as.character(tr.count.df$freq))
 
 wordcloud2(tr.count.df, shape = 'diamond', color = "random-dark", backgroundColor = "white")
 
-
-### illicit drugs
-# shows yes no drug_other
-data.clean %>%
-  tabyl(drug_other.factor) %>%
-  adorn_totals(where = "row") %>%
-  adorn_percentages(denominator = "col") %>%
-  adorn_pct_formatting() %>%
-  adorn_ns(position = "rear") %>%
-  adorn_title(
-    row_name = "Gender"
-  )
-
-##shows which drug_other_other
-data.clean %>%
-  tabyl(drug_other_other) %>%
-  adorn_totals(where = "row") %>%
-  adorn_percentages(denominator = "col") %>%
-  adorn_pct_formatting() %>%
-  adorn_ns(position = "rear") %>%
-  adorn_title(
-    row_name = "Gender"
-  )
-
-ggpiestats(
-  data         = data.clean,
-  x            = drug_other,
-  #y            = gender.id,
-  package      = "RColorBrewer",
-  palette = "Spectral",
-  title        = "Responses by state",
-  legend.title = "State"
-)
-
-#check which column labels are duplicated
-# if_else(duplicated(tr.labels) == TRUE, print(tr.labels), "NA")
-
-##treatment barplot
-#use ad.count.df from wordcloud 
-tr.count.ord <- tr.count.df %>%
-#  filter(word != "Healthy control") %>%
-  filter(freq > 8)%>%
-  rename(., treatment = word) %>%
-  arrange(., desc(freq))
-
-#ad.plot <- 
-ggplot(tr.count.ord, aes(x = freq, y = treatment)) +
-  geom_col(fill = viridis(13)) +
-  scale_y_discrete(limits=rev(tr.count.ord$treatment)) +
-  labs(title = NULL,
-       x = NULL, #"Number of respondents",
-       y = NULL) +
-  scale_x_continuous(expand = c(0, 0),
-                     limits = c(0, 145),
-                     breaks = c(0, 20, 40, 60, 80, 100, 120, 140)) +
-  theme_bw() +
-  theme(plot.title=element_text(size=20, face="bold"),
-        axis.title=element_text(size=20),
-        axis.text=element_text(size=20, face="bold"))
 
 ## wordcloud treatment classifiers
 cltr.cloud <- df.other.treatments %>%
@@ -3127,3 +3695,68 @@ cltr.count.df <- as.data.frame(do.call(cbind, cltr.count)) %>%
 cltr.count.df$freq <- as.numeric(as.character(cltr.count.df$freq))
 
 wordcloud2(cltr.count.df, shape = 'diamond', color = "random-dark", backgroundColor = "white")
+
+
+### illicit drugs
+df.other.treatments %>%
+  tabyl(cl.recdr) %>%
+  adorn_totals(where = "row") %>%
+  adorn_percentages(denominator = "col") %>%
+  adorn_pct_formatting() %>%
+  adorn_ns(position = "rear") %>%
+  adorn_title(
+    row_name = "Gender"
+  )
+### prescribed 'illicit' drugs
+df.other.treatments %>%
+  tabyl(cl.meddr) %>%
+  adorn_totals(where = "row") %>%
+  adorn_percentages(denominator = "col") %>%
+  adorn_pct_formatting() %>%
+  adorn_ns(position = "rear") %>%
+  adorn_title(
+    row_name = "Gender"
+  )
+
+
+##treatment barplot\
+tr.count.ord <- tr.count.df %>%
+  filter(freq > 9)%>%
+  rename(., treatment = word) %>%
+  arrange(., desc(freq))
+
+ggplot(tr.count.ord, aes(x = freq, y = treatment)) +
+  geom_col(fill = viridis(37)) +
+  scale_y_discrete(limits=rev(tr.count.ord$treatment)) +
+  labs(title = NULL,
+       x = NULL, #"Number of respondents",
+       y = NULL) +
+  scale_x_continuous(expand = c(0, 0),
+                     limits = c(0, 170),
+                     breaks = c(0, 20, 40, 60, 80, 100, 120, 140, 160)) +
+  theme_bw() +
+  theme(plot.title=element_text(size=20, face="bold"),
+        axis.title=element_text(size=15),
+        axis.text=element_text(size=20))
+
+##classifier barplot\
+cl.count.ord <- cltr.count.df %>%
+  #filter(freq > 9)%>%
+  rename(., treatment = word) %>%
+  arrange(., desc(freq))
+
+ggplot(cl.count.ord, aes(x = freq, y = treatment)) +
+  geom_col(fill = viridis(41)) +
+  scale_y_discrete(limits=rev(cl.count.ord$treatment)) +
+  labs(title = NULL,
+       x = NULL, #"Number of respondents",
+       y = NULL) +
+  scale_x_continuous(expand = c(0, 0),
+                     limits = c(0, 170),
+                     breaks = c(0, 20, 40, 60, 80, 100, 120, 140, 160)) +
+  theme_bw() +
+  theme(plot.title=element_text(size=20, face="bold"),
+        axis.title=element_text(size=15),
+        axis.text=element_text(size=20))
+
+
