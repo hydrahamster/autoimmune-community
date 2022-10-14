@@ -78,7 +78,29 @@ names(types.list) = c("Local blood",
 
  save( autoimmune.unknown, autoimmune.no, autoimmune.yes, types.list, file="classification-autoimmune.Rdata" )
 
-# make palette - max number of overlap is ~173 
+# ICD types 
+icd.parasitic <- readRDS( file = "icd-parasitic.rds")
+icd.special <- readRDS( file = "icd-special.rds")
+icd.developmental <- readRDS( file = "icd-developmental.rds")
+icd.blood <- readRDS( file = "icd-blood.rds")
+icd.circulatory <- readRDS( file = "icd-circulatory.rds")
+icd.digestive <- readRDS( file = "icd-digestive.rds")
+icd.ear <- readRDS( file = "icd-ear.rds")
+icd.genitourinary <- readRDS( file = "icd-genitourinary.rds")
+icd.immune <- readRDS( file = "icd-immune.rds")
+icd.musculoskeletal <- readRDS( file = "icd-musculoskeletal.rds")
+icd.nervous <- readRDS( file = "icd-nervous.rds")
+icd.respiratory <- readRDS( file = "icd-respiratory.rds")
+icd.skin <- readRDS( file = "icd-skin.rds")
+icd.visual <- readRDS( file = "icd-visual.rds")
+icd.endocrine <- readRDS( file = "icd-endocrine.rds")
+icd.mental <- readRDS( file = "icd-mental.rds")
+icd.neoplasm <- readRDS( file = "icd-neoplasm.rds")
+icd.sleep <- readRDS( file = "icd-sleep.rds")
+icd.symptom <- readRDS( file = "icd-symptom.rds")
+
+# make palette - max number of overlap is ~173
+#TODO is that still accurate?
 cols <- colorRampPalette(brewer.pal(9, "BuPu")[3:9] )(175)
 cols[1] = "white"
 
