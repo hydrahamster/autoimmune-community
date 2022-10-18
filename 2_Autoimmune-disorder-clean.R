@@ -1483,7 +1483,10 @@ df.ad <- df.ad %>%
             autoimmune_id___47,
             autoimmune_id___48,
             autoimmune_id___49
-            )) %>%
+            )) 
+
+  #TODO change this to reflect AD, non-AD, unknown, mixed
+df.ad <- df.ad %>%
   mutate(ad.sum = rowSums(select(., contains("autoimmune_id"))))
 
 #check why some chronic cohort were coming up with zero ADs & some controls with ADs logged
