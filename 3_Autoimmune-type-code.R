@@ -4,398 +4,398 @@ source("0_pachages-function.R")
 #load data
 df.ad <- readRDS("df-ad.rds")
 
-ad.type <- df.ad %>%
-  mutate(ad_type_healthy = ifelse(cohort.id == "control", 1, 0)) %>%
-  mutate(ad_type_loc.blood = ifelse(autoimmune_id___2 == 1 |
-                                      autoimmune_id___11 == 1 |
-                                      autoimmune_id___21 == 1 |
-                                      autoimmune_id___70 == 1 |
-                                      autoimmune_id___102 == 1 |
-                                      autoimmune_id___106 == 1 |
-                                      autoimmune_id___126 == 1 |
-                                      autoimmune_id___130 == 1 |
-                                      autoimmune_id___134 == 1 |
-                                      autoimmune_id___150 == 1 |
-                                      autoimmune_id___156 == 1 |
-                                      autoimmune_id___157 == 1 |
-                                      autoimmune_id___177 == 1, 1, 0)) %>%
-  mutate(ad_type_loc.card = ifelse(autoimmune_id___16 == 1 |
-                                     autoimmune_id___53 == 1 |
-                                     autoimmune_id___116 == 1 |
-                                     autoimmune_id___100 == 1 |
-                                     autoimmune_id___160 == 1, 1, 0)) %>%
-  mutate(ad_type_loc.ear = ifelse(autoimmune_id___140 == 1, 1 |
-                                    autoimmune_id___129 == 1, 0)) %>%
-  mutate(ad_type_loc.endocr = ifelse(autoimmune_id___14 == 1 |
-                                       autoimmune_id___17 == 1 |
-                                       autoimmune_id___87 == 1 |
-                                       autoimmune_id___91 == 1 |
-                                       autoimmune_id___112 == 1 |
-                                       autoimmune_id___113 == 1 |
-                                       autoimmune_id___125 == 1 |
-                                       autoimmune_id___170 == 1|
-                                       autoimmune_id___173 == 1|
-                                       autoimmune_id___179 == 1|
-                                       autoimmune_id___184 == 1, 1, 0)) %>%
-  mutate(ad_type_loc.gastro = ifelse(autoimmune_id___6 == 1 |
-                                       autoimmune_id___8 == 1 |
-                                       autoimmune_id___30 == 1 |
-                                       autoimmune_id___42 == 1 |
-                                       autoimmune_id___61 == 1 |
-                                       autoimmune_id___69 == 1 |
-                                       autoimmune_id___72 == 1 |
-                                       autoimmune_id___93 == 1 |
-                                       autoimmune_id___94 == 1 |
-                                       autoimmune_id___98 == 1 |
-                                       autoimmune_id___122 == 1 |
-                                       autoimmune_id___136 == 1 |
-                                       autoimmune_id___141 == 1 |
-                                       autoimmune_id___142 == 1 |
-                                       autoimmune_id___149 == 1 |
-                                       autoimmune_id___174 == 1, 1, 0)) %>%
-  mutate(ad_type_loc.gento = ifelse(autoimmune_id___65 == 1 |
-                                      autoimmune_id___84 == 1 |
-                                      autoimmune_id___99 == 1 |
-                                      autoimmune_id___101 == 1, 1, 0)) %>%
-  mutate(ad_type_loc.skel = ifelse(autoimmune_id___1 == 1 |
-                                     autoimmune_id___58 ==1 |
-                                     autoimmune_id___71 == 1 | 
-                                     autoimmune_id___81 == 1 |
-                                     autoimmune_id___92 == 1 |
-                                     autoimmune_id___111 == 1 |
-                                     autoimmune_id___121 == 1 |
-                                     autoimmune_id___151 == 1 |
-                                     autoimmune_id___152 == 1 |
-                                     autoimmune_id___153 == 1 |
-                                     autoimmune_id___154 == 1 |
-                                     autoimmune_id___158 == 1 |
-                                     autoimmune_id___162 == 1 |
-                                     autoimmune_id___180 |
-                                     autoimmune_id___187 == 1, 1, 0)) %>%
-  mutate(ad_type_loc.kid = ifelse(autoimmune_id___19 == 1 |
-                                      autoimmune_id___23 == 1 |
-                                      autoimmune_id___137 == 1, 1, 0)) %>%
-  mutate(ad_type_loc.liv = ifelse(autoimmune_id___32 == 1 |
-                                    autoimmune_id___52 |
-                                    autoimmune_id___182 |
-                                    autoimmune_id___183 |
-                                    autoimmune_id___185 == 1, 1, 0)) %>%
-  mutate(ad_type_loc.lymph = ifelse(autoimmune_id___83 == 1 |
-                                      autoimmune_id___117 == 1, 1, 0)) %>%
-  mutate(ad_type_loc.musc = ifelse(autoimmune_id___27 == 1 |
-                                     autoimmune_id___40 == 1 |
-                                     autoimmune_id___178 == 1 | 
-                                     autoimmune_id___186 == 1 |
-                                     autoimmune_id___128 == 1, 1, 0)) %>%
-  mutate(ad_type_loc.nerv = ifelse(autoimmune_id___5 == 1 |
-                                     autoimmune_id___15 == 1 |
-                                     autoimmune_id___25 == 1 |
-                                     autoimmune_id___26 == 1 |
-                                     autoimmune_id___51 == 1 |
-                                     autoimmune_id___63 == 1 |
-                                     autoimmune_id___64 == 1 |
-                                     autoimmune_id___66 == 1 |
-                                     autoimmune_id___68 == 1 |
-                                     autoimmune_id___78 == 1 |
-                                     autoimmune_id___82 == 1 |
-                                     autoimmune_id___90 == 1 |
-                                     autoimmune_id___114 == 1|
-                                     autoimmune_id___115 == 1 |
-                                     autoimmune_id___127 == 1 |
-                                     autoimmune_id___144 == 1 |
-                                     autoimmune_id___155 == 1 |
-                                     autoimmune_id___161 == 1|
-                                     autoimmune_id___163 == 1 |
-                                     autoimmune_id___168 == 1 |
-                                     autoimmune_id___175 == 1, 1, 0)) %>%
-  mutate(ad_type_loc.ocul = ifelse(autoimmune_id___28 == 1 |
-                                     autoimmune_id___110 == 1 |
-                                     autoimmune_id___147 == 1 |
-                                     autoimmune_id___181 == 1, 1, 0)) %>%
-  mutate(ad_type_loc.panc = ifelse(autoimmune_id___41 == 1, 1, 0)) %>%
-  mutate(ad_type_loc.resp = ifelse(autoimmune_id___159 == 1, 1, 0)) %>%
-  mutate(ad_type_loc.skin = ifelse(autoimmune_id___3 == 1 |
-                                     autoimmune_id___4 == 1 |
-                                     autoimmune_id___29 == 1 |
-                                     autoimmune_id___56 == 1 |
-                                     autoimmune_id___57 == 1 |
-                                     autoimmune_id___59 == 1 |
-                                     autoimmune_id___73 == 1 |
-                                     autoimmune_id___74 == 1 |
-                                     autoimmune_id___75 == 1 |
-                                     autoimmune_id___88 == 1 |
-                                     autoimmune_id___89 == 1 |
-                                     autoimmune_id___95 == 1 |
-                                     autoimmune_id___103 == 1 |
-                                     autoimmune_id___119 == 1 |
-                                     autoimmune_id___131 == 1 |
-                                     autoimmune_id___138 == 1 |
-                                     autoimmune_id___145 == 1 |
-                                     autoimmune_id___148 == 1 |
-                                     autoimmune_id___165 == 1 |
-                                     autoimmune_id___166 == 1 |
-                                     autoimmune_id___167 == 1 |
-                                     autoimmune_id___169 == 1 , 1, 0)) %>%
-  mutate(ad_type_sys.gen = ifelse(  autoimmune_id___105 == 1 |
-                                      autoimmune_id___108 == 1 |
-                                    autoimmune_id___146 == 1 |
-                                    autoimmune_id___132 == 1, 1, 0)) %>%
-  mutate(ad_type_sys.rheum = ifelse(autoimmune_id___7 == 1 |
-                                      autoimmune_id___9 == 1 |
-                                      autoimmune_id___22 == 1 |
-                                      autoimmune_id___31 == 1 |
-                                      autoimmune_id___33 == 1 |
-                                      autoimmune_id___34 == 1 |
-                                      autoimmune_id___35 == 1 |
-                                      autoimmune_id___37 == 1 |
-                                      autoimmune_id___38 == 1 |
-                                      autoimmune_id___46 == 1 |
-                                      autoimmune_id___50 == 1 |
-                                      autoimmune_id___55 == 1 |
-                                      autoimmune_id___60 == 1 |
-                                      autoimmune_id___77 == 1 |
-                                      autoimmune_id___80 == 1 |
-                                      autoimmune_id___96 == 1 |
-                                      autoimmune_id___107 == 1 |
-                                      autoimmune_id___139 == 1 |
-                                      autoimmune_id___164 == 1 |
-                                      autoimmune_id___171 == 1 |
-                                      autoimmune_id___172 == 1 |
-                                      autoimmune_id___85 == 1, 1, 0)) %>%
-  mutate(ad_type_sys.vasc = ifelse(autoimmune_id___10 == 1 |
-                                     autoimmune_id___12 == 1 |
-                                     autoimmune_id___13 == 1 |
-                                     autoimmune_id___18 == 1 |
-                                     autoimmune_id___20 == 1 |
-                                     autoimmune_id___24 == 1 |
-                                     autoimmune_id___36 == 1 |
-                                     autoimmune_id___39 == 1 |
-                                     autoimmune_id___43 == 1 |
-                                     autoimmune_id___54 == 1 |
-                                     autoimmune_id___62 == 1 |
-                                     autoimmune_id___76 == 1 |
-                                     autoimmune_id___79 == 1 |
-                                     autoimmune_id___86 == 1 |
-                                     autoimmune_id___104 == 1 |
-                                     autoimmune_id___109 == 1 |
-                                     autoimmune_id___118 == 1 |
-                                     autoimmune_id___133 == 1 |
-                                     autoimmune_id___176 == 1, 1, 0))
- #TODO work out whether to drop ADs
-#TODO chron.sum?
-#TODO ad.type.sum ?
-#TODO variables with type ADs might be needed to?
-
-#label
-label(ad.type$ad_type_healthy)="Healthy"
-label(ad.type$ad_type_loc.blood)="Local blood"
-label(ad.type$ad_type_loc.card)="Local cardiac"
-label(ad.type$ad_type_loc.ear)="Local ear"
-label(ad.type$ad_type_loc.endocr)="Local endocrine"
-label(ad.type$ad_type_loc.gastro)="Local gastrointestinal system"
-label(ad.type$ad_type_loc.gento)="Local genitourinary system"
-label(ad.type$ad_type_loc.skel)="Local joint/skeletal"
-label(ad.type$ad_type_loc.kid)="Local kidney"
-label(ad.type$ad_type_loc.liv)="Local liver"
-label(ad.type$ad_type_loc.lymph)="Local lymphatic"
-label(ad.type$ad_type_loc.musc)="Local muscular"
-label(ad.type$ad_type_loc.nerv)="Local nervous system"
-label(ad.type$ad_type_loc.ocul)="Local occular"
-label(ad.type$ad_type_loc.panc)="Local pancreas"
-label(ad.type$ad_type_loc.resp)="Local respiratory"
-label(ad.type$ad_type_loc.skin)="Local skin"
-label(ad.type$ad_type_sys.gen)="Systemic general"
-label(ad.type$ad_type_sys.rheum)="Systemic rheumatological"
-label(ad.type$ad_type_sys.vasc)="Systemic vasculitis"
-
-saveRDS(ad.type, file = "AD-type-classification.rds")
-
-############
-# Variables of AD classification
-############
-
-# Subsetting aim:
-# data %>%
-#   select(any_of(variable))
-
-autoimmune.yes <- c("autoimmune_id___1",
-                    "autoimmune_id___2",
-                    "autoimmune_id___3",
-                    "autoimmune_id___4",
-                    "autoimmune_id___5",
-                    "autoimmune_id___6",
-                    "autoimmune_id___7",
-                    "autoimmune_id___8",
-                    "autoimmune_id___9",
-                    "autoimmune_id___10",
-                    "autoimmune_id___11",
-                    "autoimmune_id___12",
-                    "autoimmune_id___13",
-                    "autoimmune_id___14",
-                    "autoimmune_id___15",
-                    "autoimmune_id___16",
-                    "autoimmune_id___17",
-                    "autoimmune_id___18",
-                    "autoimmune_id___19",
-                    "autoimmune_id___20",
-                    "autoimmune_id___21",
-                    "autoimmune_id___22",
-                    "autoimmune_id___23",
-                    "autoimmune_id___24",
-                    "autoimmune_id___25",
-                    "autoimmune_id___26",
-                    "autoimmune_id___27",
-                    "autoimmune_id___28",
-                    "autoimmune_id___29",
-                    "autoimmune_id___30",
-                    "autoimmune_id___31",
-                    "autoimmune_id___32",
-                    "autoimmune_id___33",
-                    "autoimmune_id___34",
-                    "autoimmune_id___35",
-                    "autoimmune_id___36",
-                    "autoimmune_id___37",
-                    "autoimmune_id___38",
-                    "autoimmune_id___39",
-                    "autoimmune_id___40",
-                    "autoimmune_id___41",
-                    "autoimmune_id___42",
-                    "autoimmune_id___43",
-                    "autoimmune_id___46",
-                    "autoimmune_id___50",
-                    "autoimmune_id___52",
-                    "autoimmune_id___54",
-                    "autoimmune_id___59",
-                    "autoimmune_id___62",
-                    "autoimmune_id___70",
-                    "autoimmune_id___71",
-                    "autoimmune_id___73",
-                    "autoimmune_id___75",
-                    "autoimmune_id___77",
-                    "autoimmune_id___78",
-                    "autoimmune_id___79",
-                    "autoimmune_id___80",
-                    "autoimmune_id___82",
-                    "autoimmune_id___88",
-                    "autoimmune_id___89",
-                    "autoimmune_id___90",
-                    "autoimmune_id___94",
-                    "autoimmune_id___96",
-                    "autoimmune_id___103",
-                    "autoimmune_id___104",
-                    "autoimmune_id___107",
-                    "autoimmune_id___108",
-                    "autoimmune_id___109",
-                    "autoimmune_id___110",
-                    "autoimmune_id___115",
-                    "autoimmune_id___122",
-                    "autoimmune_id___127",
-                    "autoimmune_id___131",
-                    "autoimmune_id___137",
-                    "autoimmune_id___138",
-                    "autoimmune_id___139",
-                    "autoimmune_id___148",
-                    "autoimmune_id___150",
-                    "autoimmune_id___151",
-                    "autoimmune_id___162",
-                    "autoimmune_id___165",
-                    "autoimmune_id___166",
-                    "autoimmune_id___168",
-                    "autoimmune_id___171",
-                    "autoimmune_id___173",
-                    "autoimmune_id___174",
-                    "autoimmune_id___175",
-                    "autoimmune_id___176",
-                    "autoimmune_id___179",
-                    "autoimmune_id___181",
-                    "autoimmune_id___183")
-saveRDS(autoimmune.yes, file = "classification-autoimmune-yes.rds")
-autoimmune.no <- c("autoimmune_id___51",
-                   "autoimmune_id___53",
-                   "autoimmune_id___56",
-                   "autoimmune_id___58",
-                   "autoimmune_id___60",
-                   "autoimmune_id___61",
-                   "autoimmune_id___63",
-                   "autoimmune_id___64",
-                   "autoimmune_id___65",
-                   "autoimmune_id___66",
-                   "autoimmune_id___68",
-                   "autoimmune_id___69",
-                   "autoimmune_id___72",
-                   "autoimmune_id___76",
-                   "autoimmune_id___81",
-                   "autoimmune_id___83",
-                   "autoimmune_id___86",
-                   "autoimmune_id___87",
-                   "autoimmune_id___91",
-                   "autoimmune_id___92",
-                   "autoimmune_id___93",
-                   "autoimmune_id___98",
-                   "autoimmune_id___101",
-                   "autoimmune_id___102",
-                   "autoimmune_id___105",
-                   "autoimmune_id___106",
-                   "autoimmune_id___111",
-                   "autoimmune_id___112",
-                   "autoimmune_id___113",
-                   "autoimmune_id___114",
-                   "autoimmune_id___117",
-                   "autoimmune_id___119",
-                   "autoimmune_id___121",
-                   "autoimmune_id___126",
-                   "autoimmune_id___128",
-                   "autoimmune_id___129",
-                   "autoimmune_id___130",
-                   "autoimmune_id___132",
-                   "autoimmune_id___133",
-                   "autoimmune_id___134",
-                   "autoimmune_id___136",
-                   "autoimmune_id___140",
-                   "autoimmune_id___141",
-                   "autoimmune_id___142",
-                   "autoimmune_id___144",
-                   "autoimmune_id___145",
-                   "autoimmune_id___146",
-                   "autoimmune_id___147",
-                   "autoimmune_id___152",
-                   "autoimmune_id___153",
-                   "autoimmune_id___154",
-                   "autoimmune_id___155",
-                   "autoimmune_id___156",
-                   "autoimmune_id___157",
-                   "autoimmune_id___158",
-                   "autoimmune_id___160",
-                   "autoimmune_id___161",
-                   "autoimmune_id___163",
-                   "autoimmune_id___167",
-                   "autoimmune_id___170",
-                   "autoimmune_id___172",
-                   "autoimmune_id___177",
-                   "autoimmune_id___178",
-                   "autoimmune_id___180",
-                   "autoimmune_id___182",
-                   "autoimmune_id___184",
-                   "autoimmune_id___185",
-                   "autoimmune_id___186",
-                   "autoimmune_id___187")
-saveRDS(autoimmune.no, file = "classification-autoimmune-no.rds")
-autoimmune.unknown <- c("autoimmune_id___55",
-                        "autoimmune_id___57",
-                        "autoimmune_id___74",
-                        "autoimmune_id___84",
-                        "autoimmune_id___85",
-                        "autoimmune_id___95",
-                        "autoimmune_id___99",
-                        "autoimmune_id___100",
-                        "autoimmune_id___116",
-                        "autoimmune_id___118",
-                        "autoimmune_id___125",
-                        "autoimmune_id___149",
-                        "autoimmune_id___159",
-                        "autoimmune_id___164",
-                        "autoimmune_id___169")
-saveRDS(autoimmune.unknown, file = "classification-autoimmune-unknown.rds")
+# ad.type <- df.ad %>%
+#   mutate(ad_type_healthy = ifelse(cohort.id == "control", 1, 0)) %>%
+#   mutate(ad_type_loc.blood = ifelse(autoimmune_id___2 == 1 |
+#                                       autoimmune_id___11 == 1 |
+#                                       autoimmune_id___21 == 1 |
+#                                       autoimmune_id___70 == 1 |
+#                                       autoimmune_id___102 == 1 |
+#                                       autoimmune_id___106 == 1 |
+#                                       autoimmune_id___126 == 1 |
+#                                       autoimmune_id___130 == 1 |
+#                                       autoimmune_id___134 == 1 |
+#                                       autoimmune_id___150 == 1 |
+#                                       autoimmune_id___156 == 1 |
+#                                       autoimmune_id___157 == 1 |
+#                                       autoimmune_id___177 == 1, 1, 0)) %>%
+#   mutate(ad_type_loc.card = ifelse(autoimmune_id___16 == 1 |
+#                                      autoimmune_id___53 == 1 |
+#                                      autoimmune_id___116 == 1 |
+#                                      autoimmune_id___100 == 1 |
+#                                      autoimmune_id___160 == 1, 1, 0)) %>%
+#   mutate(ad_type_loc.ear = ifelse(autoimmune_id___140 == 1, 1 |
+#                                     autoimmune_id___129 == 1, 0)) %>%
+#   mutate(ad_type_loc.endocr = ifelse(autoimmune_id___14 == 1 |
+#                                        autoimmune_id___17 == 1 |
+#                                        autoimmune_id___87 == 1 |
+#                                        autoimmune_id___91 == 1 |
+#                                        autoimmune_id___112 == 1 |
+#                                        autoimmune_id___113 == 1 |
+#                                        autoimmune_id___125 == 1 |
+#                                        autoimmune_id___170 == 1|
+#                                        autoimmune_id___173 == 1|
+#                                        autoimmune_id___179 == 1|
+#                                        autoimmune_id___184 == 1, 1, 0)) %>%
+#   mutate(ad_type_loc.gastro = ifelse(autoimmune_id___6 == 1 |
+#                                        autoimmune_id___8 == 1 |
+#                                        autoimmune_id___30 == 1 |
+#                                        autoimmune_id___42 == 1 |
+#                                        autoimmune_id___61 == 1 |
+#                                        autoimmune_id___69 == 1 |
+#                                        autoimmune_id___72 == 1 |
+#                                        autoimmune_id___93 == 1 |
+#                                        autoimmune_id___94 == 1 |
+#                                        autoimmune_id___98 == 1 |
+#                                        autoimmune_id___122 == 1 |
+#                                        autoimmune_id___136 == 1 |
+#                                        autoimmune_id___141 == 1 |
+#                                        autoimmune_id___142 == 1 |
+#                                        autoimmune_id___149 == 1 |
+#                                        autoimmune_id___174 == 1, 1, 0)) %>%
+#   mutate(ad_type_loc.gento = ifelse(autoimmune_id___65 == 1 |
+#                                       autoimmune_id___84 == 1 |
+#                                       autoimmune_id___99 == 1 |
+#                                       autoimmune_id___101 == 1, 1, 0)) %>%
+#   mutate(ad_type_loc.skel = ifelse(autoimmune_id___1 == 1 |
+#                                      autoimmune_id___58 ==1 |
+#                                      autoimmune_id___71 == 1 | 
+#                                      autoimmune_id___81 == 1 |
+#                                      autoimmune_id___92 == 1 |
+#                                      autoimmune_id___111 == 1 |
+#                                      autoimmune_id___121 == 1 |
+#                                      autoimmune_id___151 == 1 |
+#                                      autoimmune_id___152 == 1 |
+#                                      autoimmune_id___153 == 1 |
+#                                      autoimmune_id___154 == 1 |
+#                                      autoimmune_id___158 == 1 |
+#                                      autoimmune_id___162 == 1 |
+#                                      autoimmune_id___180 |
+#                                      autoimmune_id___187 == 1, 1, 0)) %>%
+#   mutate(ad_type_loc.kid = ifelse(autoimmune_id___19 == 1 |
+#                                       autoimmune_id___23 == 1 |
+#                                       autoimmune_id___137 == 1, 1, 0)) %>%
+#   mutate(ad_type_loc.liv = ifelse(autoimmune_id___32 == 1 |
+#                                     autoimmune_id___52 |
+#                                     autoimmune_id___182 |
+#                                     autoimmune_id___183 |
+#                                     autoimmune_id___185 == 1, 1, 0)) %>%
+#   mutate(ad_type_loc.lymph = ifelse(autoimmune_id___83 == 1 |
+#                                       autoimmune_id___117 == 1, 1, 0)) %>%
+#   mutate(ad_type_loc.musc = ifelse(autoimmune_id___27 == 1 |
+#                                      autoimmune_id___40 == 1 |
+#                                      autoimmune_id___178 == 1 | 
+#                                      autoimmune_id___186 == 1 |
+#                                      autoimmune_id___128 == 1, 1, 0)) %>%
+#   mutate(ad_type_loc.nerv = ifelse(autoimmune_id___5 == 1 |
+#                                      autoimmune_id___15 == 1 |
+#                                      autoimmune_id___25 == 1 |
+#                                      autoimmune_id___26 == 1 |
+#                                      autoimmune_id___51 == 1 |
+#                                      autoimmune_id___63 == 1 |
+#                                      autoimmune_id___64 == 1 |
+#                                      autoimmune_id___66 == 1 |
+#                                      autoimmune_id___68 == 1 |
+#                                      autoimmune_id___78 == 1 |
+#                                      autoimmune_id___82 == 1 |
+#                                      autoimmune_id___90 == 1 |
+#                                      autoimmune_id___114 == 1|
+#                                      autoimmune_id___115 == 1 |
+#                                      autoimmune_id___127 == 1 |
+#                                      autoimmune_id___144 == 1 |
+#                                      autoimmune_id___155 == 1 |
+#                                      autoimmune_id___161 == 1|
+#                                      autoimmune_id___163 == 1 |
+#                                      autoimmune_id___168 == 1 |
+#                                      autoimmune_id___175 == 1, 1, 0)) %>%
+#   mutate(ad_type_loc.ocul = ifelse(autoimmune_id___28 == 1 |
+#                                      autoimmune_id___110 == 1 |
+#                                      autoimmune_id___147 == 1 |
+#                                      autoimmune_id___181 == 1, 1, 0)) %>%
+#   mutate(ad_type_loc.panc = ifelse(autoimmune_id___41 == 1, 1, 0)) %>%
+#   mutate(ad_type_loc.resp = ifelse(autoimmune_id___159 == 1, 1, 0)) %>%
+#   mutate(ad_type_loc.skin = ifelse(autoimmune_id___3 == 1 |
+#                                      autoimmune_id___4 == 1 |
+#                                      autoimmune_id___29 == 1 |
+#                                      autoimmune_id___56 == 1 |
+#                                      autoimmune_id___57 == 1 |
+#                                      autoimmune_id___59 == 1 |
+#                                      autoimmune_id___73 == 1 |
+#                                      autoimmune_id___74 == 1 |
+#                                      autoimmune_id___75 == 1 |
+#                                      autoimmune_id___88 == 1 |
+#                                      autoimmune_id___89 == 1 |
+#                                      autoimmune_id___95 == 1 |
+#                                      autoimmune_id___103 == 1 |
+#                                      autoimmune_id___119 == 1 |
+#                                      autoimmune_id___131 == 1 |
+#                                      autoimmune_id___138 == 1 |
+#                                      autoimmune_id___145 == 1 |
+#                                      autoimmune_id___148 == 1 |
+#                                      autoimmune_id___165 == 1 |
+#                                      autoimmune_id___166 == 1 |
+#                                      autoimmune_id___167 == 1 |
+#                                      autoimmune_id___169 == 1 , 1, 0)) %>%
+#   mutate(ad_type_sys.gen = ifelse(  autoimmune_id___105 == 1 |
+#                                       autoimmune_id___108 == 1 |
+#                                     autoimmune_id___146 == 1 |
+#                                     autoimmune_id___132 == 1, 1, 0)) %>%
+#   mutate(ad_type_sys.rheum = ifelse(autoimmune_id___7 == 1 |
+#                                       autoimmune_id___9 == 1 |
+#                                       autoimmune_id___22 == 1 |
+#                                       autoimmune_id___31 == 1 |
+#                                       autoimmune_id___33 == 1 |
+#                                       autoimmune_id___34 == 1 |
+#                                       autoimmune_id___35 == 1 |
+#                                       autoimmune_id___37 == 1 |
+#                                       autoimmune_id___38 == 1 |
+#                                       autoimmune_id___46 == 1 |
+#                                       autoimmune_id___50 == 1 |
+#                                       autoimmune_id___55 == 1 |
+#                                       autoimmune_id___60 == 1 |
+#                                       autoimmune_id___77 == 1 |
+#                                       autoimmune_id___80 == 1 |
+#                                       autoimmune_id___96 == 1 |
+#                                       autoimmune_id___107 == 1 |
+#                                       autoimmune_id___139 == 1 |
+#                                       autoimmune_id___164 == 1 |
+#                                       autoimmune_id___171 == 1 |
+#                                       autoimmune_id___172 == 1 |
+#                                       autoimmune_id___85 == 1, 1, 0)) %>%
+#   mutate(ad_type_sys.vasc = ifelse(autoimmune_id___10 == 1 |
+#                                      autoimmune_id___12 == 1 |
+#                                      autoimmune_id___13 == 1 |
+#                                      autoimmune_id___18 == 1 |
+#                                      autoimmune_id___20 == 1 |
+#                                      autoimmune_id___24 == 1 |
+#                                      autoimmune_id___36 == 1 |
+#                                      autoimmune_id___39 == 1 |
+#                                      autoimmune_id___43 == 1 |
+#                                      autoimmune_id___54 == 1 |
+#                                      autoimmune_id___62 == 1 |
+#                                      autoimmune_id___76 == 1 |
+#                                      autoimmune_id___79 == 1 |
+#                                      autoimmune_id___86 == 1 |
+#                                      autoimmune_id___104 == 1 |
+#                                      autoimmune_id___109 == 1 |
+#                                      autoimmune_id___118 == 1 |
+#                                      autoimmune_id___133 == 1 |
+#                                      autoimmune_id___176 == 1, 1, 0))
+#  #TODO work out whether to drop ADs
+# #TODO chron.sum?
+# #TODO ad.type.sum ?
+# #TODO variables with type ADs might be needed to?
+# 
+# #label
+# label(ad.type$ad_type_healthy)="Healthy"
+# label(ad.type$ad_type_loc.blood)="Local blood"
+# label(ad.type$ad_type_loc.card)="Local cardiac"
+# label(ad.type$ad_type_loc.ear)="Local ear"
+# label(ad.type$ad_type_loc.endocr)="Local endocrine"
+# label(ad.type$ad_type_loc.gastro)="Local gastrointestinal system"
+# label(ad.type$ad_type_loc.gento)="Local genitourinary system"
+# label(ad.type$ad_type_loc.skel)="Local joint/skeletal"
+# label(ad.type$ad_type_loc.kid)="Local kidney"
+# label(ad.type$ad_type_loc.liv)="Local liver"
+# label(ad.type$ad_type_loc.lymph)="Local lymphatic"
+# label(ad.type$ad_type_loc.musc)="Local muscular"
+# label(ad.type$ad_type_loc.nerv)="Local nervous system"
+# label(ad.type$ad_type_loc.ocul)="Local occular"
+# label(ad.type$ad_type_loc.panc)="Local pancreas"
+# label(ad.type$ad_type_loc.resp)="Local respiratory"
+# label(ad.type$ad_type_loc.skin)="Local skin"
+# label(ad.type$ad_type_sys.gen)="Systemic general"
+# label(ad.type$ad_type_sys.rheum)="Systemic rheumatological"
+# label(ad.type$ad_type_sys.vasc)="Systemic vasculitis"
+# 
+# saveRDS(ad.type, file = "AD-type-classification.rds")
+# 
+# ############
+# # Variables of AD classification
+# ############
+# 
+# # Subsetting aim:
+# # data %>%
+# #   select(any_of(variable))
+# 
+# autoimmune.yes <- c("autoimmune_id___1",
+#                     "autoimmune_id___2",
+#                     "autoimmune_id___3",
+#                     "autoimmune_id___4",
+#                     "autoimmune_id___5",
+#                     "autoimmune_id___6",
+#                     "autoimmune_id___7",
+#                     "autoimmune_id___8",
+#                     "autoimmune_id___9",
+#                     "autoimmune_id___10",
+#                     "autoimmune_id___11",
+#                     "autoimmune_id___12",
+#                     "autoimmune_id___13",
+#                     "autoimmune_id___14",
+#                     "autoimmune_id___15",
+#                     "autoimmune_id___16",
+#                     "autoimmune_id___17",
+#                     "autoimmune_id___18",
+#                     "autoimmune_id___19",
+#                     "autoimmune_id___20",
+#                     "autoimmune_id___21",
+#                     "autoimmune_id___22",
+#                     "autoimmune_id___23",
+#                     "autoimmune_id___24",
+#                     "autoimmune_id___25",
+#                     "autoimmune_id___26",
+#                     "autoimmune_id___27",
+#                     "autoimmune_id___28",
+#                     "autoimmune_id___29",
+#                     "autoimmune_id___30",
+#                     "autoimmune_id___31",
+#                     "autoimmune_id___32",
+#                     "autoimmune_id___33",
+#                     "autoimmune_id___34",
+#                     "autoimmune_id___35",
+#                     "autoimmune_id___36",
+#                     "autoimmune_id___37",
+#                     "autoimmune_id___38",
+#                     "autoimmune_id___39",
+#                     "autoimmune_id___40",
+#                     "autoimmune_id___41",
+#                     "autoimmune_id___42",
+#                     "autoimmune_id___43",
+#                     "autoimmune_id___46",
+#                     "autoimmune_id___50",
+#                     "autoimmune_id___52",
+#                     "autoimmune_id___54",
+#                     "autoimmune_id___59",
+#                     "autoimmune_id___62",
+#                     "autoimmune_id___70",
+#                     "autoimmune_id___71",
+#                     "autoimmune_id___73",
+#                     "autoimmune_id___75",
+#                     "autoimmune_id___77",
+#                     "autoimmune_id___78",
+#                     "autoimmune_id___79",
+#                     "autoimmune_id___80",
+#                     "autoimmune_id___82",
+#                     "autoimmune_id___88",
+#                     "autoimmune_id___89",
+#                     "autoimmune_id___90",
+#                     "autoimmune_id___94",
+#                     "autoimmune_id___96",
+#                     "autoimmune_id___103",
+#                     "autoimmune_id___104",
+#                     "autoimmune_id___107",
+#                     "autoimmune_id___108",
+#                     "autoimmune_id___109",
+#                     "autoimmune_id___110",
+#                     "autoimmune_id___115",
+#                     "autoimmune_id___122",
+#                     "autoimmune_id___127",
+#                     "autoimmune_id___131",
+#                     "autoimmune_id___137",
+#                     "autoimmune_id___138",
+#                     "autoimmune_id___139",
+#                     "autoimmune_id___148",
+#                     "autoimmune_id___150",
+#                     "autoimmune_id___151",
+#                     "autoimmune_id___162",
+#                     "autoimmune_id___165",
+#                     "autoimmune_id___166",
+#                     "autoimmune_id___168",
+#                     "autoimmune_id___171",
+#                     "autoimmune_id___173",
+#                     "autoimmune_id___174",
+#                     "autoimmune_id___175",
+#                     "autoimmune_id___176",
+#                     "autoimmune_id___179",
+#                     "autoimmune_id___181",
+#                     "autoimmune_id___183")
+# saveRDS(autoimmune.yes, file = "classification-autoimmune-yes.rds")
+# autoimmune.no <- c("autoimmune_id___51",
+#                    "autoimmune_id___53",
+#                    "autoimmune_id___56",
+#                    "autoimmune_id___58",
+#                    "autoimmune_id___60",
+#                    "autoimmune_id___61",
+#                    "autoimmune_id___63",
+#                    "autoimmune_id___64",
+#                    "autoimmune_id___65",
+#                    "autoimmune_id___66",
+#                    "autoimmune_id___68",
+#                    "autoimmune_id___69",
+#                    "autoimmune_id___72",
+#                    "autoimmune_id___76",
+#                    "autoimmune_id___81",
+#                    "autoimmune_id___83",
+#                    "autoimmune_id___86",
+#                    "autoimmune_id___87",
+#                    "autoimmune_id___91",
+#                    "autoimmune_id___92",
+#                    "autoimmune_id___93",
+#                    "autoimmune_id___98",
+#                    "autoimmune_id___101",
+#                    "autoimmune_id___102",
+#                    "autoimmune_id___105",
+#                    "autoimmune_id___106",
+#                    "autoimmune_id___111",
+#                    "autoimmune_id___112",
+#                    "autoimmune_id___113",
+#                    "autoimmune_id___114",
+#                    "autoimmune_id___117",
+#                    "autoimmune_id___119",
+#                    "autoimmune_id___121",
+#                    "autoimmune_id___126",
+#                    "autoimmune_id___128",
+#                    "autoimmune_id___129",
+#                    "autoimmune_id___130",
+#                    "autoimmune_id___132",
+#                    "autoimmune_id___133",
+#                    "autoimmune_id___134",
+#                    "autoimmune_id___136",
+#                    "autoimmune_id___140",
+#                    "autoimmune_id___141",
+#                    "autoimmune_id___142",
+#                    "autoimmune_id___144",
+#                    "autoimmune_id___145",
+#                    "autoimmune_id___146",
+#                    "autoimmune_id___147",
+#                    "autoimmune_id___152",
+#                    "autoimmune_id___153",
+#                    "autoimmune_id___154",
+#                    "autoimmune_id___155",
+#                    "autoimmune_id___156",
+#                    "autoimmune_id___157",
+#                    "autoimmune_id___158",
+#                    "autoimmune_id___160",
+#                    "autoimmune_id___161",
+#                    "autoimmune_id___163",
+#                    "autoimmune_id___167",
+#                    "autoimmune_id___170",
+#                    "autoimmune_id___172",
+#                    "autoimmune_id___177",
+#                    "autoimmune_id___178",
+#                    "autoimmune_id___180",
+#                    "autoimmune_id___182",
+#                    "autoimmune_id___184",
+#                    "autoimmune_id___185",
+#                    "autoimmune_id___186",
+#                    "autoimmune_id___187")
+# saveRDS(autoimmune.no, file = "classification-autoimmune-no.rds")
+# autoimmune.unknown <- c("autoimmune_id___55",
+#                         "autoimmune_id___57",
+#                         "autoimmune_id___74",
+#                         "autoimmune_id___84",
+#                         "autoimmune_id___85",
+#                         "autoimmune_id___95",
+#                         "autoimmune_id___99",
+#                         "autoimmune_id___100",
+#                         "autoimmune_id___116",
+#                         "autoimmune_id___118",
+#                         "autoimmune_id___125",
+#                         "autoimmune_id___149",
+#                         "autoimmune_id___159",
+#                         "autoimmune_id___164",
+#                         "autoimmune_id___169")
+# saveRDS(autoimmune.unknown, file = "classification-autoimmune-unknown.rds")
 
 #### old calssification:
 
@@ -913,3 +913,214 @@ icd.symptom <- c(
   "chronic___22"
 )
 saveRDS(icd.symptom, file = "icd-symptom.rds")
+
+# 0 - mixed AD and non-AD
+autoimmune.mix <- c("chronic___5",
+                    "chronic___12",
+                    "chronic___16")
+saveRDS(autoimmune.mix, file = "classification-autoimmune-mixed.rds")
+
+# 1 - AD
+autoimmune.yes <- c("autoimmune_id___1",
+                    "autoimmune_id___171",
+                    "autoimmune_id___96",
+                    "autoimmune_id___11",
+                    "autoimmune_id___2",
+                    "autoimmune_id___21",
+                    "autoimmune_id___30",
+                    "autoimmune_id___70",
+                    "autoimmune_id___16",
+                    "autoimmune_id___122",
+                    "autoimmune_id___183",
+                    "autoimmune_id___32",
+                    "autoimmune_id___42",
+                    "autoimmune_id___52",
+                    "autoimmune_id___6",
+                    "autoimmune_id___8",
+                    "autoimmune_id___94",
+                    "autoimmune_id___23",
+                    "autoimmune_id___10",
+                    "autoimmune_id___104",
+                    "autoimmune_id___107",
+                    "autoimmune_id___108",
+                    "autoimmune_id___109",
+                    "autoimmune_id___13",
+                    "autoimmune_id___137",
+                    "autoimmune_id___150",
+                    "autoimmune_id___173",
+                    "autoimmune_id___176",
+                    "autoimmune_id___18",
+                    "autoimmune_id___20",
+                    "autoimmune_id___22",
+                    "autoimmune_id___24",
+                    "autoimmune_id___31",
+                    "autoimmune_id___33",
+                    "autoimmune_id___36",
+                    "autoimmune_id___37",
+                    "autoimmune_id___38",
+                    "autoimmune_id___40",
+                    "autoimmune_id___43",
+                    "autoimmune_id___50",
+                    "autoimmune_id___54",
+                    "autoimmune_id___62",
+                    "autoimmune_id___7",
+                    "autoimmune_id___77",
+                    "autoimmune_id___80",
+                    "autoimmune_id___9",
+                    "autoimmune_id___139",
+                    "autoimmune_id___151",
+                    "autoimmune_id___162",
+                    "autoimmune_id___34",
+                    "autoimmune_id___35",
+                    "autoimmune_id___71",
+                    "autoimmune_id___115",
+                    "autoimmune_id___127",
+                    "autoimmune_id___15",
+                    "autoimmune_id___168",
+                    "autoimmune_id___175",
+                    "autoimmune_id___25",
+                    "autoimmune_id___26",
+                    "autoimmune_id___27",
+                    "autoimmune_id___28",
+                    "autoimmune_id___39",
+                    "autoimmune_id___5",
+                    "autoimmune_id___79",
+                    "autoimmune_id___82",
+                    "autoimmune_id___103",
+                    "autoimmune_id___131",
+                    "autoimmune_id___138",
+                    "autoimmune_id___148",
+                    "autoimmune_id___165",
+                    "autoimmune_id___166",
+                    "autoimmune_id___29",
+                    "autoimmune_id___59",
+                    "autoimmune_id___73",
+                    "autoimmune_id___75",
+                    "autoimmune_id___88",
+                    "autoimmune_id___89",
+                    "autoimmune_id___3",
+                    "autoimmune_id___4",
+                    "autoimmune_id___110",
+                    "autoimmune_id___181",
+                    "autoimmune_id___14",
+                    "autoimmune_id___17",
+                    "autoimmune_id___179",
+                    "autoimmune_id___41",
+                    "autoimmune_id___46",
+                    "autoimmune_id___78",
+                    "autoimmune_id___12",
+                    "autoimmune_id___19")
+saveRDS(autoimmune.yes, file = "classification-autoimmune-yes.rds")
+
+# 2 - non-AD
+autoimmune.no <- c("chronic___19",
+                   "chronic___23",
+                   "chronic___21",
+                   "chronic___18",
+                   "chronic___25",
+                   "chronic___26",
+                   "chronic___1",
+                   "chronic___13",
+                   "chronic___2",
+                   "chronic___20",
+                   "chronic___11",
+                   "chronic___4",
+                   "chronic___9",
+                   "chronic___3",
+                   "chronic___17",
+                   "chronic___15",
+                   "chronic___22",
+                   "chronic___14",
+                   "autoimmune_id___90",
+                   "autoimmune_id___174",
+                   "autoimmune_id___182",
+                   "autoimmune_id___111",
+                   "autoimmune_id___172",
+                   "autoimmune_id___133",
+                   "autoimmune_id___157",
+                   "autoimmune_id___86",
+                   "autoimmune_id___177",
+                   "autoimmune_id___117",
+                   "autoimmune_id___128",
+                   "autoimmune_id___134",
+                   "autoimmune_id___153",
+                   "autoimmune_id___160",
+                   "autoimmune_id___66",
+                   "autoimmune_id___142",
+                   "autoimmune_id___61",
+                   "autoimmune_id___69",
+                   "autoimmune_id___72",
+                   "autoimmune_id___93",
+                   "autoimmune_id___98",
+                   "autoimmune_id___129",
+                   "autoimmune_id___140",
+                   "autoimmune_id___101",
+                   "autoimmune_id___184",
+                   "autoimmune_id___65",
+                   "autoimmune_id___106",
+                   "autoimmune_id___126",
+                   "autoimmune_id___130",
+                   "autoimmune_id___121",
+                   "autoimmune_id___152",
+                   "autoimmune_id___178",
+                   "autoimmune_id___186",
+                   "autoimmune_id___58",
+                   "autoimmune_id___81",
+                   "autoimmune_id___92",
+                   "autoimmune_id___155",
+                   "autoimmune_id___161",
+                   "autoimmune_id___180",
+                   "autoimmune_id___187",
+                   "autoimmune_id___51",
+                   "autoimmune_id___53",
+                   "autoimmune_id___146",
+                   "autoimmune_id___158",
+                   "autoimmune_id___119",
+                   "autoimmune_id___144",
+                   "autoimmune_id___145",
+                   "autoimmune_id___167",
+                   "autoimmune_id___147",
+                   "autoimmune_id___102",
+                   "autoimmune_id___112",
+                   "autoimmune_id___113",
+                   "autoimmune_id___141",
+                   "autoimmune_id___154",
+                   "autoimmune_id___156",
+                   "autoimmune_id___170",
+                   "autoimmune_id___185",
+                   "autoimmune_id___87",
+                   "autoimmune_id___91",
+                   "autoimmune_id___68",
+                   "autoimmune_id___76",
+                   "autoimmune_id___114",
+                   "autoimmune_id___105",
+                   "autoimmune_id___136",
+                   "autoimmune_id___163",
+                   "autoimmune_id___56",
+                   "autoimmune_id___60",
+                   "autoimmune_id___63",
+                   "autoimmune_id___64",
+                   "autoimmune_id___132",
+                   "autoimmune_id___83",
+                   "autoimmune_id___100",
+                   "autoimmune_id___99",
+                   "autoimmune_id___187")
+saveRDS(autoimmune.no, file = "classification-autoimmune-no.rds")
+
+# 3 - unknown origin
+autoimmune.unknown <- c("chronic___24",
+                        "chronic___10",
+                        "autoimmune_id___164",
+                        "autoimmune_id___149",
+                        "autoimmune_id___118",
+                        "autoimmune_id___85",
+                        "autoimmune_id___116",
+                        "autoimmune_id___55",
+                        "autoimmune_id___159",
+                        "autoimmune_id___169",
+                        "autoimmune_id___57",
+                        "autoimmune_id___74",
+                        "autoimmune_id___95",
+                        "autoimmune_id___125",
+                        "autoimmune_id___84")
+saveRDS(autoimmune.unknown, file = "classification-autoimmune-unknown.rds")
