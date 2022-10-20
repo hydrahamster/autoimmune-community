@@ -1103,8 +1103,7 @@ autoimmune.no <- c("chronic___19",
                    "autoimmune_id___132",
                    "autoimmune_id___83",
                    "autoimmune_id___100",
-                   "autoimmune_id___99",
-                   "autoimmune_id___187")
+                   "autoimmune_id___99")
 saveRDS(autoimmune.no, file = "classification-autoimmune-no.rds")
 
 # 3 - unknown origin
@@ -1124,3 +1123,6 @@ autoimmune.unknown <- c("chronic___24",
                         "autoimmune_id___125",
                         "autoimmune_id___84")
 saveRDS(autoimmune.unknown, file = "classification-autoimmune-unknown.rds")
+
+autoimmune.all <- c(autoimmune.yes, autoimmune.mix, autoimmune.no, autoimmune.unknown)
+saveRDS(autoimmune.all, file = "classification-autoimmune-all.rds")

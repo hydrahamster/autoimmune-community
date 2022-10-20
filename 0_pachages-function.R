@@ -29,6 +29,7 @@ library(igraph)
 library(ggpubr)
 library(scales)
 library(OutDeCo)
+library(patchwork)
 #library(utilities)
 #library(cooccur) damn it, specific for species co-occurence
 
