@@ -1470,7 +1470,7 @@ label(df.ad$chronic___25)="Idiopathic intracranial hypertension"
 label(df.ad$chronic___26)="Cerebral palsy"
 label(df.ad$chronic___12)="Chronic kidney disease"
 
-
+# rm irrelevant and pooled codes from df
 df.ad <- df.ad %>%
   select(-c(autoimmune_id_other,
             otherchronic,
@@ -1485,13 +1485,561 @@ df.ad <- df.ad %>%
             autoimmune_id___49
             )) 
 
-  #TODO change this to reflect AD, non-AD, unknown, mixed from 3_ script
+############
+#
+# ICD-11 parent classification
+#
+###########
+
+#Certain infectious or parasitic diseases
+icd.parasitic <- c(
+  "autoimmune_id___171",
+  "autoimmune_id___182",
+  "autoimmune_id___96"
+)
+saveRDS(icd.parasitic, file = "icd-parasitic.rds")
+
+#Codes for special purposes
+icd.special <- c(
+  "autoimmune_id___164"
+)
+saveRDS(icd.special, file = "icd-special.rds")
+
+#Developmental anomalies
+icd.developmental <- c(
+  "autoimmune_id___111",
+  "autoimmune_id___172",
+  "chronic___19"
+)
+saveRDS(icd.developmental, file = "icd-developmental.rds")
+
+#Diseases of the blood or blood-forming organs
+icd.blood <- c(
+  "autoimmune_id___133",
+  "autoimmune_id___157",
+  "autoimmune_id___86",
+  "chronic___23",
+  "autoimmune_id___11",
+  "autoimmune_id___177",
+  "autoimmune_id___2",
+  "autoimmune_id___21",
+  "autoimmune_id___30",
+  "autoimmune_id___70"
+)
+saveRDS(icd.blood, file = "icd-blood.rds")
+
+# Diseases of the circulatory system
+icd.circulatory <- c(
+  "autoimmune_id___117",
+  "autoimmune_id___128",
+  "autoimmune_id___134",
+  "autoimmune_id___153",
+  "autoimmune_id___16",
+  "autoimmune_id___160",
+  "autoimmune_id___66",
+  "chronic___24",
+  "chronic___5"
+)
+saveRDS(icd.circulatory, file = "icd-circulatory.rds")
+
+# Diseases of the digestive system
+icd.digestive <- c(
+  "autoimmune_id___122",
+  "autoimmune_id___142",
+  "autoimmune_id___149",
+  "autoimmune_id___183",
+  "autoimmune_id___32",
+  "autoimmune_id___42",
+  "autoimmune_id___52",
+  "autoimmune_id___6",
+  "autoimmune_id___61",
+  "autoimmune_id___69",
+  "autoimmune_id___72",
+  "autoimmune_id___8",
+  "autoimmune_id___93",
+  "autoimmune_id___94",
+  "autoimmune_id___98",
+  "autoimmune_id___83"
+)
+saveRDS(icd.digestive, file = "icd-digestive.rds")
+
+# Diseases of the ear or mastoid process
+icd.ear <- c(
+  "autoimmune_id___129",
+  "autoimmune_id___140"
+)
+saveRDS(icd.ear, file = "icd-ear.rds")
+
+#Diseases of the genitourinary system
+icd.genitourinary <- c(
+  "autoimmune_id___101",
+  "autoimmune_id___184",
+  "autoimmune_id___23",
+  "autoimmune_id___65",
+  "chronic___12"
+)
+saveRDS(icd.genitourinary, file = "icd-genitourinary.rds")
+
+#Diseases of the immune system
+icd.immune <- c(
+  "autoimmune_id___10",
+  "autoimmune_id___104",
+  "autoimmune_id___106",
+  "autoimmune_id___107",
+  "autoimmune_id___108",
+  "autoimmune_id___109",
+  "autoimmune_id___118",
+  "autoimmune_id___126",
+  "autoimmune_id___13",
+  "autoimmune_id___130",
+  "autoimmune_id___137",
+  "autoimmune_id___150",
+  "autoimmune_id___173",
+  "autoimmune_id___176",
+  "autoimmune_id___18",
+  "autoimmune_id___20",
+  "autoimmune_id___22",
+  "autoimmune_id___24",
+  "autoimmune_id___31",
+  "autoimmune_id___33",
+  "autoimmune_id___36",
+  "autoimmune_id___37",
+  "autoimmune_id___38",
+  "autoimmune_id___40",
+  "autoimmune_id___43",
+  "autoimmune_id___50",
+  "autoimmune_id___54",
+  "autoimmune_id___62",
+  "autoimmune_id___7",
+  "autoimmune_id___77",
+  "autoimmune_id___80",
+  "autoimmune_id___9",
+  "autoimmune_id___132",
+  "chronic___21"
+)
+saveRDS(icd.immune, file = "icd-immune.rds")
+
+# Diseases of the musculoskeletal system or connective tissue
+icd.musculoskeletal <- c(
+  "autoimmune_id___1",
+  "autoimmune_id___121",
+  "autoimmune_id___139",
+  "autoimmune_id___151",
+  "autoimmune_id___152",
+  "autoimmune_id___162",
+  "autoimmune_id___178",
+  "autoimmune_id___186",
+  "autoimmune_id___34",
+  "autoimmune_id___35",
+  "autoimmune_id___58",
+  "autoimmune_id___71",
+  "autoimmune_id___81",
+  "autoimmune_id___85",
+  "autoimmune_id___92",
+  "chronic___18"
+)
+saveRDS(icd.musculoskeletal, file = "icd-musculoskeletal.rds")
+
+# Diseases of the nervous system
+icd.nervous <- c(
+  "autoimmune_id___115",
+  "autoimmune_id___116",
+  "autoimmune_id___127",
+  "autoimmune_id___15",
+  "autoimmune_id___155",
+  "autoimmune_id___161",
+  "autoimmune_id___168",
+  "autoimmune_id___175",
+  "autoimmune_id___180",
+  "autoimmune_id___187",
+  "autoimmune_id___25",
+  "autoimmune_id___26",
+  "autoimmune_id___27",
+  "autoimmune_id___28",
+  "autoimmune_id___39",
+  "autoimmune_id___5",
+  "autoimmune_id___51",
+  "autoimmune_id___53",
+  "autoimmune_id___55",
+  "autoimmune_id___79",
+  "autoimmune_id___82",
+  "autoimmune_id___90",
+  "chronic___10",
+  "chronic___16",
+  "chronic___25",
+  "chronic___26"
+)
+saveRDS(icd.nervous, file = "icd-nervous.rds")
+
+#Diseases of the respiratory system
+icd.respiratory <- c(
+  "autoimmune_id___146",
+  "autoimmune_id___158",
+  "autoimmune_id___159",
+  "chronic___1",
+  "chronic___13"
+)
+saveRDS(icd.respiratory, file = "icd-respiratory.rds")
+
+#Diseases of the skin
+icd.skin <- c(
+  "autoimmune_id___103",
+  "autoimmune_id___119",
+  "autoimmune_id___131",
+  "autoimmune_id___138",
+  "autoimmune_id___144",
+  "autoimmune_id___145",
+  "autoimmune_id___148",
+  "autoimmune_id___165",
+  "autoimmune_id___166",
+  "autoimmune_id___167",
+  "autoimmune_id___169",
+  "autoimmune_id___29",
+  "autoimmune_id___57",
+  "autoimmune_id___59",
+  "autoimmune_id___73",
+  "autoimmune_id___74",
+  "autoimmune_id___75",
+  "autoimmune_id___88",
+  "autoimmune_id___89",
+  "autoimmune_id___95",
+  "autoimmune_id___3",
+  "autoimmune_id___4",
+  "chronic___14"
+)
+saveRDS(icd.skin, file = "icd-skin.rds")
+
+#Diseases of the visual system
+icd.visual <- c(
+  "autoimmune_id___110",
+  "autoimmune_id___147",
+  "autoimmune_id___181"
+)
+saveRDS(icd.visual, file = "icd-visual.rds")
+
+#Endocrine, nutritional or metabolic diseases
+icd.endocrine <- c(
+  "autoimmune_id___102",
+  "autoimmune_id___112",
+  "autoimmune_id___113",
+  "autoimmune_id___125",
+  "autoimmune_id___14",
+  "autoimmune_id___141",
+  "autoimmune_id___154",
+  "autoimmune_id___156",
+  "autoimmune_id___17",
+  "autoimmune_id___170",
+  "autoimmune_id___179",
+  "autoimmune_id___185",
+  "autoimmune_id___41",
+  "autoimmune_id___46",
+  "autoimmune_id___84",
+  "autoimmune_id___87",
+  "autoimmune_id___91",
+  "chronic___2",
+  "chronic___20"
+)
+saveRDS(icd.endocrine, file = "icd-endocrine.rds")
+
+#Mental, behavioural or neurodevelopmental disorders
+icd.mental <- c(
+  "autoimmune_id___68",
+  "chronic___11",
+  "chronic___4",
+  "chronic___9"
+)
+saveRDS(icd.mental, file = "icd-mental.rds")
+
+#Neoplasms
+icd.neoplasm <- c(
+  "autoimmune_id___76",
+  "chronic___3"
+)
+saveRDS(icd.neoplasm, file = "icd-neoplasm.rds")
+
+#Sleep-wake disorders
+icd.sleep <- c(
+  "autoimmune_id___114",
+  "autoimmune_id___78",
+  "chronic___17"
+)
+saveRDS(icd.sleep, file = "icd-sleep.rds")
+
+#Symptoms, signs or clinical findings, not elsewhere classified
+icd.symptom <- c(
+  "autoimmune_id___100",
+  "autoimmune_id___105",
+  "autoimmune_id___12",
+  "autoimmune_id___136",
+  "autoimmune_id___163",
+  "autoimmune_id___174",
+  "autoimmune_id___19",
+  "autoimmune_id___56",
+  "autoimmune_id___60",
+  "autoimmune_id___63",
+  "autoimmune_id___64",
+  "autoimmune_id___99",
+  "chronic___15",
+  "chronic___22"
+)
+saveRDS(icd.symptom, file = "icd-symptom.rds")
+
+# 0 - mixed AD and non-AD
+autoimmune.mix <- c("chronic___5",
+                    "chronic___12",
+                    "chronic___16")
+saveRDS(autoimmune.mix, file = "classification-autoimmune-mixed.rds")
+
+# 1 - AD
+autoimmune.yes <- c("autoimmune_id___1",
+                    "autoimmune_id___171",
+                    "autoimmune_id___96",
+                    "autoimmune_id___11",
+                    "autoimmune_id___2",
+                    "autoimmune_id___21",
+                    "autoimmune_id___30",
+                    "autoimmune_id___70",
+                    "autoimmune_id___16",
+                    "autoimmune_id___122",
+                    "autoimmune_id___183",
+                    "autoimmune_id___32",
+                    "autoimmune_id___42",
+                    "autoimmune_id___52",
+                    "autoimmune_id___6",
+                    "autoimmune_id___8",
+                    "autoimmune_id___94",
+                    "autoimmune_id___23",
+                    "autoimmune_id___10",
+                    "autoimmune_id___104",
+                    "autoimmune_id___107",
+                    "autoimmune_id___108",
+                    "autoimmune_id___109",
+                    "autoimmune_id___13",
+                    "autoimmune_id___137",
+                    "autoimmune_id___150",
+                    "autoimmune_id___173",
+                    "autoimmune_id___176",
+                    "autoimmune_id___18",
+                    "autoimmune_id___20",
+                    "autoimmune_id___22",
+                    "autoimmune_id___24",
+                    "autoimmune_id___31",
+                    "autoimmune_id___33",
+                    "autoimmune_id___36",
+                    "autoimmune_id___37",
+                    "autoimmune_id___38",
+                    "autoimmune_id___40",
+                    "autoimmune_id___43",
+                    "autoimmune_id___50",
+                    "autoimmune_id___54",
+                    "autoimmune_id___62",
+                    "autoimmune_id___7",
+                    "autoimmune_id___77",
+                    "autoimmune_id___80",
+                    "autoimmune_id___9",
+                    "autoimmune_id___139",
+                    "autoimmune_id___151",
+                    "autoimmune_id___162",
+                    "autoimmune_id___34",
+                    "autoimmune_id___35",
+                    "autoimmune_id___71",
+                    "autoimmune_id___115",
+                    "autoimmune_id___127",
+                    "autoimmune_id___15",
+                    "autoimmune_id___168",
+                    "autoimmune_id___175",
+                    "autoimmune_id___25",
+                    "autoimmune_id___26",
+                    "autoimmune_id___27",
+                    "autoimmune_id___28",
+                    "autoimmune_id___39",
+                    "autoimmune_id___5",
+                    "autoimmune_id___79",
+                    "autoimmune_id___82",
+                    "autoimmune_id___103",
+                    "autoimmune_id___131",
+                    "autoimmune_id___138",
+                    "autoimmune_id___148",
+                    "autoimmune_id___165",
+                    "autoimmune_id___166",
+                    "autoimmune_id___29",
+                    "autoimmune_id___59",
+                    "autoimmune_id___73",
+                    "autoimmune_id___75",
+                    "autoimmune_id___88",
+                    "autoimmune_id___89",
+                    "autoimmune_id___3",
+                    "autoimmune_id___4",
+                    "autoimmune_id___110",
+                    "autoimmune_id___181",
+                    "autoimmune_id___14",
+                    "autoimmune_id___17",
+                    "autoimmune_id___179",
+                    "autoimmune_id___41",
+                    "autoimmune_id___46",
+                    "autoimmune_id___78",
+                    "autoimmune_id___12",
+                    "autoimmune_id___19")
+saveRDS(autoimmune.yes, file = "classification-autoimmune-yes.rds")
+
+# 2 - non-AD
+autoimmune.no <- c("chronic___19",
+                   "chronic___23",
+                   "chronic___21",
+                   "chronic___18",
+                   "chronic___25",
+                   "chronic___26",
+                   "chronic___1",
+                   "chronic___13",
+                   "chronic___2",
+                   "chronic___20",
+                   "chronic___11",
+                   "chronic___4",
+                   "chronic___9",
+                   "chronic___3",
+                   "chronic___17",
+                   "chronic___15",
+                   "chronic___22",
+                   "chronic___14",
+                   "autoimmune_id___90",
+                   "autoimmune_id___174",
+                   "autoimmune_id___182",
+                   "autoimmune_id___111",
+                   "autoimmune_id___172",
+                   "autoimmune_id___133",
+                   "autoimmune_id___157",
+                   "autoimmune_id___86",
+                   "autoimmune_id___177",
+                   "autoimmune_id___117",
+                   "autoimmune_id___128",
+                   "autoimmune_id___134",
+                   "autoimmune_id___153",
+                   "autoimmune_id___160",
+                   "autoimmune_id___66",
+                   "autoimmune_id___142",
+                   "autoimmune_id___61",
+                   "autoimmune_id___69",
+                   "autoimmune_id___72",
+                   "autoimmune_id___93",
+                   "autoimmune_id___98",
+                   "autoimmune_id___129",
+                   "autoimmune_id___140",
+                   "autoimmune_id___101",
+                   "autoimmune_id___184",
+                   "autoimmune_id___65",
+                   "autoimmune_id___106",
+                   "autoimmune_id___126",
+                   "autoimmune_id___130",
+                   "autoimmune_id___121",
+                   "autoimmune_id___152",
+                   "autoimmune_id___178",
+                   "autoimmune_id___186",
+                   "autoimmune_id___58",
+                   "autoimmune_id___81",
+                   "autoimmune_id___92",
+                   "autoimmune_id___155",
+                   "autoimmune_id___161",
+                   "autoimmune_id___180",
+                   "autoimmune_id___187",
+                   "autoimmune_id___51",
+                   "autoimmune_id___53",
+                   "autoimmune_id___146",
+                   "autoimmune_id___158",
+                   "autoimmune_id___119",
+                   "autoimmune_id___144",
+                   "autoimmune_id___145",
+                   "autoimmune_id___167",
+                   "autoimmune_id___147",
+                   "autoimmune_id___102",
+                   "autoimmune_id___112",
+                   "autoimmune_id___113",
+                   "autoimmune_id___141",
+                   "autoimmune_id___154",
+                   "autoimmune_id___156",
+                   "autoimmune_id___170",
+                   "autoimmune_id___185",
+                   "autoimmune_id___87",
+                   "autoimmune_id___91",
+                   "autoimmune_id___68",
+                   "autoimmune_id___76",
+                   "autoimmune_id___114",
+                   "autoimmune_id___105",
+                   "autoimmune_id___136",
+                   "autoimmune_id___163",
+                   "autoimmune_id___56",
+                   "autoimmune_id___60",
+                   "autoimmune_id___63",
+                   "autoimmune_id___64",
+                   "autoimmune_id___132",
+                   "autoimmune_id___83",
+                   "autoimmune_id___100",
+                   "autoimmune_id___99")
+saveRDS(autoimmune.no, file = "classification-autoimmune-no.rds")
+
+# 3 - unknown origin
+autoimmune.unknown <- c("chronic___24",
+                        "chronic___10",
+                        "autoimmune_id___164",
+                        "autoimmune_id___149",
+                        "autoimmune_id___118",
+                        "autoimmune_id___85",
+                        "autoimmune_id___116",
+                        "autoimmune_id___55",
+                        "autoimmune_id___159",
+                        "autoimmune_id___169",
+                        "autoimmune_id___57",
+                        "autoimmune_id___74",
+                        "autoimmune_id___95",
+                        "autoimmune_id___125",
+                        "autoimmune_id___84")
+saveRDS(autoimmune.unknown, file = "classification-autoimmune-unknown.rds")
+
+autoimmune.all <- c(autoimmune.yes, autoimmune.mix, autoimmune.no, autoimmune.unknown)
+saveRDS(autoimmune.all, file = "classification-autoimmune-all.rds")
+
+
+############
+#
+# Include broad sumamries e.g. ad presence vs. non-ad, plus counts of each per participant 
+#
+############
+
 df.ad <- df.ad %>%
   mutate(sum.ad = rowSums(select(., all_of(autoimmune.yes)))) %>%
   mutate(sum.noad = rowSums(select(., all_of(autoimmune.no)))) %>%
   mutate(sum.mixad = rowSums(select(., all_of(autoimmune.mix)))) %>%
   mutate(sum.unkad = rowSums(select(., all_of(autoimmune.unknown)))) %>%
-  mutate(sum.totalad = rowSums(select(., all_of(autoimmune.all))))
+  mutate(sum.totalad = rowSums(select(., all_of(autoimmune.all)))) %>%
+  mutate(cohort.id = case_when(
+    sum.totalad == 0 ~ "control",
+    sum.totalad > 0 ~ "chronically ill",
+    is.na(sum.totalad) ~ NA_character_
+  )) 
+
+single.illness <- df.ad %>%
+  filter(sum.totalad == 1) # | (sum.totalad ==2 & chronic___4 == 1))
+
+%>%
+  mutate(illness.grouped = case_when(
+    sum.totalad == 0 ~ "control",
+    sum.totalad == 1 & autoimmune_id___6 == 1 ~ "coeliac",
+    sum.totalad == 1 & autoimmune_id___55 == 1 ~ "ME",
+    sum.totalad == 1 & autoimmune_id___17 == 1 ~ "hashimotos",
+    sum.totalad == 1 & autoimmune_id___35 == 1 ~ "RA",
+    sum.totalad == 1 & autoimmune_id___26 == 1 ~ "MS",
+    sum.totalad == 1 & autoimmune_id___34 == 1 ~ "PsA",
+    sum.totalad == 1 & autoimmune_id___1 == 1 ~ "AS",
+    sum.totalad == 1 ~ "1 other illnesses",
+    sum.totalad > 1 ~ "multiple illnesses",
+    TRUE ~ NA_character_
+  ))
+label(df.ad$illness.grouped)="Illness grouped"
+label(df.ad$sum.totalad)="Totall llness count"
+label(df.ad$sum.ad)="ADs count"
+label(df.ad$sum.noad)="Non-ADs count"
+label(df.ad$sum.mixad)="Mixed AD and non-AD count"
+label(df.ad$sum.unkad)="Unknown if AD count"
+label(df.ad$cohort.id)="Cohort ID"
 
 #TODO overhaul cohort.id & illness.grouped
 
